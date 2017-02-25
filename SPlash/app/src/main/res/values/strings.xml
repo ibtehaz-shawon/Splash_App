@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Splash</string>
+    <string name="default_name">Ibtehaz Shawon</string>
+    <string name="daily_wallpaper">Daily wallpaper</string>
+    <string name="tap_to_turn">Tap to turn on</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="default_courtesy">Courtesy of Unsplash</string>
+    <string name="empty_view_scolling">Thats all for now!</string>
+</resources>

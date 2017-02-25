@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_no_radius"
+        android:alpha="0.2"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
+        >
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_icon"
+            android:padding="@dimen/margin_16dp"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@+id/btn_set_wallpaper"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/set_wallpaper"
+            android:background="@android:color/transparent"
+            android:textStyle="bold"
+            android:textColor="@color/textIconsColor"
+            android:textSize="@dimen/text_16sp"
+            android:fontFamily="sans-serif"
+            />
+    </LinearLayout>
+</FrameLayout>

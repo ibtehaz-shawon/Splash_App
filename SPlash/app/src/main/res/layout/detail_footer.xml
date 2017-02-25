@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_no_radius"
+        android:alpha="0.3"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_16dp"
+        android:paddingTop="@dimen/margin_8dp"
+        android:paddingBottom="@dimen/margin_8dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_profile_ic"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/placeholder_user"
+            app:civ_border_width="0dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/txt_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_name"
+                android:gravity="center|left"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:layout_marginRight="@dimen/margin_16dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="@dimen/text_20sp"
+                android:textColor="@color/primaryTextColor"
+                android:layout_marginBottom="@dimen/margin_12dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_courtesy"
+                android:gravity="center|left"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:layout_marginRight="@dimen/margin_16dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="@dimen/text_16sp"
+                android:textColor="@color/secondaryColor"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

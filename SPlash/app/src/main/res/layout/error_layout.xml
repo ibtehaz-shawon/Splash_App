@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/white_no_radius"
+    android:padding="@dimen/margin_16dp"
+    android:gravity="center"
+    android:id="@+id/ll_error_layout"
+    android:visibility="gone"
+    >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/error_icon"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Oops!\nAn Error Occured"
+        android:textSize="@dimen/text_24sp"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:textColor="@color/primaryTextColor"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        />
+
+
+
+</LinearLayout>
