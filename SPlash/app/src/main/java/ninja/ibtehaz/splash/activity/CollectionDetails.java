@@ -12,9 +12,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.models.CollectionModel;
 import ninja.ibtehaz.splash.network.ApiWrapperToGet;
 import ninja.ibtehaz.splash.network.ApiWrapperUtility;
 import ninja.ibtehaz.splash.utility.Util;
@@ -45,6 +50,7 @@ public class CollectionDetails extends BaseActivity
     private ApiWrapperUtility apiWrapperUtility;
     private boolean isLoading;
     private Object paginationLock = new Object();
+    private ArrayList<CollectionModel> dataModel;
 
 
     @Override
@@ -96,6 +102,7 @@ public class CollectionDetails extends BaseActivity
         currentPage = 1;
         util = new Util();
         isEmpty = false;
+        dataModel = new ArrayList<>();
         apiWrapperUtility = new ApiWrapperUtility();
     }
 
@@ -130,9 +137,7 @@ public class CollectionDetails extends BaseActivity
             showDialog("Loading Data... Please wait!");
 
         if (util.isConnectionAvailable(context)) {
-
             String actionTag;
-
             if (method == 1) {
                 actionTag = TAG_CURATED;
             } else {
@@ -181,9 +186,9 @@ public class CollectionDetails extends BaseActivity
         }
 
         if (actionTag.equals(TAG_CURATED)) {
-            parseCurated();
+            parseCurated(response);
         } else if (actionTag.equals(TAG_FEATURED)) {
-            parseFeatured();
+            parseFeatured(response);
         }
     }
 
@@ -191,15 +196,57 @@ public class CollectionDetails extends BaseActivity
     /**
      * parses curated list of data
      */
-    private void parseCurated() {
+    private void parseCurated(JSONObject response) {
+        if (response.has("collections")) {
+            try {
+                JSONArray collections = response.getJSONArray("collections");
 
+                if (collections.length() == 0) {
+                    isEmpty = true;
+                }
+
+                for (int i = 0; i < collections.length(); i++) {
+                    JSONObject row = collections.getJSONObject(i);
+                    CollectionModel collectionModel = new CollectionModel();
+
+                    collectionModel.setUrlSmall(row.getString("url_small"));
+                    collectionModel.setProfileImageSmall(row.getString("profile_image_small"));
+                    collectionModel.setUrlRaw(row.getString("url_raw"));
+                    collectionModel.setUpdatedAt(row.getString("updated"));
+                    collectionModel.setUrlRegular(row.getString("url_regular"));
+                    collectionModel.setProfileImageLarge(row.getString("profile_image_large"));
+                    collectionModel.setCollectionTitle(row.getString("collection_title"));
+                    collectionModel.setCoverHeight(row.getString("cover_height"));
+                    collectionModel.setCollectionUrlHtml(row.getString("collection_url_html"));
+                    collectionModel.setTotalPhotos(row.getString("total_photos"));
+                    collectionModel.setUrlCustom(row.getString("url_custom"));
+                    collectionModel.setUrlFull(row.getString("url_full"));
+                    collectionModel.setCoverWidth(row.getString("cover_width"));
+                    collectionModel.setCollectionId(row.getString("collection_id"));
+                    collectionModel.setCurated(row.getBoolean("is_curated"));
+                    collectionModel.setUrlThumb(row.getString("url_thumb"));
+                    collectionModel.setFeatured(row.getBoolean("is_featured"));
+                    collectionModel.setCollectionDescription(row.getString("collection_description"));
+                    collectionModel.setCollectionUrlSelf(row.getString("collection_url_self"));
+                    collectionModel.setPublishedAt(row.getString("published"));
+                    collectionModel.setCoverColor(row.getString("cover_color"));
+                    collectionModel.setUsername(row.getString("user_name"));
+
+                    dataModel.add(collectionModel);
+                }
+                isLoading = false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 
     /**
      * parses featured lists of data
      */
-    private void parseFeatured() {
+    private void parseFeatured(JSONObject response) {
 
     }
 }
