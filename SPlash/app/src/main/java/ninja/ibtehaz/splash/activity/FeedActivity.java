@@ -3,12 +3,17 @@ package ninja.ibtehaz.splash.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,16 +50,25 @@ public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetRes
     private int pageNumber;
     private boolean isLoading, isEmpty;
     private final Object paginationLock = new Object();
+    private View header;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_activity);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_landing);
+        setSupportActionBar(toolbar);
 
         /*-----------------------------------------*/
         init();
         /*-----------------------------------------*/
         callApi();
+        /*-----------------------------------------*/
+        initNavigationDrawer();
+        /*-----------------------------------------*/
         /*-----------------------------------------*/
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -97,6 +111,48 @@ public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetRes
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         llErrorLayout = (LinearLayout)findViewById(R.id.ll_error_layout);
 
+        findViewById(R.id.img_back).setVisibility(View.GONE);
+    }
+
+
+    /**
+     * initiates the navigation drawer
+     */
+    private void initNavigationDrawer() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setItemIconTintList(null);
+        /*--------------------------------------------------------------*/
+        /*---------------------Header TextView and ImageView------------*/
+        /*--------------------------------------------------------------*/
+        header = navigationView.getHeaderView(0);
+
+        /*--------------------------------------------------------------*/
+        /*--------------------------------------------------------------*/
+        /*--------------On Click Listener NavBar------------------------*/
+        /*--------------------------------------------------------------*/
+//        header.findViewById(R.id.txt_create_contest).setOnClickListener(this);
+//        header.findViewById(R.id.txt_my_contests).setOnClickListener(this);
+//        header.findViewById(R.id.txt_my_contacts).setOnClickListener(this);
+
+
+        /*--------------------------------------------------------------*/
+        /*--------------------------------------------------------------*/
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.nav_drawer_open, R.string.nav_drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View v) {
+                super.onDrawerClosed(v);
+            }
+
+            @Override
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
+            }
+        };
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
 
 

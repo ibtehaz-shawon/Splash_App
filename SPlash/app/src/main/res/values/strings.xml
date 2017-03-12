@@ -6,4 +6,10 @@
     <string name="set_wallpaper">Set Wallpaper</string>
     <string name="default_courtesy">Courtesy of Unsplash</string>
     <string name="empty_view_scolling">Thats all for now!</string>
+    <string name="hello">Hello There!</string>
+    <string name="curated">Curated Collections</string>
+    <string name="featured">Featured Collections</string>
+    <string name="settings">Settings</string>
+    <string name="nav_drawer_open">sisim_kholo</string>
+    <string name="nav_drawer_close">sisim_bondho</string>
 </resources>

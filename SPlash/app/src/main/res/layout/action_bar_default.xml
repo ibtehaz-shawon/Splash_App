@@ -22,13 +22,13 @@
         android:layout_weight="1"
         android:text="@string/app_name"
         android:textColor="@color/textIconsColor"
-        android:layout_gravity="center"
+        android:gravity="center|left"
         android:paddingRight="@dimen/margin_16dp"
         android:paddingTop="@dimen/margin_16dp"
         android:paddingBottom="@dimen/margin_16dp"
         android:textSize="@dimen/text_20sp"
         android:textStyle="bold"
-        android:fontFamily="sans-serif"
+        android:fontFamily="casual"
         android:textAllCaps="true"
         />
 </LinearLayout>

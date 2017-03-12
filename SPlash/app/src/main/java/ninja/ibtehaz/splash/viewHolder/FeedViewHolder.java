@@ -43,12 +43,10 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         this.context = context;
 
         imgLeft = (ImageView)itemView.findViewById(R.id.img_left_original);
-
         imgLayerLeft = (ImageView)itemView.findViewById(R.id.img_layer_left);
-
         frameLeft = (FrameLayout)itemView.findViewById(R.id.frame_left);
-
         txtAuthorLeft = (TextView)itemView.findViewById(R.id.txt_author_left);
+
 
         frameLeft.setOnClickListener(this);
     }
