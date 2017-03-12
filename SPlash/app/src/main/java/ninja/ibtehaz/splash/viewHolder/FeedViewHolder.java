@@ -72,10 +72,23 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         } else {
             imgLayerLeft.setVisibility(View.VISIBLE);
             imgLayerLeft.setBackgroundColor(Color.parseColor(model.getColor()));
-            util.loadImage(context, model.getUrlRegular(), imgLeft, imgLayerLeft);
+            loadPicture();
             txtAuthorLeft.setText(model.getUserDisplayName());
             itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.GONE);
         }
+    }
+
+
+    /**
+     * checks which url would be able to load image
+     */
+    private void loadPicture() {
+//        if (!currentDataModel.getUrlSmall().equals("none")) {
+//            util.loadImage(context, currentDataModel.getUrlSmall(), imgLeft, imgLayerLeft);
+//        } else {
+//            util.loadImage(context, currentDataModel.getUrlRegular(), imgLeft, imgLayerLeft);
+//        }
+        util.loadImage(context, currentDataModel.getUrlRegular(), imgLeft, imgLayerLeft);
     }
 
     /**

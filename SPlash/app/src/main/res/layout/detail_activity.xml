@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/placeholder_image"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"
+            android:scaleType="centerInside"
             />
 
 

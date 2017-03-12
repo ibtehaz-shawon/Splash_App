@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class FeedModel implements Serializable {
 
-    private String urlShare, urlFull, urlRegular, urlRaw, urlDownload;
+    private String urlShare, urlFull, urlRegular, urlRaw, urlDownload, urlThumb, urlCustom, urlSmall;
     private String cameraIso, cameraAparture, cameraMake, cameraExposure, cameraFocal, cameraModel;
     private String color, photoCategory;
     private String locationLat, locationLong, locationName;
@@ -16,6 +16,30 @@ public class FeedModel implements Serializable {
     private String photoId;
     private String createdAt;
     private boolean isView;
+
+    public String getUrlThumb() {
+        return urlThumb;
+    }
+
+    public void setUrlThumb(String urlThumb) {
+        this.urlThumb = urlThumb;
+    }
+
+    public String getUrlCustom() {
+        return urlCustom;
+    }
+
+    public void setUrlCustom(String urlCustom) {
+        this.urlCustom = urlCustom;
+    }
+
+    public String getUrlSmall() {
+        return urlSmall;
+    }
+
+    public void setUrlSmall(String urlSmall) {
+        this.urlSmall = urlSmall;
+    }
 
     public boolean isView() {
         return isView;

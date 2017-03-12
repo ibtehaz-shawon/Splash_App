@@ -1,6 +1,7 @@
 package ninja.ibtehaz.splash.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -35,7 +36,10 @@ import ninja.ibtehaz.splash.utility.Util;
  * Created by ibteh on 2/20/2017.
  */
 
-public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetResponse {
+public class FeedActivity extends BaseActivity
+        implements
+        ApiWrapperToGet.GetResponse,
+        View.OnClickListener {
 
     private final String TAG = FeedActivity.class.getSimpleName();
     private Context context;
@@ -130,9 +134,9 @@ public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetRes
         /*--------------------------------------------------------------*/
         /*--------------On Click Listener NavBar------------------------*/
         /*--------------------------------------------------------------*/
-//        header.findViewById(R.id.txt_create_contest).setOnClickListener(this);
-//        header.findViewById(R.id.txt_my_contests).setOnClickListener(this);
-//        header.findViewById(R.id.txt_my_contacts).setOnClickListener(this);
+        header.findViewById(R.id.btn_curated).setOnClickListener(this);
+        header.findViewById(R.id.btn_featured).setOnClickListener(this);
+        header.findViewById(R.id.btn_settings).setOnClickListener(this);
 
 
         /*--------------------------------------------------------------*/
@@ -214,6 +218,9 @@ public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetRes
                         model.setUrlFull(row.getString("url_full"));
                         model.setUrlRaw(row.getString("url_raw"));
                         model.setUrlRegular(row.getString("url_regular"));
+                        model.setUrlCustom(row.getString("url_custom"));
+                        model.setUrlThumb(row.getString("url_thumb"));
+                        model.setUrlSmall(row.getString("url_small"));
 
                         model.setCameraMake(row.getString("user_camera_make"));
                         model.setCameraModel(row.getString("user_camera_model"));
@@ -234,7 +241,6 @@ public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetRes
 
                         model.setPhotoId(row.getString("photo_id"));
                         model.setCreatedAt(row.getString("created_at"));
-
                         model.setView(false);
 
                         dataModel.add(model);
@@ -283,6 +289,28 @@ public class FeedActivity extends BaseActivity implements ApiWrapperToGet.GetRes
 
         if (state) {
             util.showSnackbar(context, findViewById(R.id.ll_feed_layout), message);
+        }
+    }
+
+
+    /**
+     * on click listeners
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(context, CollectionDetails.class);
+        switch (v.getId()) {
+            case R.id.btn_curated:
+                i.putExtra("collection_state", true);
+                startActivity(i);
+                break;
+            case R.id.btn_featured:
+                i.putExtra("collection_state", false);
+                startActivity(i);
+                break;
+            case R.id.btn_settings:
+                break;
         }
     }
 }

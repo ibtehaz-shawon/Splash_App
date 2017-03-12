@@ -25,4 +25,20 @@ public class ApiWrapperUtility {
         ApiWrapperToGet apiWrapperToGet = new ApiWrapperToGet(actionTag, getResponse);
         apiWrapperToGet.callApi(feedUrl);
     }
+
+
+    /**
+     *
+     * @param getResponse
+     * @param pageNumber
+     * @param method
+     * @param actionTag
+     */
+    public void apiCallToGetCollection(ApiWrapperToGet.GetResponse getResponse, int pageNumber,
+                                       int method, String actionTag) {
+        String collectionUrl = new ApiConfig().GET_COLLECTION_URL(pageNumber, method);
+        Log.d(TAG, "_log: collection url: "+collectionUrl);
+        ApiWrapperToGet apiWrapperToGet = new ApiWrapperToGet(actionTag, getResponse);
+        apiWrapperToGet.callApi(collectionUrl);
+    }
 }

@@ -17,5 +17,16 @@ public class ApiConfig {
     public String GET_FEED_URL(int pageNumber) {
         return BASE_URL + "feed?page="+pageNumber;
     }
+
+
+    /**
+     * https://python-splash.herokuapp.com/unsplash/get_collection?method=2
+     * @param pageNumber
+     * @param method
+     * @return
+     */
+    public String GET_COLLECTION_URL(int pageNumber, int method) {
+        return BASE_URL + "get_collection?method="+method+"&page="+pageNumber;
+    }
 }
 
