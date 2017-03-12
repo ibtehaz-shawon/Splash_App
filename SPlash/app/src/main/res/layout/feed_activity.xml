@@ -55,6 +55,7 @@
         android:layout_gravity="start"
         android:fadeScrollbars="true"
         app:headerLayout="@layout/item_navigation_view"
+        android:background="@drawable/gradient_nav_bg"
         android:fitsSystemWindows="true"
         />
 
