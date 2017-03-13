@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="225dp"
-    android:layout_margin="@dimen/margin_12dp"
+    android:layout_margin="@dimen/margin_2dp"
     >
     <!--layout left-->
     <FrameLayout
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone"
-            android:background="@drawable/accent_no_radius"
+            android:background="@drawable/gradient_accent_bg"
             >
             <LinearLayout
                 android:layout_width="match_parent"

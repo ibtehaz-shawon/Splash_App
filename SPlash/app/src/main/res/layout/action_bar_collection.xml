@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:layout_marginLeft="@dimen/margin_2dp"
     >
 
     <ImageView
@@ -13,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/back_icon"
-        android:paddingTop="@dimen/margin_8dp"
-        android:paddingBottom="@dimen/margin_8dp"
-        android:paddingRight="@dimen/margin_8dp"
+        android:paddingTop="@dimen/margin_4dp"
+        android:paddingBottom="@dimen/margin_4dp"
+        android:paddingRight="@dimen/margin_4dp"
         android:layout_gravity="center"
         />
 
