@@ -32,6 +32,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.CollectionDetails"/>
+
 
         <activity android:name=".activity.DetailActivity"/>
     </application>

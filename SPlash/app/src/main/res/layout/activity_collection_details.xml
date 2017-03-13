@@ -17,9 +17,10 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="center|left"
             android:elevation="@dimen/margin_8dp"
+            android:background="@drawable/dark_primary_no_radius"
             >
             <include
-                layout="@layout/action_bar_default"/>
+                layout="@layout/action_bar_collection"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
@@ -28,8 +29,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:padding="@dimen/margin_16dp"
+        android:background="@drawable/gradient_feed_bg"
         >
     </android.support.v7.widget.RecyclerView>
 

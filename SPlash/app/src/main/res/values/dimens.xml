@@ -6,6 +6,7 @@
     <!--For title bars use casual font style-->
     <!--For button bars use MonoSpace font style-->
 
+    <dimen name="margin_2dp">2dp</dimen>
     <dimen name="margin_4dp">4dp</dimen>
     <dimen name="margin_8dp">8dp</dimen>
     <dimen name="margin_12dp">12dp</dimen>

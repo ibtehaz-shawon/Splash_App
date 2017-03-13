@@ -3,8 +3,11 @@ package ninja.ibtehaz.splash.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +22,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.adapter.CollectionAdapter;
+import ninja.ibtehaz.splash.adapter.FeedAdapter;
 import ninja.ibtehaz.splash.models.CollectionModel;
 import ninja.ibtehaz.splash.network.ApiWrapperToGet;
 import ninja.ibtehaz.splash.network.ApiWrapperUtility;
@@ -51,6 +56,7 @@ public class CollectionDetails extends BaseActivity
     private boolean isLoading;
     private Object paginationLock = new Object();
     private ArrayList<CollectionModel> dataModel;
+    private CollectionAdapter collectionAdapter;
 
 
     @Override
@@ -74,9 +80,6 @@ public class CollectionDetails extends BaseActivity
             @Override
             public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
                     while (isLoading) {
                         synchronized (paginationLock) {
                             isLoading = false;
@@ -171,7 +174,8 @@ public class CollectionDetails extends BaseActivity
 
 
     /**
-     *
+     * handles the get response and then parse it to separate function to parse
+     * particular data file
      * @param actionTag
      * @param response
      */
@@ -235,6 +239,7 @@ public class CollectionDetails extends BaseActivity
                     dataModel.add(collectionModel);
                 }
                 isLoading = false;
+                listBind();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -248,5 +253,25 @@ public class CollectionDetails extends BaseActivity
      */
     private void parseFeatured(JSONObject response) {
 
+    }
+
+
+    /**
+     *
+     */
+    private void listBind() {
+        if (collectionAdapter == null) {
+            collectionAdapter = new CollectionAdapter(dataModel, context);
+            StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, 1);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setHasFixedSize(false);
+            RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+            itemAnimator.setAddDuration(1500);
+            itemAnimator.setChangeDuration(1000);
+            recyclerView.setItemAnimator(itemAnimator);
+            recyclerView.setAdapter(collectionAdapter);
+        } else {
+            collectionAdapter.notifyDataSetChanged();
+        }
     }
 }

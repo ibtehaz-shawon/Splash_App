@@ -84,9 +84,6 @@ public class FeedActivity extends BaseActivity
             @Override
             public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
                     while (isLoading) {
                         synchronized (paginationLock) {
                             isLoading = false;
