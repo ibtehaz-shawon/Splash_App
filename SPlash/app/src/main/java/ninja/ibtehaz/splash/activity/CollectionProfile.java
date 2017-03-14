@@ -25,7 +25,8 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
     private String collectionId;
     private Toolbar toolbar;
 
-    private TextView txtTitle, txtName, txtDescription, txtTotalPhotos, txtUpdated, txtPublished;
+    private TextView txtTitle, txtName, txtDescription, txtTotalPhotos, txtUpdated, txtPublished,
+            txtCollectionTitle;
     private ImageView imgCover, imgProfile, imgLayer;
     private Util util;
     private ImageView imgBack;
@@ -65,6 +66,7 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
         this.util = new Util();
 
         txtTitle = (TextView)findViewById(R.id.txt_title);
+        txtCollectionTitle = (TextView)findViewById(R.id.txt_collection_title);
         txtName = (TextView)findViewById(R.id.txt_user_name);
         txtDescription = (TextView)findViewById(R.id.txt_description);
         txtTotalPhotos = (TextView)findViewById(R.id.txt_total_photos);
@@ -84,8 +86,10 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
      *
      */
     private void inflateUi() {
-        txtTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()) + " by: "+
-                util.capitalizeWords(collectionModel.getUsername()));
+        txtTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()));
+
+        txtCollectionTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()));
+        txtName.setText("By "+util.capitalizeWords(collectionModel.getUsername()));
 
         if (!collectionModel.getCollectionDescription().equalsIgnoreCase("none")) {
             txtDescription.setText(collectionModel.getCollectionDescription());
