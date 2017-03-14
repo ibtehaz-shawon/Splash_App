@@ -32,7 +32,7 @@
         android:paddingBottom="@dimen/margin_16dp"
         android:textSize="@dimen/text_20sp"
         android:textStyle="bold"
-        android:fontFamily="casual"
-        android:textAllCaps="true"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textAllCaps="false"
         />
 </LinearLayout>

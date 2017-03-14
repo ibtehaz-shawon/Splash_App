@@ -13,4 +13,9 @@
     <string name="nav_drawer_open">sisim_kholo</string>
     <string name="nav_drawer_close">sisim_bondho</string>
     <string name="default_collection">Collection Title</string>
+    <string name="collection_description">This is a dummy collection description. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</string>
+    <string name="default_updated_date">3 days ago</string>
+    <string name="total_photos">180 Photos</string>
+    <string name="last_updated">Last Updated: 3 Days Ago</string>
+    <string name="published">Published: September 02, 2016</string>
 </resources>

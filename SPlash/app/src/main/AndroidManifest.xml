@@ -34,8 +34,9 @@
 
         <activity android:name=".activity.CollectionDetails"/>
 
-
         <activity android:name=".activity.DetailActivity"/>
+
+        <activity android:name=".activity.CollectionProfile"/>
     </application>
 
 </manifest>
