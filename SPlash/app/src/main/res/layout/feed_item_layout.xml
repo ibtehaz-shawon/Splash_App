@@ -84,13 +84,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/default_name"
-            android:textSize="@dimen/text_12sp"
+            android:textSize="@dimen/text_16sp"
             android:layout_gravity="bottom"
             android:paddingBottom="@dimen/margin_16dp"
             android:gravity="center"
-            android:textColor="@color/primaryTextColor"
-            android:fontFamily="serif"
+            android:textColor="@color/E5E5E0Color"
+            android:fontFamily="sans-serif"
             android:visibility="visible"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
             />
     </FrameLayout>
 </LinearLayout>

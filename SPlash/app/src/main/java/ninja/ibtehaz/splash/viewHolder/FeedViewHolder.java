@@ -16,7 +16,7 @@ import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
- * Created by ibteh on 2/20/2017.
+ * Created by ibtehaz on 2/20/2017.
  */
 
 public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -73,7 +73,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             imgLayerLeft.setVisibility(View.VISIBLE);
             imgLayerLeft.setBackgroundColor(Color.parseColor(model.getColor()));
             loadPicture();
-            txtAuthorLeft.setText(model.getUserDisplayName());
+            txtAuthorLeft.setText(util.capitalizeWords(model.getUserDisplayName()));
             itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.GONE);
         }
     }
@@ -83,11 +83,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
      * checks which url would be able to load image
      */
     private void loadPicture() {
-//        if (!currentDataModel.getUrlSmall().equals("none")) {
-//            util.loadImage(context, currentDataModel.getUrlSmall(), imgLeft, imgLayerLeft);
-//        } else {
-//            util.loadImage(context, currentDataModel.getUrlRegular(), imgLeft, imgLayerLeft);
-//        }
         util.loadImage(context, currentDataModel.getUrlRegular(), imgLeft, imgLayerLeft);
     }
 

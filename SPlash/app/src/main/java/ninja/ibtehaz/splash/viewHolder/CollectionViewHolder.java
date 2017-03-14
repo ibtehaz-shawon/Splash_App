@@ -22,6 +22,12 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder {
     private TextView txtCollectionTitle, txtUserName;
     private Util util;
 
+
+    /**
+     *
+     * @param itemView
+     * @param context
+     */
     public CollectionViewHolder(View itemView, Context context) {
         super(itemView);
         this.context = context;
@@ -42,7 +48,7 @@ public class CollectionViewHolder extends RecyclerView.ViewHolder {
     public void onBindData(CollectionModel model) {
         imgLayer.setBackgroundColor(Color.parseColor(model.getCoverColor()));
         util.loadImage(context, model.getUrlRegular(), imgOriginal, imgLayer);
-        txtCollectionTitle.setText(model.getCollectionTitle());
-        txtUserName.setText(model.getUsername());
+        txtCollectionTitle.setText(util.capitalizeWords(model.getCollectionTitle()));
+        txtUserName.setText(util.capitalizeWords(model.getUsername()));
     }
 }

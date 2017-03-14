@@ -226,4 +226,20 @@ public class Util {
         RetrieveFeed retrieveFeed = new RetrieveFeed(context, loader,width, height);
         retrieveFeed.execute(Url);
     }
+
+
+    /**
+     * returns the capitalize version of a string/each string
+     * @param word
+     * @return
+     */
+    public String capitalizeWords(String word) {
+        String []words = word.split(" ");
+        String returnVal = "";
+        for (int i =0; i < words.length; i++) {
+            returnVal += words[i].substring(0,1).toUpperCase()
+                    + words[i].substring(1).toLowerCase() +" ";
+        }
+        return returnVal;
+    }
 }

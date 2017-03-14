@@ -137,7 +137,7 @@ public class CollectionDetails extends BaseActivity
      */
     private void callApi() {
         if (currentPage == 1)
-            showDialog("Loading Data... Please wait!");
+            showDialog("Loading Collections... Please wait!");
 
         if (util.isConnectionAvailable(context)) {
             String actionTag;
@@ -238,7 +238,7 @@ public class CollectionDetails extends BaseActivity
 
                     dataModel.add(collectionModel);
                 }
-                isLoading = false;
+                isLoading = true;
                 listBind();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -252,7 +252,50 @@ public class CollectionDetails extends BaseActivity
      * parses featured lists of data
      */
     private void parseFeatured(JSONObject response) {
+        if (response.has("collections")) {
+            try {
+                JSONArray collections = response.getJSONArray("collections");
 
+                if (collections.length() == 0) {
+                    isEmpty = true;
+                }
+
+                for (int i = 0; i < collections.length(); i++) {
+                    JSONObject row = collections.getJSONObject(i);
+                    CollectionModel collectionModel = new CollectionModel();
+
+                    collectionModel.setUrlSmall(row.getString("url_small"));
+                    collectionModel.setProfileImageSmall(row.getString("profile_image_small"));
+                    collectionModel.setUrlRaw(row.getString("url_raw"));
+                    collectionModel.setUpdatedAt(row.getString("updated"));
+                    collectionModel.setUrlRegular(row.getString("url_regular"));
+                    collectionModel.setProfileImageLarge(row.getString("profile_image_large"));
+                    collectionModel.setCollectionTitle(row.getString("collection_title"));
+                    collectionModel.setCoverHeight(row.getString("cover_height"));
+                    collectionModel.setCollectionUrlHtml(row.getString("collection_url_html"));
+                    collectionModel.setTotalPhotos(row.getString("total_photos"));
+                    collectionModel.setUrlCustom(row.getString("url_custom"));
+                    collectionModel.setUrlFull(row.getString("url_full"));
+                    collectionModel.setCoverWidth(row.getString("cover_width"));
+                    collectionModel.setCollectionId(row.getString("collection_id"));
+                    collectionModel.setCurated(row.getBoolean("is_curated"));
+                    collectionModel.setUrlThumb(row.getString("url_thumb"));
+                    collectionModel.setFeatured(row.getBoolean("is_featured"));
+                    collectionModel.setCollectionDescription(row.getString("collection_description"));
+                    collectionModel.setCollectionUrlSelf(row.getString("collection_url_self"));
+                    collectionModel.setPublishedAt(row.getString("published"));
+                    collectionModel.setCoverColor(row.getString("cover_color"));
+                    collectionModel.setUsername(row.getString("user_name"));
+
+                    dataModel.add(collectionModel);
+                }
+                isLoading = true;
+                listBind();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 
