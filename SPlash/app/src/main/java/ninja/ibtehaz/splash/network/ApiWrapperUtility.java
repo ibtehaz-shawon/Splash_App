@@ -41,4 +41,22 @@ public class ApiWrapperUtility {
         ApiWrapperToGet apiWrapperToGet = new ApiWrapperToGet(actionTag, getResponse);
         apiWrapperToGet.callApi(collectionUrl);
     }
+
+
+    /**
+     *
+     * @param getResponse
+     * @param pageNumber
+     * @param collectionId
+     * @param method
+     * @param actionTag
+     */
+    public void apicallToGetCollectionPhoto(ApiWrapperToGet.GetResponse getResponse, int pageNumber,
+                                            String collectionId, String method, String actionTag) {
+
+        String collectionPhoto = new ApiConfig().GET_COLLECTION_PHOTO(collectionId, method, pageNumber);
+        Log.d(TAG, "_log: collection photo url "+collectionPhoto);
+        ApiWrapperToGet apiWrapperToGet = new ApiWrapperToGet(actionTag, getResponse);
+        apiWrapperToGet.callApi(collectionPhoto);
+    }
 }

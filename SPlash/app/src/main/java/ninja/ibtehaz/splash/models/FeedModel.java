@@ -15,7 +15,24 @@ public class FeedModel implements Serializable {
     private String userDisplayName, userProfilePic;
     private String photoId;
     private String createdAt;
+    private String photoHeight, photoWidth;
     private boolean isView;
+
+    public String getPhotoHeight() {
+        return photoHeight;
+    }
+
+    public void setPhotoHeight(String photoHeight) {
+        this.photoHeight = photoHeight;
+    }
+
+    public String getPhotoWidth() {
+        return photoWidth;
+    }
+
+    public void setPhotoWidth(String photoWidth) {
+        this.photoWidth = photoWidth;
+    }
 
     public String getUrlThumb() {
         return urlThumb;

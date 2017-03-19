@@ -28,5 +28,17 @@ public class ApiConfig {
     public String GET_COLLECTION_URL(int pageNumber, int method) {
         return BASE_URL + "get_collection?method="+method+"&page="+pageNumber;
     }
+
+
+    /**
+     * https://python-splash.herokuapp.com/unsplash/get_photo_collection?collection_id=1&method=1&page=1
+     * @param collectionId
+     * @param method
+     * @param pageNumber
+     * @return
+     */
+    public String GET_COLLECTION_PHOTO(String collectionId, String method, int pageNumber) {
+        return BASE_URL + "get_photo_collection?collection_id="+collectionId+"&method="+method+"&page="+pageNumber;
+    }
 }
 
