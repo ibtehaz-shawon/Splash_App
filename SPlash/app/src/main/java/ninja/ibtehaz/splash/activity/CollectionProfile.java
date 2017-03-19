@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ninja.ibtehaz.splash.R;
@@ -30,6 +34,8 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
     private ImageView imgCover, imgProfile, imgLayer;
     private Util util;
     private ImageView imgBack;
+
+    private LinearLayout llTotalPhotos, llAboutCollection, llLastUpdate, llAboutCollectionTab;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,9 +75,15 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
         txtCollectionTitle = (TextView)findViewById(R.id.txt_collection_title);
         txtName = (TextView)findViewById(R.id.txt_user_name);
         txtDescription = (TextView)findViewById(R.id.txt_description);
+
         txtTotalPhotos = (TextView)findViewById(R.id.txt_total_photos);
         txtUpdated = (TextView)findViewById(R.id.txt_last_updated);
         txtPublished = (TextView)findViewById(R.id.txt_published);
+
+        llTotalPhotos = (LinearLayout)findViewById(R.id.ll_total_photos);
+        llAboutCollection = (LinearLayout)findViewById(R.id.ll_about_collection);
+        llAboutCollectionTab = (LinearLayout)findViewById(R.id.ll_about_collection_tab);
+        llLastUpdate = (LinearLayout)findViewById(R.id.ll_last_update);
 
         imgCover = (ImageView)findViewById(R.id.img_cover);
         imgLayer = (ImageView)findViewById(R.id.img_layer);
@@ -79,6 +91,7 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
         imgBack = (ImageView)findViewById(R.id.img_back);
 
         imgBack.setOnClickListener(this);
+        llAboutCollection.setOnClickListener(this);
     }
 
 
@@ -92,21 +105,20 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
         txtName.setText("By "+util.capitalizeWords(collectionModel.getUsername()));
 
         if (!collectionModel.getCollectionDescription().equalsIgnoreCase("none")) {
-            txtDescription.setText(collectionModel.getCollectionDescription());
-            txtTotalPhotos.setTextColor(ContextCompat.getColor(context, R.color.secondaryColor));
+            Spannable spannable = new SpannableString(collectionModel.getCollectionDescription().trim());
+            spannable.setSpan(new RelativeSizeSpan(1.5f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            txtDescription.setText(spannable);
         } else {
-            txtDescription.setVisibility(View.GONE);
-            txtTotalPhotos.setTextColor(ContextCompat.getColor(context, R.color.primaryTextColor));
+            llAboutCollection.setVisibility(View.GONE);
+            findViewById(R.id.view_about_collection).setVisibility(View.GONE);
         }
-        txtTotalPhotos.setText(collectionModel.getTotalPhotos() + " Photos");
+        txtTotalPhotos.setText(collectionModel.getTotalPhotos());
 
         imgLayer.setBackgroundColor(Color.parseColor(collectionModel.getCoverColor()));
         util.loadImage(context, collectionModel.getUrlRegular(), imgCover, imgLayer);
         util.loadProfilePic(context, collectionModel.getProfileImageLarge(), imgProfile);
         txtPublished.setText(collectionModel.getPublishedAt());
         txtUpdated.setText(collectionModel.getUpdatedAt());
-
-        util.makeToast(context, collectionId + " collection id");
     }
 
     /**
@@ -118,6 +130,10 @@ public class CollectionProfile extends BaseActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.img_back:
                 finish();
+                break;
+            case R.id.ll_about_collection:
+                if (llAboutCollectionTab.getVisibility() != View.VISIBLE) llAboutCollectionTab.setVisibility(View.VISIBLE);
+                else llAboutCollectionTab.setVisibility(View.GONE);
                 break;
         }
     }
