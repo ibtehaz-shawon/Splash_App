@@ -66,9 +66,13 @@ public class CollectionDetails extends BaseActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
         init();
+        /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
         getIntentExtra();
+        /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
         callApi();
+        /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -107,6 +111,8 @@ public class CollectionDetails extends BaseActivity
         isEmpty = false;
         dataModel = new ArrayList<>();
         apiWrapperUtility = new ApiWrapperUtility();
+
+        imgBack.setOnClickListener(this);
     }
 
 
@@ -127,9 +133,18 @@ public class CollectionDetails extends BaseActivity
 
     }
 
+
+    /**
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.img_back:
+                finish();
+                break;
+        }
     }
 
     /**

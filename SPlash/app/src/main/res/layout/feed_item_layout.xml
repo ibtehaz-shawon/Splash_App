@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/placeholder_image"
             android:adjustViewBounds="true"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             />
 
         <ImageView

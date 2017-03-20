@@ -206,9 +206,10 @@ public class CollectionProfile extends BaseActivity
                 int currentPayload = response.getInt("total");
                 int page = response.getInt("page");
 
-                if (collectionData.length() == 1 && page == 1) {
+                if (totalCollectionPhoto == 0 && currentPayload == 0) {
                     JSONObject row = collectionData.getJSONObject(0);
                     if (row.has("error")) {
+                        util.makeToast(context, "Data not uploaded yet into the server from Unsplash!");
                         util.makeToast(context, "Error: " + row.getString("message"));
                         return;
                     } else {
@@ -229,11 +230,7 @@ public class CollectionProfile extends BaseActivity
      * @param collectionData
      */
     private void parseCollectionData(JSONArray collectionData, int page) {
-        if (collectionData.length() == 0 && page == 1) {
-            util.makeToast(context, "Data not uploaded yet into the server from Unsplash!");
-            isEmpty = true;
-            return;
-        } else if (collectionData.length() == 0 && page > 1) {
+        if (collectionData.length() == 0 && page > 1) {
             isEmpty = true;
             return;
         }
@@ -265,7 +262,6 @@ public class CollectionProfile extends BaseActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
 
