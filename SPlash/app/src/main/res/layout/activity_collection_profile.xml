@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/profile_coordinate_layout"
     >
 
@@ -11,16 +11,14 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         >
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             android:layout_gravity="fill_vertical"
             android:fitsSystemWindows="true"
-            app:expandedTitleMarginStart="?actionBarSize"
             app:contentScrim="?colorPrimary"
             >
 
@@ -34,10 +32,6 @@
                 app:layout_collapseMode="pin"
                 android:orientation="vertical"
                 >
-                <android.support.v4.widget.Space
-                    android:id="@+id/space_top"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_8dp" />
                 <include
                     layout="@layout/item_collection_profile" />
             </LinearLayout>
@@ -47,30 +41,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:layout_collapseMode="pin"
-                android:layout_gravity="top"
-                android:elevation="@dimen/margin_8dp"
                 android:background="@drawable/dark_primary_no_radius"
                 >
-                <include layout="@layout/action_bar_collection"/>
+                <include layout="@layout/action_bar_collection_profile"/>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
 
-    <LinearLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:visibility="gone"
-        >
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-        </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        ></android.support.v4.view.ViewPager>
 
 </android.support.design.widget.CoordinatorLayout>

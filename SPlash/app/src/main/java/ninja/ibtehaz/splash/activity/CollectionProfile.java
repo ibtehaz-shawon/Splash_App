@@ -4,7 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.adapter.FeedAdapter;
+import ninja.ibtehaz.splash.fragments.CollectionProfileFragments;
 import ninja.ibtehaz.splash.models.CollectionModel;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.network.ApiWrapperToGet;
@@ -38,24 +43,20 @@ import ninja.ibtehaz.splash.utility.Util;
  */
 
 public class CollectionProfile extends BaseActivity
-        implements View.OnClickListener,
-        ApiWrapperToGet.GetResponse {
+        implements View.OnClickListener {
 
     private final String TAG = "collection_photo";
     private Context context;
     private CollectionModel collectionModel;
-    private String collectionId;
+    private String collectionId, method;
     private Toolbar toolbar;
     private boolean isCurated, isEmpty;
-    private ArrayList<FeedModel> dataModel;
-    private FeedAdapter feedAdapter;
 
     private TextView txtTitle, txtName, txtDescription, txtTotalPhotos, txtUpdated, txtPublished,
             txtCollectionTitle;
     private ImageView imgCover, imgProfile, imgLayer;
     private Util util;
     private ImageView imgBack;
-    private RecyclerView recyclerView;
 
     private LinearLayout llTotalPhotos, llAboutCollection, llLastUpdate, llAboutCollectionTab;
 
@@ -63,8 +64,6 @@ public class CollectionProfile extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collection_profile);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         /*------------------------------------------------------*/
         init();
@@ -73,7 +72,8 @@ public class CollectionProfile extends BaseActivity
         /*------------------------------------------------------*/
         inflateUi();
         /*------------------------------------------------------*/
-        callApi(1);
+        initiateFragments(collectionId, method, isCurated);
+        /*------------------------------------------------------*/
     }
 
 
@@ -82,9 +82,14 @@ public class CollectionProfile extends BaseActivity
      */
     private void getExtra() {
         this.collectionModel = (CollectionModel)getIntent().getSerializableExtra("collection_data");
+
         this.collectionId = collectionModel.getCollectionId();
+
         if (collectionModel.isCurated()) this.isCurated = true;
         else this.isCurated = false;
+
+        if (isCurated) method = "1";
+        else method = "2";
     }
 
 
@@ -95,7 +100,6 @@ public class CollectionProfile extends BaseActivity
         this.context = this;
         this.util = new Util();
         this.isEmpty = false;
-        dataModel = new ArrayList<>();
 
         txtTitle = (TextView)findViewById(R.id.txt_title);
         txtCollectionTitle = (TextView)findViewById(R.id.txt_collection_title);
@@ -115,8 +119,6 @@ public class CollectionProfile extends BaseActivity
         imgLayer = (ImageView)findViewById(R.id.img_layer);
         imgProfile = (ImageView)findViewById(R.id.img_profile);
         imgBack = (ImageView)findViewById(R.id.img_back);
-
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
 
         imgBack.setOnClickListener(this);
         llAboutCollection.setOnClickListener(this);
@@ -167,121 +169,75 @@ public class CollectionProfile extends BaseActivity
     }
 
 
-    /**
-     * calls the api to get the collection data
-     * @param pageNumber
-     */
-    private void callApi(int pageNumber) {
-        if (pageNumber == 1) showDialog("Loading collection.....");
-
-        if (!isEmpty) {
-            String method;
-            if (isCurated) method = "1";
-            else method = "2";
-            new ApiWrapperUtility().apicallToGetCollectionPhoto(this, pageNumber, collectionId, method, "");
-        }
-    }
 
     /**
-     * parses JSOB responses of Collection data
-     * @param actionTag
-     * @param response
+     * initiates the fragments
      */
-    @Override
-    public void onGetResponse(String actionTag, JSONObject response) {
-        cancelDialog();
+    private void initiateFragments(String collectionId, String method, boolean isCurated) {
+        ProfileAdapterController profileAdapterController = new ProfileAdapterController(getSupportFragmentManager());
+        ViewPager viewPager = (ViewPager)findViewById(R.id.view_pager);
 
-        if (response == null) {
-            util.makeToast(context, "An Error Occurred! Please try again!");
-            Log.d(TAG, "_log: null returned");
-            return;
-        } else {
-            Log.d(TAG, "_log: "+response.toString());
-        }
+        CollectionProfileFragments fragments = new CollectionProfileFragments();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("collectionId", collectionId);
+        bundle1.putString("method", method);
+        bundle1.putBoolean("isCurated", isCurated);
+        fragments.setArguments(bundle1);
 
-        if (response.has("collection_data")) {
-            try {
-                JSONArray collectionData = response.getJSONArray("collection_data");
-                int totalCollectionPhoto = response.getInt("total_collection");
-                int currentPayload = response.getInt("total");
-                int page = response.getInt("page");
-
-                if (totalCollectionPhoto == 0 && currentPayload == 0) {
-                    JSONObject row = collectionData.getJSONObject(0);
-                    if (row.has("error")) {
-                        util.makeToast(context, "Data not uploaded yet into the server from Unsplash!");
-                        util.makeToast(context, "Error: " + row.getString("message"));
-                        return;
-                    } else {
-                        parseCollectionData(collectionData, page);
-                    }
-                } else {
-                    parseCollectionData(collectionData, page);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        profileAdapterController.addFragment(fragments);
+        viewPager.setAdapter(profileAdapterController);
+        viewPager.setOffscreenPageLimit(1);
     }
 
 
-    /**
-     *
-     * @param collectionData
-     */
-    private void parseCollectionData(JSONArray collectionData, int page) {
-        if (collectionData.length() == 0 && page > 1) {
-            isEmpty = true;
-            return;
-        }
-
-        try {
-            for (int i = 0; i < collectionData.length(); i++) {
-                JSONObject row = collectionData.getJSONObject(i);
-                FeedModel feedModel = new FeedModel();
-
-                feedModel.setUserProfilePic(row.getString("user_profile_pic"));
-                feedModel.setUrlRaw(row.getString("url_raw"));
-                feedModel.setUrlDownload(row.getString("url_download"));
-                feedModel.setCreatedAt("created_at");
-                feedModel.setPhotoHeight(row.getString("height"));
-                feedModel.setPhotoId(row.getString("photo_id"));
-                feedModel.setUrlThumb(row.getString("url_thumb"));
-                feedModel.setUserDisplayName(row.getString("user_display_name"));
-                feedModel.setUrlShare(row.getString("url_share"));
-                feedModel.setColor(row.getString("color"));
-                feedModel.setUrlFull(row.getString("url_full"));
-                feedModel.setPhotoWidth(row.getString("width"));
-                feedModel.setUrlRegular(row.getString("url_regular"));
-                feedModel.setUrlSmall(row.getString("url_small"));
-                feedModel.setUrlCustom(row.getString("url_custom"));
-
-                dataModel.add(feedModel);
-            }
-            listBind();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     /**
-     *
+     * ------------------------------------------------------------------
+     * ------------------------------------------------------------------
+     * ------------------------------------------------------------------
+     * |||||||||||||||||||||     adapter fragment  ||||||||||||||||||||||
+     * ------------------------------------------------------------------
+     * ------------------------------------------------------------------
+     * ------------------------------------------------------------------
      */
-    private void listBind() {
-        if (feedAdapter == null) {
-            feedAdapter = new FeedAdapter(context, dataModel);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 2,
-                    LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(mLayoutManager);
-            RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-            itemAnimator.setAddDuration(1500);
-            itemAnimator.setChangeDuration(1000);
-            recyclerView.setItemAnimator(itemAnimator);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(feedAdapter);
-        } else {
-            feedAdapter.notifyDataSetChanged();
+    public class ProfileAdapterController extends FragmentPagerAdapter {
+
+        private ArrayList<Fragment> fragments = new ArrayList<>();
+
+        /**
+         *
+         * @param fm
+         */
+        public ProfileAdapterController(FragmentManager fm) {
+            super(fm);
+        }
+
+        /**
+         *
+         * @param fragment
+         */
+        private void addFragment(Fragment fragment) {
+            fragments.add(fragment);
+        }
+
+        /**
+         *
+         * @param position
+         * @return
+         */
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        /**
+         *
+         * @return
+         */
+        @Override
+        public int getCount() {
+            return 1;
         }
     }
 }
