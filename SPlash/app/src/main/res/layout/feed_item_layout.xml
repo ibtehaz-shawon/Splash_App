@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/default_name"
-            android:textSize="@dimen/text_16sp"
+            android:textSize="@dimen/text_20sp"
             android:layout_gravity="bottom"
             android:paddingBottom="@dimen/margin_16dp"
             android:gravity="center"

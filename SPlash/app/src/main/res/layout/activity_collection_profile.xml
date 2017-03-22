@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|enterAlways"
             android:layout_gravity="fill_vertical"
             android:fitsSystemWindows="true"
+            app:expandedTitleMarginStart="?actionBarSize"
             app:contentScrim="?colorPrimary"
             >
 
@@ -29,8 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="?actionBarSize"
-                app:layout_collapseMode="pin"
                 android:orientation="vertical"
+                app:layout_collapseMode="parallax"
+                android:background="@drawable/gradient_feed_bg"
                 >
                 <include
                     layout="@layout/item_collection_profile" />
@@ -40,7 +41,6 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:layout_collapseMode="pin"
                 android:background="@drawable/dark_primary_no_radius"
                 >
                 <include layout="@layout/action_bar_collection_profile"/>
