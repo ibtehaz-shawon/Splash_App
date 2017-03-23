@@ -79,7 +79,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         switch (v.getId()) {
             case R.id.btn_set_wallpaper:
                 util.setupWallpaperFromBackground(context,
-                        dataModel.getUrlRegular(),
+                        dataModel.getUrlRaw(),
                         circularFillableLoaders, this);
                 break;
         }

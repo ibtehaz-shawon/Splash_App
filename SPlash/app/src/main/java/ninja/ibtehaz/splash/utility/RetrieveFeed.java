@@ -12,11 +12,14 @@ import android.view.View;
 
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 /**
  * Created by ibteh on 2/21/2017.
@@ -53,45 +56,38 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
             URL url = new URL(params[0]);
             Log.d(TAG, "_log: output URL is: " + url.toString());
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection  connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             InputStream inputStream = connection.getInputStream();
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 2048);
+            ArrayList<Byte> imageData = new ArrayList<>();
+            int current;
 
-            // First decode with inJustDecodeBounds=true to check dimensions
+            while ((current = bufferedInputStream.read()) != -1) {
+                imageData.add((byte)current);
+            }
+
+            Log.d(TAG, "_log: imageData size:--> " +imageData.size());
+            byte[] imageArray = new byte[imageData.size()];
+
+            for (int i = 0; i < imageData.size(); i++) {
+                imageArray[i] = imageData.get(i);
+            }
+
+            Log.d(TAG, "_log: imageArray size:--> " +imageArray.length);
             final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(inputStream, null, options);
-
-            Log.d(TAG, "_log: options.inSampleSize " + options.inSampleSize);
-            Log.d(TAG, "_log: Device width " + width + " height "+height);
-            Log.d(TAG, "_log: options width " + options.outWidth + " height "+options.outHeight);
-            // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, width, height);
-
-            /*---------------------------------------------------------------*/
-            /*---------------------------------------------------------------*/
-            /*---------------------------------------------------------------*/
-            HttpURLConnection  secondaryConnection = (HttpURLConnection) url.openConnection();
-            secondaryConnection.connect();
-            InputStream secondaryStream = secondaryConnection.getInputStream();
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
             Log.d(TAG, "_log: options.inSampleSize " + options.inSampleSize);
             options.inScaled = true;
+            options.inSampleSize = 2;
 
-            if (options.outHeight * options.outWidth >= (4096 * 4096)) {
-                return null;
-            }
             Log.d(TAG, "_log: options.inSampleSize Manually " + options.inSampleSize);
-            output = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(secondaryStream, null, options)
-            , width, height, true);
-
+            output = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
             Log.d(TAG, "_log: output size " + output.getByteCount());
 
             inputStream.close();
-            secondaryStream.close();
             connection.disconnect();
-            secondaryConnection.disconnect();
         } catch (MalformedURLException e) {
             e.printStackTrace();
             Log.d(TAG, "_log: output with MalformedURLException " + e.toString());
