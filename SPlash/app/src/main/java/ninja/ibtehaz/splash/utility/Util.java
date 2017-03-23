@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -193,20 +194,32 @@ public class Util {
 
 
     /**
+     * creates a scrollable website.
      * sets up wallpaper into an image
      * @param context
      * @param image
      */
     public void setupWallpaper(Context context, Bitmap image) {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        width *= 2;
         try {
             if (image == null) {
                 makeToast(context, "Image is null!");
             } else {
-                wallpaperManager.setBitmap(image);
+                float scale = width / (float) image.getWidth();
+                height = (int) (scale * image.getHeight());
+                Bitmap scaledImage = Bitmap.createScaledBitmap(image, width,height, true);
+                Log.d("RetrieveFeed", "Scaled Image size "+scaledImage.getByteCount());
+                wallpaperManager.setBitmap(scaledImage);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
         }
     }
 
