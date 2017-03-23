@@ -49,6 +49,11 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
     }
 
 
+    /**
+     * 
+     * @param params
+     * @return
+     */
     @Override
     protected Void doInBackground(String... params) {
         Bitmap output = null;
@@ -80,7 +85,7 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
             options.inJustDecodeBounds = false;
             Log.d(TAG, "_log: options.inSampleSize " + options.inSampleSize);
             options.inScaled = true;
-            options.inSampleSize = 2;
+            options.inSampleSize = 1;
 
             Log.d(TAG, "_log: options.inSampleSize Manually " + options.inSampleSize);
             output = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
