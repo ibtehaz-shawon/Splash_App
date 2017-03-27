@@ -9,4 +9,5 @@
     <color name="secondaryColor">#757575</color>
     <color name="primaryTextColor">#212121</color>
     <color name="E5E5E0Color">#E5E5E0</color>
+    <color name="transparent">@android:color/transparent</color>
 </resources>
