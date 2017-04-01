@@ -43,6 +43,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
     private Util util;
     private ArrayList<FeedModel> dataModel;
     private FeedAdapter feedAdapter;
+    private int currentPage;
 
     /**
      *
@@ -58,7 +59,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
 
         init();
         getBundleData();
-        callApi(1);
+        callApi(currentPage);
 
         return view;
     }
@@ -72,6 +73,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
         recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         util = new Util();
         dataModel = new ArrayList<>();
+        currentPage = 1;
     }
 
 
@@ -91,8 +93,13 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
      * @param pageNumber
      */
     private void callApi(int pageNumber) {
-        if (!isEmpty) {
-            new ApiWrapperUtility().apicallToGetCollectionPhoto(this, pageNumber, collectionId, method, "");
+        if (util.isConnectionAvailable(context)) {
+            if (!isEmpty) {
+                new ApiWrapperUtility().apicallToGetCollectionPhoto(this, pageNumber, collectionId, method, "");
+                currentPage++;
+            }
+        } else {
+            util.makeToast(context, "No Connection Available!");
         }
     }
 
@@ -148,6 +155,12 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
         if (collectionData.length() == 0 && page > 1) {
             isEmpty = true;
             return;
+        }
+
+        if (currentPage == 2) {
+            FeedModel model = new FeedModel();
+            model.setView(true);
+            dataModel.add(model);
         }
 
         try {

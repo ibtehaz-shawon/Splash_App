@@ -165,7 +165,6 @@ public class FeedActivity extends BaseActivity
             showDialog("Loading Data... Please wait!");
 
         if (util.isConnectionAvailable(context)) {
-
             if (!isEmpty) {
                 apiWrapperUtility.apiCallToGetFeed(this, pageNumber, "");
                 pageNumber++;

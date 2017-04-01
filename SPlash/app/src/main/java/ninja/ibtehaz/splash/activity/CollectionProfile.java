@@ -64,8 +64,6 @@ public class CollectionProfile extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collection_profile);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         /*------------------------------------------------------*/
         init();
         /*------------------------------------------------------*/
@@ -120,6 +118,11 @@ public class CollectionProfile extends BaseActivity
         imgLayer = (ImageView)findViewById(R.id.img_layer);
         imgProfile = (ImageView)findViewById(R.id.img_profile);
         imgBack = (ImageView)findViewById(R.id.img_back);
+
+
+        findViewById(R.id.toolbar).setBackgroundResource(R.drawable.dark_primary_no_radius);
+        findViewById(R.id.app_bar_layout).setBackgroundResource(R.color.transparent);
+        setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.toolbar));
 
         imgBack.setOnClickListener(this);
         llAboutCollection.setOnClickListener(this);
