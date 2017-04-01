@@ -4,38 +4,25 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
-import ninja.ibtehaz.splash.adapter.FeedAdapter;
 import ninja.ibtehaz.splash.fragments.CollectionProfileFragments;
 import ninja.ibtehaz.splash.models.CollectionModel;
-import ninja.ibtehaz.splash.models.FeedModel;
-import ninja.ibtehaz.splash.network.ApiWrapperToGet;
-import ninja.ibtehaz.splash.network.ApiWrapperUtility;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
@@ -49,8 +36,9 @@ public class CollectionProfile extends BaseActivity
     private Context context;
     private CollectionModel collectionModel;
     private String collectionId, method;
-    private Toolbar toolbar;
     private boolean isCurated, isEmpty;
+    private LinearLayout llHeader;
+    private CoordinatorLayout coordinatorLayout;
 
     private TextView txtTitle, txtName, txtDescription, txtTotalPhotos, txtUpdated, txtPublished,
             txtCollectionTitle;
@@ -119,9 +107,13 @@ public class CollectionProfile extends BaseActivity
         imgProfile = (ImageView)findViewById(R.id.img_profile);
         imgBack = (ImageView)findViewById(R.id.img_back);
 
+        llHeader = (LinearLayout)findViewById(R.id.ll_header);
+        coordinatorLayout = (CoordinatorLayout)findViewById(R.id.profile_coordinate_layout);
 
-        findViewById(R.id.toolbar).setBackgroundResource(R.drawable.dark_primary_no_radius);
         findViewById(R.id.app_bar_layout).setBackgroundResource(R.color.transparent);
+        findViewById(R.id.toolbar).setBackgroundResource(R.drawable.dark_primary_no_radius);
+        llHeader.setBackgroundResource(R.drawable.gradient_feed_bg);
+        coordinatorLayout.setBackgroundResource(R.drawable.gradient_feed_bg);
         setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.toolbar));
 
         imgBack.setOnClickListener(this);
