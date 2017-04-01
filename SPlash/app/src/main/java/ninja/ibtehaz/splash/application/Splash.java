@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.orm.SugarContext;
 
 /**
  * Created by ibteh on 2/20/2017.
@@ -25,6 +26,7 @@ public class Splash extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        SugarContext.init(this);
         application = this;
         mRequestQueue=null;
     }
@@ -41,7 +43,11 @@ public class Splash extends Application {
         return mRequestQueue;
     }
 
-
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        SugarContext.terminate();
+    }
 
     /**
      * Adds the specified request to the global queue, if tag is specified then

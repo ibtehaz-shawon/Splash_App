@@ -1,12 +1,10 @@
 package ninja.ibtehaz.splash.utility;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -30,12 +28,24 @@ import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 import java.io.IOException;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.db_helper.SplashDb;
 
 /**
  * Created by ibteh on 2/20/2017.
  */
 
 public class Util {
+
+    /**
+     *
+     * @param title
+     * @param description
+     * @param id
+     */
+    public void addData(String title, String description, int id) {
+        SplashDb db_test = new SplashDb(title, description, id);
+        db_test.save();
+    }
 
 
     /**
