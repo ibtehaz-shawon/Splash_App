@@ -16,12 +16,18 @@ public class SplashDb extends SugarRecord {
 
     @Unique
     private int id;
+
+    private String localImageId; //current time function in milli second along with random generated text
     private String urlRaw;
+    private String urlSmall;
     private boolean isOffline;
     private boolean isSet;
     private String imageId;
 
 
+    /**
+     * default constructor
+     */
     public SplashDb() {
     }
 
@@ -30,12 +36,15 @@ public class SplashDb extends SugarRecord {
      * creates a database to store the database and offline/online preferences
      * @param feedModel
      * @param offline
+     * @overload SplashDb()
      */
-    public SplashDb(FeedModel feedModel, boolean offline) {
+    public SplashDb(FeedModel feedModel, boolean offline, String localImageId) {
         this.urlRaw = feedModel.getUrlRaw();
+        this.urlSmall = feedModel.getUrlSmall();
         this.imageId = feedModel.getPhotoId();
         this.isSet = false;
         this.isOffline = offline;
+        this.localImageId = localImageId;
     }
 
     /**
@@ -65,6 +74,13 @@ public class SplashDb extends SugarRecord {
         return imageId;
     }
 
+    public String getLocalImageId() {
+        return localImageId;
+    }
+
+    public String getUrlSmall() {
+        return urlSmall;
+    }
 
     /**
      *
@@ -94,7 +110,9 @@ public class SplashDb extends SugarRecord {
     /**
      * this will re-initiate splash if it has been filled and running in offline mode
      * computation will be done in another part.
-     * @TODO: need to compute if the internet collection is available. Take decision based on that.
+     * TODO: need to compute if the internet collection is available. Take decision based on that.
+     * TODO: If the internet is on, get the new data from the internet,
+     * TODO: if need to download then start downloading one by one
      * @param data
      */
     private void reInitSplash(List<SplashDb> data) {
@@ -120,7 +138,7 @@ public class SplashDb extends SugarRecord {
         ArrayList<String> duplicate = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), false);
+                SplashDb splash = new SplashDb(data.get(i), false, null);
                 splash.save();
             } else {
                 duplicate.add(data.get(i).getPhotoId());
@@ -143,5 +161,27 @@ public class SplashDb extends SugarRecord {
         } else {
             return true;
         }
+    }
+
+
+    /**
+     * returns all image data from local db to settings page for viewing purpose.
+     * @return ArrayList<> of FeedModel (ImageId, urlSmall and urlRaw is being sent)
+     * @see FeedModel
+     */
+    public ArrayList<FeedModel> returnAllImage() {
+        List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+        ArrayList<FeedModel> returnModel = new ArrayList<>();
+
+        for (int i = 0; i < allData.size(); i++) {
+            FeedModel feedModel = new FeedModel();
+            feedModel.setPhotoId(allData.get(i).getImageId());
+            feedModel.setUrlSmall(allData.get(i).getUrlSmall());
+            feedModel.setUrlRaw(allData.get(i).getUrlRaw());
+
+            returnModel.add(feedModel);
+        }
+
+        return returnModel;
     }
 }
