@@ -36,17 +36,6 @@ import ninja.ibtehaz.splash.db_helper.SplashDb;
 
 public class Util {
 
-    /**
-     *
-     * @param title
-     * @param description
-     * @param id
-     */
-    public void addData(String title, String description, int id) {
-        SplashDb db_test = new SplashDb(title, description, id);
-        db_test.save();
-    }
-
 
     /**
      *

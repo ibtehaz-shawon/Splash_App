@@ -9,6 +9,9 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 import com.orm.SugarContext;
 
+import ninja.ibtehaz.splash.db_helper.SplashDb;
+import ninja.ibtehaz.splash.models.FeedModel;
+
 /**
  * Created by ibteh on 2/20/2017.
  */
@@ -27,8 +30,25 @@ public class Splash extends Application {
     public void onCreate() {
         super.onCreate();
         SugarContext.init(this);
+        /*-------------init the db with a dummy data-------------------*/
+//        new SplashDb().removeAll();
+//        initDB();
+        /*-------------------------------------------------------------*/
         application = this;
         mRequestQueue=null;
+    }
+
+
+    /**
+     * californication :/
+     */
+    private void initDB() {
+        FeedModel feedModel = new FeedModel();
+        feedModel.setPhotoId("imiXX93U8Po");
+        feedModel.setUrlRaw("https://images.unsplash.com/photo-1488977321720-6672ab3ed60f");
+        feedModel.setUrlSmall("https://images.unsplash.com/photo-1488977321720-6672ab3ed60f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&s=f0b2a4bd6f9abcc69c9c6fc65ba4cd0f");
+
+        new SplashDb().insertSingleImageData(feedModel);
     }
 
     public static synchronized Splash getInstance()

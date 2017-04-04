@@ -73,7 +73,6 @@ public class FeedActivity extends BaseActivity
         /*-----------------------------------------*/
         initNavigationDrawer();
         /*-----------------------------------------*/
-        dbTest();
         /*-----------------------------------------*/
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -313,15 +312,4 @@ public class FeedActivity extends BaseActivity
         }
     }
 
-
-    /**
-     * just to check if the db is up and running.
-     */
-    private void dbTest() {
-        Util util = new Util();
-
-        for (int i = 0; i < 10; i++) {
-            util.addData(Math.random() + "title" , "description : "+i ,(int)Math.random() * 1000);
-        }
-    }
 }

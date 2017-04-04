@@ -1,12 +1,18 @@
 package ninja.ibtehaz.splash.db_helper;
 
+import android.hardware.camera2.params.Face;
+import android.util.Log;
+
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 import com.orm.dsl.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ninja.ibtehaz.splash.application.Splash;
 import ninja.ibtehaz.splash.models.FeedModel;
+import ninja.ibtehaz.splash.utility.Util;
 
 /**
  * Created by ibteh on 4/1/2017.
@@ -14,14 +20,17 @@ import ninja.ibtehaz.splash.models.FeedModel;
 
 public class SplashDb extends SugarRecord {
 
+    @Ignore
+    private final String TAG = "SplashDb";
+
     @Unique
     private int id;
-
     private String localImageId; //current time function in milli second along with random generated text
     private String urlRaw;
     private String urlSmall;
     private boolean isOffline;
     private boolean isSet;
+    @Unique
     private String imageId;
     private boolean isDailyWallpaper;
 
@@ -139,9 +148,11 @@ public class SplashDb extends SugarRecord {
         //amount is 10;
         ArrayList<String> duplicate = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
-            if (checkDuplicate(data.get(i).getPhotoId())) {
+            if (!checkDuplicate(data.get(i).getPhotoId())) {
                 SplashDb splash = new SplashDb(data.get(i), false, null, true);
-                splash.save();
+                long id = splash.save();
+
+                Log.d(TAG, "successfully inserted :"+id);
             } else {
                 duplicate.add(data.get(i).getPhotoId());
             }
@@ -151,18 +162,60 @@ public class SplashDb extends SugarRecord {
 
 
     /**
+     * sweden dream
+     * @param feedModel
+     * @return
+     */
+    public boolean insertSingleImageData(FeedModel feedModel) {
+        if (!checkDuplicate(feedModel.getPhotoId())) {
+            SplashDb splashDb = new SplashDb(feedModel, false, null, false);
+            splashDb.save();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
      * checks for duplicate data on the db based on imageId
      * @param imageId -> actual imageId from splash
      * @return boolean; true if DUPLICATE
      */
     private boolean checkDuplicate(String imageId) {
-        List<SplashDb> data = SplashDb.find(SplashDb.class, "imageId = ?", imageId);
+        List<SplashDb> data = SplashDb.find(SplashDb.class, "IMAGE_ID = ?", imageId);
+//        List<SplashDb> data = SplashDb.listAll(SplashDb.class);
 
+        if (data == null) {
+            return false;
+        }
         if (data.size() == 0) {
             return false;
         } else {
             return true;
         }
+//        for (int i = 0; i < data.size(); i++) {
+//            SplashDb splashDb = data.get(i);
+//
+//            if (splashDb.getImageId() != null) {
+//                if (splashDb.getImageId().equalsIgnoreCase(imageId)) {
+//                    return true;
+//                }
+//            } else {
+//                new SplashDb().delete(splashDb.getId());
+//                return false;
+//            }
+//        }
+//        return false;
+    }
+
+
+    /**
+     * remove all data from splash DB
+     */
+    public void removeAll() {
+        SplashDb splashDb = new SplashDb();
+        splashDb.deleteAll(SplashDb.class);
     }
 
 

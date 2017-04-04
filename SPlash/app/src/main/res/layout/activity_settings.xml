@@ -30,16 +30,17 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/white_all_radius"
-        android:layout_marginLeft="@dimen/margin_16dp"
-        android:layout_marginRight="@dimen/margin_16dp"
-        android:layout_marginTop="@dimen/margin_16dp"
         >
 
         <LinearLayout
+            android:id="@+id/ll_settings_part"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:background="@drawable/white_all_radius"
+            android:layout_marginLeft="@dimen/margin_16dp"
+            android:layout_marginRight="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_16dp"
             android:padding="@dimen/margin_16dp"
             >
 
@@ -69,6 +70,7 @@
 
 
             <Button
+                android:id="@+id/btn_show_photos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Show Saved Photos"
@@ -84,12 +86,15 @@
 
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_16dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
         android:background="@drawable/white_all_radius"
         android:visibility="gone"
-        >
+        android:layout_weight="7">
 
 
     </android.support.v7.widget.RecyclerView>
