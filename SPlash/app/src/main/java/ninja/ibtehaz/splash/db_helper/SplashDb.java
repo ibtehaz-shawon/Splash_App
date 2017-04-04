@@ -48,7 +48,8 @@ public class SplashDb extends SugarRecord {
      * @param offline
      * @overload SplashDb()
      */
-    public SplashDb(FeedModel feedModel, boolean offline, String localImageId, boolean isDailyWallpaper) {
+    public SplashDb(FeedModel feedModel, boolean offline, String localImageId,
+                    boolean isDailyWallpaper) {
         this.urlRaw = feedModel.getUrlRaw();
         this.urlSmall = feedModel.getUrlSmall();
         this.imageId = feedModel.getPhotoId();
@@ -184,7 +185,6 @@ public class SplashDb extends SugarRecord {
      */
     private boolean checkDuplicate(String imageId) {
         List<SplashDb> data = SplashDb.find(SplashDb.class, "IMAGE_ID = ?", imageId);
-//        List<SplashDb> data = SplashDb.listAll(SplashDb.class);
 
         if (data == null) {
             return false;
@@ -194,19 +194,6 @@ public class SplashDb extends SugarRecord {
         } else {
             return true;
         }
-//        for (int i = 0; i < data.size(); i++) {
-//            SplashDb splashDb = data.get(i);
-//
-//            if (splashDb.getImageId() != null) {
-//                if (splashDb.getImageId().equalsIgnoreCase(imageId)) {
-//                    return true;
-//                }
-//            } else {
-//                new SplashDb().delete(splashDb.getId());
-//                return false;
-//            }
-//        }
-//        return false;
     }
 
 
@@ -236,7 +223,6 @@ public class SplashDb extends SugarRecord {
 
             returnModel.add(feedModel);
         }
-
         return returnModel;
     }
 }

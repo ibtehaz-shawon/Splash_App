@@ -78,14 +78,16 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
     public void onDailyPaperSet(boolean isOffline) {
         ArrayList<FeedModel> dataSet = new ArrayList<>();
         int counter;
+        int index = 0;
 
         for (counter = 0; counter < 10;){
-            if (counter == 10) break;
+            if (index == 10) break;
             FeedModel model = dataModel.get(counter);
-            if (!model.isView()) {
+            if (model.getPhotoId() != null) { //first image id is null here. and it cannot be null
                 dataSet.add(model);
-                counter++;
+                index++;
             }
+            counter++;
         }
 
         ArrayList<String> duplicate = new SplashDb().insertFeedData(dataSet);
