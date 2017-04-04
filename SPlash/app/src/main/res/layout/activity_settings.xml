@@ -68,6 +68,18 @@
                 android:layout_marginBottom="@dimen/margin_16dp"
                 />
 
+            <Switch
+                android:id="@+id/switch_clear_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Clear All Data"
+                android:textSize="@dimen/text_16sp"
+                android:textStyle="normal"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primaryTextColor"
+                android:layout_marginBottom="@dimen/margin_16dp"
+                />
+
 
             <Button
                 android:id="@+id/btn_show_photos"

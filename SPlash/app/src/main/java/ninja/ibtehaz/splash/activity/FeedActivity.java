@@ -145,8 +145,7 @@ public class FeedActivity extends BaseActivity
         header.findViewById(R.id.btn_curated).setOnClickListener(this);
         header.findViewById(R.id.btn_featured).setOnClickListener(this);
         header.findViewById(R.id.btn_settings).setOnClickListener(this);
-
-
+        header.findViewById(R.id.btn_test).setOnClickListener(this);
         /*--------------------------------------------------------------*/
         /*--------------------------------------------------------------*/
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
@@ -327,6 +326,10 @@ public class FeedActivity extends BaseActivity
             case R.id.btn_settings:
                 Intent settings = new Intent(context, SettingsActivity.class);
                 startActivity(settings);
+                break;
+            case R.id.btn_test:
+                Intent testLocalPhoto = new Intent(context, TestLocalPhoto.class);
+                startActivity(testLocalPhoto);
                 break;
         }
     }

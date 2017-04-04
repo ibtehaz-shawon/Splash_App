@@ -33,19 +33,21 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
     private ProgressDialog progressDialog;
     private Util util;
     private CircularFillableLoaders loaders;
-    private int width, height;
     private boolean flag;
+    private boolean isOffline;
+    private long dataId;
 
     /**
      * @param context
      */
-    public RetrieveFeed(Context context, CircularFillableLoaders loader, int width, int height) {
+    public RetrieveFeed(Context context, CircularFillableLoaders loader,
+                        boolean isOffline, long dataId) {
         this.context = context;
         this.util = new Util();
         this.loaders = loader;
-        this.width = width;
-        this.height = height;
         this.flag = false;
+        this.isOffline = isOffline;
+        this.dataId = dataId;
     }
 
 
@@ -72,24 +74,19 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
                 imageData.add((byte)current);
             }
 
-            Log.d(TAG, "_log: imageData size:--> " +imageData.size());
             byte[] imageArray = new byte[imageData.size()];
 
             for (int i = 0; i < imageData.size(); i++) {
                 imageArray[i] = imageData.get(i);
             }
 
-            Log.d(TAG, "_log: imageArray size:--> " +imageArray.length);
             final BitmapFactory.Options options = new BitmapFactory.Options();
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
-            Log.d(TAG, "_log: options.inSampleSize " + options.inSampleSize);
             options.inScaled = true;
             options.inSampleSize = 1;
 
-            Log.d(TAG, "_log: options.inSampleSize Manually " + options.inSampleSize);
             output = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
-            Log.d(TAG, "_log: output size " + output.getByteCount());
 
             inputStream.close();
             connection.disconnect();
@@ -104,22 +101,37 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
             e.printStackTrace();
         } finally {
             if (output != null) {
-                util.setupWallpaper(context, output);
-                flag = true;
+                if (!isOffline) {
+                    util.setupWallpaper(context, output);
+                    flag = true;
+                } else {
+                    //send the filename to util
+                    util.storeImageInternalStorage(output, context, dataId);
+                }
             }
             else Log.d(TAG, "_log: output is null");
         }
         return null;
     }
 
+
+    /**
+     *
+     */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
-        loaders.setVisibility(View.VISIBLE);
-        loaders.setProgress(60);
+        if (!isOffline) {
+            loaders.setVisibility(View.VISIBLE);
+            loaders.setProgress(60);
+        }
     }
 
+
+    /**
+     *
+     * @param aVoid
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
@@ -127,13 +139,16 @@ public class RetrieveFeed extends AsyncTask<String, Void, Void> {
         if (loaders != null) {
             loaders.setVisibility(View.GONE);
         }
-        if (flag) util.makeToast(context, "Complete!");
-        else util.makeToast(context, "Failed!");
+        if (!isOffline) {
+            if (flag) util.makeToast(context, "Complete!");
+            else util.makeToast(context, "Failed!");
+        }
     }
 
 
     /**
      *
+     * @deprecated BITMAP image is compressed only if needed to store in Internal Storage
      * @param options
      * @param reqWidth
      * @param reqHeight

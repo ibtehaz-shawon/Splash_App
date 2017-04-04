@@ -13,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Button btnShowPhotos;
     private RecyclerView recyclerView;
     private ArrayList<?> dataModel;
+    private Switch switchResetAll;
     private AdapterSettings adapterSettings;
 
 
@@ -56,6 +59,21 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         listBind();
 
         btnShowPhotos.setOnClickListener(this);
+
+        switchResetAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    new SplashDb().removeAll();
+                    switchResetAll.setChecked(false);
+                    dataModel.clear();
+                    adapterSettings.notifyDataSetChanged();
+                    noSavedData();
+
+                    new Util().makeToast(context, "All data removed!");
+                }
+            }
+        });
     }
 
 
@@ -66,6 +84,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         context = this;
         btnShowPhotos = (Button)findViewById(R.id.btn_show_photos);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        switchResetAll = (Switch)findViewById(R.id.switch_clear_all);
         dataModel = new ArrayList<>();
     }
 
@@ -105,12 +124,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             }
         }
 
-        if (dataModel.size() == 0) {
-            btnShowPhotos.setEnabled(false);
-            recyclerView.setVisibility(View.GONE);
-            btnShowPhotos.setAlpha(0.3f);
-            btnShowPhotos.setText("No Saved Photos!");
-        }
+        if (dataModel.size() == 0) noSavedData();
+    }
+
+
+    /**
+     * called when there is no data locally
+     */
+    private void noSavedData() {
+        btnShowPhotos.setEnabled(false);
+        recyclerView.setVisibility(View.GONE);
+        btnShowPhotos.setAlpha(0.3f);
+        switchResetAll.setAlpha(0.3f);
+        switchResetAll.setEnabled(false);
+        btnShowPhotos.setText("No Saved Photos!");
     }
 
 

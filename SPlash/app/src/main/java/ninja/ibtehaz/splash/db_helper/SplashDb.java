@@ -1,6 +1,6 @@
 package ninja.ibtehaz.splash.db_helper;
 
-import android.hardware.camera2.params.Face;
+import android.content.Context;
 import android.util.Log;
 
 import com.orm.SugarRecord;
@@ -10,7 +10,6 @@ import com.orm.dsl.Unique;
 import java.util.ArrayList;
 import java.util.List;
 
-import ninja.ibtehaz.splash.application.Splash;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.utility.Util;
 
@@ -25,7 +24,7 @@ public class SplashDb extends SugarRecord {
 
     @Unique
     private int id;
-    private String localImageId; //current time function in milli second along with random generated text
+    private String localFileName; //current time function in milli second along with random generated text
     private String urlRaw;
     private String urlSmall;
     private boolean isOffline;
@@ -55,7 +54,7 @@ public class SplashDb extends SugarRecord {
         this.imageId = feedModel.getPhotoId();
         this.isSet = false;
         this.isOffline = offline;
-        this.localImageId = localImageId;
+        this.localFileName = localImageId;
         this.isDailyWallpaper = isDailyWallpaper;
     }
 
@@ -86,12 +85,16 @@ public class SplashDb extends SugarRecord {
         return imageId;
     }
 
-    public String getLocalImageId() {
-        return localImageId;
+    public String getLocalFileName() {
+        return localFileName;
     }
 
     public String getUrlSmall() {
         return urlSmall;
+    }
+
+    public void setLocalFileName(String localFileName) {
+        this.localFileName = localFileName;
     }
 
     /**
@@ -220,9 +223,42 @@ public class SplashDb extends SugarRecord {
             feedModel.setPhotoId(allData.get(i).getImageId());
             feedModel.setUrlSmall(allData.get(i).getUrlSmall());
             feedModel.setUrlRaw(allData.get(i).getUrlRaw());
+            feedModel.setLocationName(allData.get(i).getLocalFileName());
 
             returnModel.add(feedModel);
         }
         return returnModel;
+    }
+
+
+    /**
+     * updates the filename of a particular image for local storage use
+     * @param fileName
+     * @param dataId
+     */
+    public void updateFileName(String fileName, long dataId) {
+        SplashDb data = SplashDb.findById(SplashDb.class, dataId);
+        data.setLocalFileName(fileName);
+        data.save();
+    }
+
+
+    /**
+     * This function will be used only if the image has to be stored locally.
+     * User will prefer this. Otherwise, Image will not be stored locally
+     * @param data | all feedModel data containing image data
+     * @param context | context is needed in order to access InternalStorage
+     */
+    public void insertLocalImage(ArrayList<FeedModel> data, Context context) {
+        for (int i = 0; i < data.size(); i++) {
+            if (!checkDuplicate(data.get(i).getPhotoId())) {
+                SplashDb splash = new SplashDb(data.get(i), true, null, true);
+                long id = splash.save();
+
+                //call the util function to store data to Internal Storage
+                Log.d(TAG, "successfully inserted :"+id);
+                new Util().downloadImageToStore(splash.getUrlRaw(), id, context);
+            }
+        }
     }
 }

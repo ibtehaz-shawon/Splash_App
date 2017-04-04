@@ -25,7 +25,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
@@ -58,10 +60,6 @@ public class Util {
      * @param activity
      */
     public static void hideSoftKeyboard(Activity activity) {
-    /*if (activity.getCurrentFocus() != null) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }*/
         // Check if no view has focus:
         View view = activity.getCurrentFocus();
         if (view != null) {
@@ -235,7 +233,7 @@ public class Util {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        RetrieveFeed retrieveFeed = new RetrieveFeed(context, loader,width, height);
+        RetrieveFeed retrieveFeed = new RetrieveFeed(context, loader, false, -1);
         retrieveFeed.execute(Url);
     }
 
@@ -253,5 +251,50 @@ public class Util {
                     + words[i].substring(1).toLowerCase() +" ";
         }
         return returnVal;
+    }
+
+
+    /**
+     * downloads the image from internet to Internal storage
+     * Filename has to be sent to database based on ID
+     * This function will be called from splashDB to download the image
+     * @see SplashDb
+     * @param rawUrl | raw url of the current photo
+     * @param databaseId | sqlite unique id
+     * @param context
+     */
+    public void downloadImageToStore(String rawUrl, long databaseId, Context context) {
+        RetrieveFeed retrieveFeed = new RetrieveFeed(context, null, true, databaseId);
+        retrieveFeed.execute(rawUrl);
+    }
+
+
+    /**
+     * store images in android's internal storage
+     * this function will be called from RetrieveFeed Async class to load image on background rather than
+     * foreground
+     * @see RetrieveFeed
+     * @param image | just downloaded image from the server
+     * @param context
+     * @param dataId | sqlite primary key
+     */
+    public void storeImageInternalStorage(Bitmap image, Context context, long dataId) {
+        String TAG = "InternalStorage";
+        String fileName = Calendar.getInstance().get(Calendar.MILLISECOND) + "";
+        try {
+            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+
+            //load based on id
+            new SplashDb().updateFileName(fileName, dataId);
+            Log.d(TAG, "FileName: "+ fileName);
+        } catch (IOException e) {
+            Log.d(TAG, "Exception "+e.toString());
+            e.printStackTrace();
+        } catch (Exception exc) {
+            Log.d(TAG, "Exception "+exc.toString());
+            exc.printStackTrace();
+        }
     }
 }

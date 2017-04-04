@@ -90,7 +90,8 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
             counter++;
         }
 
-        ArrayList<String> duplicate = new SplashDb().insertFeedData(dataSet);
-        new Util().makeToast(context, "Duplicate "+duplicate.size());
+//        ArrayList<String> duplicate = new SplashDb().insertFeedData(dataSet);
+        new SplashDb().insertLocalImage(dataSet, context);
+//        new Util().makeToast(context, "Duplicate "+duplicate.size());
     }
 }
