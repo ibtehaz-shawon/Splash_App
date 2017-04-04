@@ -1,5 +1,6 @@
 package ninja.ibtehaz.splash.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
@@ -16,19 +17,16 @@ import ninja.ibtehaz.splash.db_helper.SplashDb;
 public class SettingsActivity extends BaseActivity {
 
 
+    private Context context;
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        TextView txt = (TextView)findViewById(R.id.txt_test);
+    }
 
-        SplashDb db_test = new SplashDb();
-        List<SplashDb> data = db_test.returnTitle();
 
-        for (int i = 0; i < data.size(); i++) {
-            SplashDb db_test1 = data.get(i);
-            String line = db_test1.getTitle() + " _-_ "+db_test1.getDescription() + " ||} "+db_test1.getId();
-            txt.setText(txt.getText().toString() + '\n' + line);
-        }
+    private void init() {
+
     }
 }

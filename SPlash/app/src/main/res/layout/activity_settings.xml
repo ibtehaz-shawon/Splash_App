@@ -1,26 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_feed_bg"
+    >
+
+    <!--App bar goes here.-->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_landing"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center|left"
+            android:elevation="@dimen/margin_8dp"
+            android:background="@drawable/dark_primary_no_radius"
+            >
+
+            <!--action bar-->
+            <include layout="@layout/action_bar_default"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_all_radius"
+        android:layout_marginLeft="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:padding="@dimen/margin_16dp"
             >
 
-            <TextView
+            <Switch
+                android:id="@+id/switch_daily_wallpaper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/txt_test"
+                android:text="Set Daily Wallpaper"
+                android:textSize="@dimen/text_16sp"
+                android:textStyle="normal"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primaryTextColor"
+                android:layout_marginBottom="@dimen/margin_16dp"
                 />
 
-        </LinearLayout>
+            <Switch
+                android:id="@+id/switch_offline_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=" Enable Offline Mode"
+                android:textSize="@dimen/text_16sp"
+                android:textStyle="normal"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primaryTextColor"
+                android:layout_marginBottom="@dimen/margin_16dp"
+                />
 
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show Saved Photos"
+                android:textSize="@dimen/text_16sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/textIconsColor"
+                android:textAllCaps="false"
+                android:background="@drawable/primary_no_radius"
+                />
+        </LinearLayout>
     </ScrollView>
 
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16dp"
+        android:background="@drawable/white_all_radius"
+        android:visibility="gone"
+        >
+
+
+    </android.support.v7.widget.RecyclerView>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Ibtehaz Shawon 2017"
+        android:gravity="center|bottom"
+        android:padding="@dimen/margin_16dp"
+        android:textColor="@color/textIconsColor"
+        android:fontFamily="serif"
+        android:textSize="@dimen/text_14sp"
+        android:layout_weight="1"
+        />
 </LinearLayout>

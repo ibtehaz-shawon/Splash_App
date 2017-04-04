@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_16dp"
+    android:layout_marginBottom="@dimen/margin_16dp"
+    android:layout_marginLeft="@dimen/margin_16dp"
+    android:layout_marginRight="@dimen/margin_16dp"
+    >
+
+    <CheckBox
+        android:id="@+id/cBox_offline_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Offline Mode"
+        android:paddingTop="@dimen/margin_16dp"
+        android:paddingBottom="@dimen/margin_16dp"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/text_16sp"
+        android:fontFamily="serif"
+        android:ellipsize="end"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="lorem ipsum -> some text about how and when the daily wallpaper change will occur and etc"
+        android:paddingTop="@dimen/margin_16dp"
+        android:paddingBottom="@dimen/margin_16dp"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/text_16sp"
+        android:fontFamily="serif"
+        android:ellipsize="end"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/accent_no_radius"
+        android:text="Confirm"
+        android:textColor="@color/textIconsColor"
+        android:textSize="@dimen/text_16sp"
+        android:fontFamily="serif"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        />
+</LinearLayout>

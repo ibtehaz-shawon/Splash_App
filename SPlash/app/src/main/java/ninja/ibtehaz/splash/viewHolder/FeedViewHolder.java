@@ -95,6 +95,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         switch (v.getId()) {
             case R.id.frame_left:
                 if (!currentDataModel.isView()) openDetails(currentDataModel);
+                else setUpDailyWallpaper();
                 break;
         }
     }
@@ -107,5 +108,14 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         Intent i = new Intent(context, DetailActivity.class);
         i.putExtra("feed_details", dataModel);
         context.startActivity(i);
+    }
+
+
+    /**
+     * sets up daily wallpaper from a modal
+     * show some text what will happen and etc
+     */
+    private void setUpDailyWallpaper() {
+
     }
 }
