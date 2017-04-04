@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -58,6 +59,7 @@ public class FeedActivity extends BaseActivity
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +76,6 @@ public class FeedActivity extends BaseActivity
         initNavigationDrawer();
         /*-----------------------------------------*/
         /*-----------------------------------------*/
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -91,6 +92,15 @@ public class FeedActivity extends BaseActivity
                         }
                     }
                 }
+            }
+        });
+        /*-----------------------------------------*/
+        /*-----------------------------------------*/
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                pageNumber = 1;
+                callApi();
             }
         });
     }
@@ -111,6 +121,7 @@ public class FeedActivity extends BaseActivity
         txtTitle = (TextView)findViewById(R.id.txt_title);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         llErrorLayout = (LinearLayout)findViewById(R.id.ll_error_layout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_to_refresh);
 
         findViewById(R.id.img_back).setVisibility(View.GONE);
     }
@@ -173,6 +184,7 @@ public class FeedActivity extends BaseActivity
             //ERROR Layout
             cancelDialog();
             initErrorLayout("No Internet Connectivity", true);
+            if (swipeRefreshLayout.isRefreshing())swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -184,8 +196,10 @@ public class FeedActivity extends BaseActivity
     @Override
     public void onGetResponse(String actionTag, JSONObject response) {
         cancelDialog();
+        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (response == null) {
             initErrorLayout("", false);
+            return;
         } else {
             Log.d(TAG, "_log: "+response.toString());
         }
@@ -270,6 +284,11 @@ public class FeedActivity extends BaseActivity
             recyclerView.setAdapter(feedAdapter);
         } else {
             feedAdapter.notifyDataSetChanged();
+        }
+
+        if (llErrorLayout.getVisibility() == View.VISIBLE) {
+            llErrorLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 
