@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -25,6 +26,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
@@ -280,20 +283,46 @@ public class Util {
      */
     public void storeImageInternalStorage(Bitmap image, Context context, long dataId) {
         String TAG = "InternalStorage";
-        String fileName = Calendar.getInstance().get(Calendar.MILLISECOND) + "";
         try {
+            String fileName = Calendar.getInstance().get(Calendar.DAY_OF_YEAR) + ""
+                    + Calendar.getInstance().get(Calendar.MINUTE) + ""
+                    + Calendar.getInstance().get(Calendar.SECOND) + ""
+                    + Calendar.getInstance().get(Calendar.MILLISECOND)+".jpeg";
+
+            // path to /data/data/yourapp/app_data/splashDir
+//            File filePath = new File(context.getFilesDir(),fileName);
+
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            image.compress(Bitmap.CompressFormat.JPEG, 60, fos);
             fos.close();
 
             //load based on id
             new SplashDb().updateFileName(fileName, dataId);
-            Log.d(TAG, "FileName: "+ fileName);
+            Log.d(TAG, "FileName: "+fileName);
         } catch (IOException e) {
             Log.d(TAG, "Exception "+e.toString());
             e.printStackTrace();
         } catch (Exception exc) {
             Log.d(TAG, "Exception "+exc.toString());
+            exc.printStackTrace();
+        }
+    }
+
+
+    /**
+     * pulls the Internally stored photo from local storage and show it in an ImageView
+     * @param fileName | name of the JPEG file.
+     * @param context
+     * @param imgPreview | to preview
+     */
+    public void getInternalStorageImage(String fileName, Context context, ImageView imgPreview) {
+        try {
+            File f = new File(context.getFilesDir(), fileName);
+            Bitmap output = BitmapFactory.decodeStream(new FileInputStream(f));
+            imgPreview.setImageBitmap(output);
+        } catch (IOException iox) {
+            iox.printStackTrace();
+        } catch (Exception exc) {
             exc.printStackTrace();
         }
     }

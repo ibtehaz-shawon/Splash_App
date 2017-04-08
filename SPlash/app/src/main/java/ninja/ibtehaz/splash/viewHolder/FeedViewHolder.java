@@ -130,9 +130,13 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isOffline = chkIsOffline.isSelected();
+                boolean isOffline = chkIsOffline.isChecked();
                 dailyWallpaper.onDailyPaperSet(isOffline);
-                util.makeToast(context, "Wallpapers are being set! Please check Settings for changes!");
+                if (isOffline) {
+                    util.makeToast(context, "We are downloading the wallpapers. It will take a while!");
+                } else {
+                    util.makeToast(context, "Wallpapers are being set! Please check Settings for changes!");
+                }
                 dialog.dismiss();
             }
         });

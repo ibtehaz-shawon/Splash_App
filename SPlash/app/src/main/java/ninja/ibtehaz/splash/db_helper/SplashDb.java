@@ -7,10 +7,12 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 import com.orm.dsl.Unique;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import ninja.ibtehaz.splash.models.FeedModel;
+import ninja.ibtehaz.splash.models.SplashDbModel;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
@@ -97,11 +99,13 @@ public class SplashDb extends SugarRecord {
         this.localFileName = localFileName;
     }
 
+
+
     /**
-     *
-     * @return
+     * returns a single image, the first image from index 0, which has not been set to Wallpaper yet
+     * @return SplashDBModel
      */
-    private SplashDb returnImageData() {
+    private SplashDbModel returnLatestWallpaper() {
         List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
         boolean isAllSet = true;
         SplashDb splashDb = null;
@@ -118,7 +122,16 @@ public class SplashDb extends SugarRecord {
             reInitSplash(allData);
             splashDb = allData.get(0);
         }
-        return splashDb;
+
+        SplashDbModel dataModel = new SplashDbModel();
+        dataModel.setSet(splashDb.isSet());
+        dataModel.setUrlRaw(splashDb.getUrlRaw());
+        dataModel.setUrlSmall(splashDb.getUrlSmall());
+        dataModel.setImageId(splashDb.getImageId());
+        dataModel.setLocalFileName(splashDb.getLocalFileName());
+        splashDb.setOffline(splashDb.isOffline());
+
+        return dataModel;
     }
 
 
@@ -202,28 +215,38 @@ public class SplashDb extends SugarRecord {
 
     /**
      * remove all data from splash DB
+     * @param context | necessary to remove internal storage file.
      */
-    public void removeAll() {
+    public void removeAll(Context context) {
         SplashDb splashDb = new SplashDb();
+        //first delete if anything is present in the internal storage
+        ArrayList<SplashDbModel> allImages = returnAllImage();
+        for (int i = 0; i < allImages.size(); i++) {
+            if (allImages.get(i).isOffline()) {
+                File file = new File(context.getFilesDir(), allImages.get(i).getLocalFileName());
+                file.delete();
+            }
+        }
         splashDb.deleteAll(SplashDb.class);
     }
 
 
     /**
      * returns all image data from local db to settings page for viewing purpose.
-     * @return ArrayList<> of FeedModel (ImageId, urlSmall and urlRaw is being sent)
-     * @see FeedModel
+     * @return ArrayList<> of SplashDbModel (ImageId, urlSmall and urlRaw is being sent)
+     * @see SplashDbModel
      */
-    public ArrayList<FeedModel> returnAllImage() {
+    public ArrayList<SplashDbModel> returnAllImage() {
         List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
-        ArrayList<FeedModel> returnModel = new ArrayList<>();
+        ArrayList<SplashDbModel> returnModel = new ArrayList<>();
 
         for (int i = 0; i < allData.size(); i++) {
-            FeedModel feedModel = new FeedModel();
-            feedModel.setPhotoId(allData.get(i).getImageId());
+            SplashDbModel feedModel = new SplashDbModel();
+            feedModel.setImageId(allData.get(i).getImageId());
             feedModel.setUrlSmall(allData.get(i).getUrlSmall());
             feedModel.setUrlRaw(allData.get(i).getUrlRaw());
-            feedModel.setLocationName(allData.get(i).getLocalFileName());
+            feedModel.setLocalFileName(allData.get(i).getLocalFileName());
+            feedModel.setOffline(allData.get(i).isOffline());
 
             returnModel.add(feedModel);
         }
@@ -249,7 +272,8 @@ public class SplashDb extends SugarRecord {
      * @param data | all feedModel data containing image data
      * @param context | context is needed in order to access InternalStorage
      */
-    public void insertLocalImage(ArrayList<FeedModel> data, Context context) {
+    public int insertLocalImage(ArrayList<FeedModel> data, Context context) {
+        int duplicate = 0;
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
                 SplashDb splash = new SplashDb(data.get(i), true, null, true);
@@ -258,7 +282,10 @@ public class SplashDb extends SugarRecord {
                 //call the util function to store data to Internal Storage
                 Log.d(TAG, "successfully inserted :"+id);
                 new Util().downloadImageToStore(splash.getUrlRaw(), id, context);
+            } else {
+                duplicate++;
             }
         }
+        return duplicate;
     }
 }
