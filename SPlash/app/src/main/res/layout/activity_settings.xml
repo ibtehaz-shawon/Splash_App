@@ -27,100 +27,109 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         >
 
         <LinearLayout
-            android:id="@+id/ll_settings_part"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@drawable/white_all_radius"
-            android:layout_marginLeft="@dimen/margin_16dp"
-            android:layout_marginRight="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
-            android:padding="@dimen/margin_16dp"
-            >
+            android:orientation="vertical">
 
-            <Switch
-                android:id="@+id/switch_daily_wallpaper"
+
+            <LinearLayout
+                android:id="@+id/ll_settings_part"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/white_all_radius"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:layout_marginRight="@dimen/margin_16dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:padding="@dimen/margin_16dp"
+                >
+
+                <Switch
+                    android:id="@+id/switch_daily_wallpaper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Set Daily Wallpaper"
+                    android:textSize="@dimen/text_16sp"
+                    android:textStyle="normal"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    />
+
+                <Switch
+                    android:id="@+id/switch_offline_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" Enable Offline Mode"
+                    android:textSize="@dimen/text_16sp"
+                    android:textStyle="normal"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    />
+
+                <Switch
+                    android:id="@+id/switch_clear_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear All Data"
+                    android:textSize="@dimen/text_16sp"
+                    android:textStyle="normal"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    />
+
+
+                <Button
+                    android:id="@+id/btn_show_photos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Show Saved Photos"
+                    android:textSize="@dimen/text_16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/textIconsColor"
+                    android:textAllCaps="false"
+                    android:background="@drawable/primary_no_radius"
+                    />
+            </LinearLayout>
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:layout_marginRight="@dimen/margin_16dp"
+                android:background="@drawable/white_all_radius"
+                android:visibility="gone"
+                android:layout_weight="7">
+
+
+            </android.support.v7.widget.RecyclerView>
+
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Set Daily Wallpaper"
-                android:textSize="@dimen/text_16sp"
-                android:textStyle="normal"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/primaryTextColor"
-                android:layout_marginBottom="@dimen/margin_16dp"
-                />
-
-            <Switch
-                android:id="@+id/switch_offline_mode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=" Enable Offline Mode"
-                android:textSize="@dimen/text_16sp"
-                android:textStyle="normal"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/primaryTextColor"
-                android:layout_marginBottom="@dimen/margin_16dp"
-                />
-
-            <Switch
-                android:id="@+id/switch_clear_all"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Clear All Data"
-                android:textSize="@dimen/text_16sp"
-                android:textStyle="normal"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/primaryTextColor"
-                android:layout_marginBottom="@dimen/margin_16dp"
-                />
-
-
-            <Button
-                android:id="@+id/btn_show_photos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Show Saved Photos"
-                android:textSize="@dimen/text_16sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif"
+                android:text="Ibtehaz Shawon 2017"
+                android:layout_gravity="bottom"
+                android:gravity="center|bottom"
+                android:padding="@dimen/margin_16dp"
                 android:textColor="@color/textIconsColor"
-                android:textAllCaps="false"
-                android:background="@drawable/primary_no_radius"
+                android:fontFamily="serif"
+                android:textSize="@dimen/text_14sp"
                 />
+
         </LinearLayout>
-    </ScrollView>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/margin_16dp"
-        android:layout_marginTop="@dimen/margin_16dp"
-        android:layout_marginRight="@dimen/margin_16dp"
-        android:background="@drawable/white_all_radius"
-        android:visibility="gone"
-        android:layout_weight="7">
-
-
-    </android.support.v7.widget.RecyclerView>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="Ibtehaz Shawon 2017"
-        android:gravity="center|bottom"
-        android:padding="@dimen/margin_16dp"
-        android:textColor="@color/textIconsColor"
-        android:fontFamily="serif"
-        android:textSize="@dimen/text_14sp"
-        android:layout_weight="1"
-        />
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

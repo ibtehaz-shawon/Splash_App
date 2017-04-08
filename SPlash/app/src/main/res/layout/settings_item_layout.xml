@@ -40,6 +40,7 @@
             android:visibility="gone"
             android:background="@drawable/gradient_accent_bg"
             >
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -78,6 +79,24 @@
 
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_archived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="right|top"
+            android:padding="@dimen/margin_8dp"
+            android:background="@drawable/white_50_transparent"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/archived_icon"
+                />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/txt_author_left"

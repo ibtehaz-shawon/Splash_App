@@ -222,7 +222,7 @@ public class SplashDb extends SugarRecord {
         //first delete if anything is present in the internal storage
         ArrayList<SplashDbModel> allImages = returnAllImage();
         for (int i = 0; i < allImages.size(); i++) {
-            if (allImages.get(i).isOffline()) {
+            if (allImages.get(i).isOffline() && allImages.get(i).getLocalFileName() != null) {
                 File file = new File(context.getFilesDir(), allImages.get(i).getLocalFileName());
                 file.delete();
             }

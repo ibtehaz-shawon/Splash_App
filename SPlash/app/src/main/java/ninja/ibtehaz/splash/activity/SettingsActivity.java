@@ -272,11 +272,16 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.GONE);
 
             if (model.isOffline()) {
-                if (model.getLocalFileName() != null) new Util().getInternalStorageImage(
-                        model.getLocalFileName(),
-                        context,
-                        imgLeft);
+                if (model.getLocalFileName() != null) {
+                    new Util().getInternalStorageImage(
+                            model.getLocalFileName(),
+                            context,
+                            imgLeft);
+
+                    itemView.findViewById(R.id.ll_archived).setVisibility(View.VISIBLE);
+                }
             } else {
+                itemView.findViewById(R.id.ll_archived).setVisibility(View.GONE);
                 loadPicture();
             }
         }
