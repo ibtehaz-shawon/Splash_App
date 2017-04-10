@@ -3,6 +3,7 @@ package ninja.ibtehaz.splash.utility;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -30,10 +31,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.background.InternalDownloadService;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
+import ninja.ibtehaz.splash.models.SplashDbModel;
 
 /**
  * Created by ibteh on 2/20/2017.
@@ -290,8 +294,6 @@ public class Util {
                     + Calendar.getInstance().get(Calendar.MILLISECOND)+".jpeg";
 
             // path to /data/data/yourapp/app_data/splashDir
-//            File filePath = new File(context.getFilesDir(),fileName);
-
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             image.compress(Bitmap.CompressFormat.JPEG, 60, fos);
             fos.close();
@@ -325,5 +327,18 @@ public class Util {
         } catch (Exception exc) {
             exc.printStackTrace();
         }
+    }
+
+
+    /**
+     *
+     * @param data
+     */
+    public void startInternalImageDownload(ArrayList<SplashDbModel> data, Context context) {
+        Intent i = new Intent(context, InternalDownloadService.class);
+        SplashDbModel local = new SplashDbModel();
+        local.setSplashDbModels(data);
+        i.putExtra("data", local);
+        context.startService(i);
     }
 }

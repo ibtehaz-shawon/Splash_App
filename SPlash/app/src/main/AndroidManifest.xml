@@ -47,6 +47,8 @@
         <activity android:name=".activity.SettingsActivity"/>
 
         <activity android:name=".activity.TestLocalPhoto"/>
+
+        <service android:name=".background.InternalDownloadService"/>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package ninja.ibtehaz.splash.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by ibteh on 4/9/2017.
@@ -8,7 +9,7 @@ import java.io.Serializable;
 
 public class SplashDbModel implements Serializable {
 
-    private int uniqueId;
+    private long uniqueId;
     private String localFileName;
     private String urlRaw;
     private String urlSmall;
@@ -18,11 +19,32 @@ public class SplashDbModel implements Serializable {
     private String imageId;
     private boolean isDailyWallpaper;
 
-    public int getUniqueId() {
+    //in dare cases
+    private ArrayList<SplashDbModel> splashDbModels;
+
+    /*-------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------*/
+    /*if it is need to transport SplashDbModels all at once, from one class to another*/
+    public ArrayList<SplashDbModel> getSplashDbModels() {
+        return splashDbModels;
+    }
+
+    public void setSplashDbModels(ArrayList<SplashDbModel> splashDbModels) {
+        this.splashDbModels = splashDbModels;
+    }
+
+    /*-------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------*/
+
+    public long getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(int uniqueId) {
+    public void setUniqueId(long uniqueId) {
         this.uniqueId = uniqueId;
     }
 

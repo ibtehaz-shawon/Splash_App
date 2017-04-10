@@ -274,6 +274,7 @@ public class SplashDb extends SugarRecord {
      */
     public int insertLocalImage(ArrayList<FeedModel> data, Context context) {
         int duplicate = 0;
+        ArrayList<SplashDbModel> dataModel = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
                 SplashDb splash = new SplashDb(data.get(i), true, null, true);
@@ -281,11 +282,19 @@ public class SplashDb extends SugarRecord {
 
                 //call the util function to store data to Internal Storage
                 Log.d(TAG, "successfully inserted :"+id);
-                new Util().downloadImageToStore(splash.getUrlRaw(), id, context);
+//                new Util().downloadImageToStore(splash.getUrlRaw(), id, context);
+
+                SplashDbModel tempModel = new SplashDbModel();
+                tempModel.setImageId(splash.getImageId());
+                tempModel.setUrlRaw(splash.getUrlRaw());
+                tempModel.setUniqueId(id);
+
+                dataModel.add(tempModel);
             } else {
                 duplicate++;
             }
         }
-        return duplicate;
+        new Util().startInternalImageDownload(dataModel, context);
+        return 0;//temp TODO
     }
 }
