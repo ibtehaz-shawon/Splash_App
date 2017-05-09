@@ -21,12 +21,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.adapter.FeedAdapter;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.FeedModel;
+import ninja.ibtehaz.splash.models.SplashDbModel;
 import ninja.ibtehaz.splash.utility.Util;
 import ninja.ibtehaz.splash.viewHolder.FeedViewHolder;
 
@@ -64,7 +66,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    new SplashDb().removeAll();
+                    new SplashDb().removeAll(context);
                     switchResetAll.setChecked(false);
                     dataModel.clear();
                     adapterSettings.notifyDataSetChanged();
@@ -118,7 +120,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         //filtering NULL Vals
         for (int i = 0; i < dataModel.size(); i++) {
-            FeedModel model = ((FeedModel)dataModel.get(i));
+            SplashDbModel model = ((SplashDbModel)dataModel.get(i));
             if (model.getUrlSmall() == null || model.getUrlRaw() == null) {
                 dataModel.remove(i);
             }
@@ -203,7 +205,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
          */
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((SettingsViewHolder) holder).bindDataToView((FeedModel) dataModel.get(position), position);
+            ((SettingsViewHolder) holder).bindDataToView((SplashDbModel) dataModel.get(position), position);
         }
 
 
@@ -233,7 +235,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         private FrameLayout frameLeft;
         private TextView txtAuthorLeft;
 
-        private FeedModel currentDataModel;
+        private SplashDbModel currentDataModel;
         private int currentPosition;
         private View itemView;
         private Util util;
@@ -261,21 +263,26 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
          * @param model
          * @param position
          */
-        public void bindDataToView(FeedModel model, int position) {
+        public void bindDataToView(SplashDbModel model, int position) {
             this.currentDataModel = model;
             this.currentPosition = position;
 
-            if (model.isView()) {
-                imgLeft.setVisibility(View.GONE);
-                imgLayerLeft.setVisibility(View.GONE);
-                itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.VISIBLE);
-                txtAuthorLeft.setVisibility(View.GONE);
+            imgLayerLeft.setVisibility(View.VISIBLE);
+            txtAuthorLeft.setVisibility(View.GONE);
+            itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.GONE);
+
+            if (model.isOffline()) {
+                if (model.getLocalFileName() != null) {
+                    new Util().getInternalStorageImage(
+                            model.getLocalFileName(),
+                            context,
+                            imgLeft);
+
+                    itemView.findViewById(R.id.ll_archived).setVisibility(View.VISIBLE);
+                }
             } else {
-                imgLayerLeft.setVisibility(View.VISIBLE);
-//                imgLayerLeft.setBackgroundColor(Color.parseColor(model.getColor()));
+                itemView.findViewById(R.id.ll_archived).setVisibility(View.GONE);
                 loadPicture();
-                txtAuthorLeft.setVisibility(View.GONE);
-                itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.GONE);
             }
         }
 

@@ -77,21 +77,33 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
     @Override
     public void onDailyPaperSet(boolean isOffline) {
         ArrayList<FeedModel> dataSet = new ArrayList<>();
-        int counter;
-        int index = 0;
+        ArrayList<String> duplicate = new ArrayList<>();
+        int counter = 0;
+        int index;
+        boolean flag = true;
+        int duplicateCounter = 0;
 
-        for (counter = 0; counter < 10;){
-            if (index == 10) break;
-            FeedModel model = dataModel.get(counter);
-            if (model.getPhotoId() != null) { //first image id is null here. and it cannot be null
-                dataSet.add(model);
-                index++;
+        while (flag) {
+            duplicateCounter = 0;
+            index = 0;
+            for (; ;) {
+                if (index == 5) break; //TODO -> to parallaly test offline, online mode
+                FeedModel model = dataModel.get(counter);
+                if (model.getPhotoId() != null) { //first image id is null here. and it cannot be null
+                    dataSet.add(model);
+                    index++;
+                }
+                counter++;
             }
-            counter++;
-        }
 
-//        ArrayList<String> duplicate = new SplashDb().insertFeedData(dataSet);
-        new SplashDb().insertLocalImage(dataSet, context);
-//        new Util().makeToast(context, "Duplicate "+duplicate.size());
+            if (isOffline) {
+                duplicateCounter = new SplashDb().insertLocalImage(dataSet, context);
+                if (duplicateCounter == 0) break;
+            } else {
+                duplicate = new SplashDb().insertFeedData(dataSet);
+                if (duplicate.size() == 0) break;
+            }
+            dataSet.clear();
+        }
     }
 }
