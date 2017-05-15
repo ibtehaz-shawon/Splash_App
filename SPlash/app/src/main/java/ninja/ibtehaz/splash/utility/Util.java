@@ -64,10 +64,6 @@ import ninja.ibtehaz.splash.models.SplashDbModel;
 
 public class Util {
 
-    private int [] notificationId = new int[] {
-            102524, 102534, 101534, 902534, 332534
-    };
-
     /**
      * singleton instance of Util to handle notification stuffs
      * @return
@@ -368,54 +364,10 @@ public class Util {
      * @param context handling context to put/do stuffs
      */
     public void startInternalImageDownload(ArrayList<SplashDbModel> data, Context context) {
-        NotificationCompat.Builder notificationBuilder;
-        NotificationManager notificationManager;
-        /*
-        *
-        * creating a notification Intent with pending intent to view the progress of download on the view
-        *
-        **/
-        Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-        notificationIntent.putExtra("splashDbModel", data);
-        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-        for (int index = 0; index < data. size(); index++) {
-            String rawUrl = data.get(index).getUrlRaw();
-            long id = data.get(index).getUniqueId();
-
-            notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationBuilder = new NotificationCompat.Builder(context)
-                    .setContentTitle("Downloading Image "+(index + 1) + " from the list")
-                    .setContentText("Download in progress. It may take a while")
-                    .setSmallIcon(R.drawable.placeholder_image)
-                    .setProgress(0, 0, true)
-                    .setAutoCancel(false)
-                    .setContentIntent(notificationPendingIntent);
-            // Start a lengthy operation in a background thread
-            notificationManager.notify(notificationId[index], notificationBuilder.build());
-
-            InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
-                    data.size(), index, notificationBuilder, notificationManager);
-            internalAsyncDownload.execute(rawUrl);
-            Log.d("InternalStorage", " counter --> "+index + " arrayList "+data.size());
-        }
-
-        ContentResolver contentResolver = context.getContentResolver();
-        String enabledNotificationListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
-        String packageName = context.getPackageName();
-
-        // check to see if the enabledNotificationListeners String contains our
-        // package name
-        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName)) {
-            // in this situation we know that the user has not granted the app
-            // the Notification access permission
-            // Check if notification is enabled for this application
-            Log.i("InternalStorage", "Dont Have Notification access");
-            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            context.startActivity(intent);
-        } else {
-            Log.i("InternalStorage", "Have Notification access");
-        }
+        Intent i = new Intent(context, InternalDownloadService.class);
+        SplashDbModel local = new SplashDbModel();
+        local.setSplashDbModels(data);
+        i.putExtra("data", local);
+        context.startService(i);
     }
 }

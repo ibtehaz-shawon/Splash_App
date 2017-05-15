@@ -1,12 +1,17 @@
 package ninja.ibtehaz.splash.background;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -17,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.activity.NotificationViewActivity;
 import ninja.ibtehaz.splash.models.SplashDbModel;
 import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
@@ -30,13 +37,17 @@ public class InternalDownloadService extends Service {
     private final String TAG = "InternalStorage";
     private Context context;
     private ArrayList<SplashDbModel> productUrls;
+    private NotificationCompat.Builder notificationBuilder;
+    private NotificationManager notificationManager;
+    private int [] notificationId = new int[] {
+            102524, 102534, 101534, 902534, 332534
+    };
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     /**
      *
@@ -65,78 +76,64 @@ public class InternalDownloadService extends Service {
             @Override
             public void run() {
                 super.run();
-                for (int index = 0; index < productUrls. size(); index++) {
+                for (int index = 0; index < productUrls.size(); index++) {
                     String rawUrl = productUrls.get(index).getUrlRaw();
                     long id = productUrls.get(index).getUniqueId();
 
-                    shama_pe_giya(rawUrl, id);
-                    Log.d("InternalStorage", " counter --> "+index + " arrayList "+productUrls.size());
+                    showNotification(index);
 
-                    if (index == productUrls.size() - 1) {
-                        Log.d("InternalStorage", " Tata service when "+index
-                                + " and product url size "+ productUrls.size());
-                        stopSelf();
-                    }
+                    InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
+                            productUrls.size(), index, notificationBuilder, notificationManager);
+                    internalAsyncDownload.execute(rawUrl);
+
+                    Log.d("InternalStorage", " counter --> "+index + " arrayList "+productUrls.size());
                 }
             }
         }.start();
-//        return super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-    }
 
 
-    private void shama_pe_giya(String rawUrl, long dataId) {
-        Bitmap output = null;
-        try {
-            URL url = new URL(rawUrl);
-            Log.d(TAG, "_log: output URL is: " + url.toString());
+    /**
+     * creating a notification Intent with pending intent to view the progress of download on the view
+     * shows notification for current index
+     * @param currentIndex
+     */
+    private void showNotification(int currentIndex) {
+        Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        //        notificationIntent.putExtra("splashDbModel", data);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
-            InputStream inputStream = connection.getInputStream();
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 2048);
-            ArrayList<Byte> imageData = new ArrayList<>();
-            int current;
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationBuilder = new NotificationCompat.Builder(context)
+                .setContentTitle("Downloading Image "+(currentIndex + 1) + " from the list")
+                .setContentText("Download in progress. It may take a while")
+                .setSmallIcon(R.drawable.placeholder_image)
+                .setProgress(0, 0, true)
+                .setAutoCancel(false)
+                .setContentIntent(notificationPendingIntent);
+        // Start a lengthy operation in a background thread
+        notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
 
-            while ((current = bufferedInputStream.read()) != -1) {
-                imageData.add((byte)current);
-            }
+        ContentResolver contentResolver = context.getContentResolver();
+        String enabledNotificationListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
+        String packageName = context.getPackageName();
 
-            byte[] imageArray = new byte[imageData.size()];
-
-            for (int i = 0; i < imageData.size(); i++) {
-                imageArray[i] = imageData.get(i);
-            }
-
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            options.inScaled = true;
-            options.inSampleSize = 1;
-
-            output = BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length, options);
-
-            inputStream.close();
-            connection.disconnect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Log.d(TAG, "_log: output with MalformedURLException " + e.toString());
-        } catch (IOException e) {
-            Log.d(TAG, "_log: output with IOException " + e.toString());
-            e.printStackTrace();
-        } catch (Exception e) {
-            Log.d(TAG, "_log: output with Exception " + e.toString());
-            e.printStackTrace();
-        } finally {
-            if (output != null) {
-                new Util().storeImageInternalStorage(output, context, dataId);
-            }
-            else Log.d(TAG, "_log: output is null");
+        // check to see if the enabledNotificationListeners String contains our
+        // package name
+        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName)) {
+            // in this situation we know that the user has not granted the app
+            // the Notification access permission
+            // Check if notification is enabled for this application
+            Log.i("InternalStorage", "Dont Have Notification access");
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            context.startActivity(intent);
+        } else {
+            Log.i("InternalStorage", "Have Notification access");
         }
+
+        startForeground(notificationId[currentIndex], notificationBuilder.build());
     }
 }

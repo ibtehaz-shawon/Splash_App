@@ -92,7 +92,7 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
                     .setContentText("It's almost over!")
                     .setSmallIcon(R.drawable.placeholder_image)
                     .setProgress(0, 0, true)
-                    .setAutoCancel(true);
+                    .setAutoCancel(false);
             // Start a lengthy operation in a background thread
             notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
 
@@ -155,12 +155,6 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
                 .setDefaults(Notification.DEFAULT_SOUND);
 
         notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
-
-
-
-
-
-
     }
 
 }
