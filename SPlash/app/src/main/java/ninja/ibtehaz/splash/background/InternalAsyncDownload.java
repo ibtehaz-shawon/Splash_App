@@ -1,5 +1,6 @@
 package ninja.ibtehaz.splash.background;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,16 +21,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
  * Created by ibtehaz on 5/15/17.
+ * this class download the internal images from the server and stores as bitmap in the devices
+ * notifications are enabled and given hard coded notification ids.
+ *
  */
 
 public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
 
-    private final String TAG = RetrieveFeed.class.getSimpleName();
+    private final String TAG = "InternalStorage";
     private Context context;
     private Util util;
     private boolean flag;
@@ -38,9 +43,12 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
     private int currentIndex;
     private NotificationCompat.Builder notificationBuilder;
     private NotificationManager notificationManager;
-    private int notificationId = 102534;
+    private int [] notificationId = new int[] {
+            102524, 102534, 101534, 902534, 332534
+    };
 
     /**
+     *
      * @param context
      */
     public InternalAsyncDownload(Context context, long dataId,
@@ -78,6 +86,15 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
             }
 
             byte[] imageArray = new byte[imageData.size()];
+
+            notificationBuilder
+                    .setContentTitle("Downloading Image "+(currentIndex + 1) + " from the list")
+                    .setContentText("It's almost over!")
+                    .setSmallIcon(R.drawable.placeholder_image)
+                    .setProgress(0, 0, true)
+                    .setAutoCancel(true);
+            // Start a lengthy operation in a background thread
+            notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
 
             for (int i = 0; i < imageData.size(); i++) {
                 imageArray[i] = imageData.get(i);
@@ -128,22 +145,15 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-
         // When the loop is finished, updates the notification
-        if (currentIndex >= totalItem - 1) {
-            notificationBuilder.setContentTitle("Done.");
-            notificationBuilder.setContentText("Download complete")
-                    // Removes the progress bar
-                    .setProgress(0, 0, false);
-            notificationManager.notify(notificationId, notificationBuilder.build());
-        } else {
-            int per = (int) (((currentIndex + 1) / totalItem) * 100f);
-            Log.i("Counter", "Counter : " + currentIndex + ", per : " + per);
-            notificationBuilder.setContentText("Downloaded (" + per + "/100");
-            notificationBuilder.setProgress(100, per, false);
-            // Displays the progress bar for the first time.
-            notificationManager.notify(notificationId, notificationBuilder.build());
-        }
+        notificationBuilder
+                .setContentTitle("Download completed of Image "+ (currentIndex + 1))
+                .setContentText("")
+                .setProgress(0, 0, false)
+                .setSmallIcon(R.drawable.placeholder_image)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setAutoCancel(true);
+        notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
     }
 
 }
