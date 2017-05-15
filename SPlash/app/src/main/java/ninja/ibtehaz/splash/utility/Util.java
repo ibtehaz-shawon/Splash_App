@@ -1,16 +1,23 @@
 package ninja.ibtehaz.splash.utility;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.WallpaperManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -27,15 +34,22 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.background.InternalAsyncDownload;
 import ninja.ibtehaz.splash.background.InternalDownloadService;
+import ninja.ibtehaz.splash.background.NLService;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.SplashDbModel;
 
@@ -45,6 +59,19 @@ import ninja.ibtehaz.splash.models.SplashDbModel;
 
 public class Util {
 
+    private NotificationCompat.Builder notificationBuilder;
+    private NotificationManager notificationManager;
+    private NotificationReceiver notificationReceiver;
+    private ArrayList<AsyncTask<String, Void, Void>> arr;
+    private int notificationId = 102534;
+
+    /**
+     * singleton instance of Util to handle notification stuffs
+     * @return
+     */
+    public Util getInstance() {
+        return new Util();
+    }
 
     /**
      *
@@ -340,5 +367,87 @@ public class Util {
         local.setSplashDbModels(data);
         i.putExtra("data", local);
         context.startService(i);
+
+
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationBuilder = new NotificationCompat.Builder(context);
+        notificationBuilder.setContentTitle("Downloading images...").setContentText("Download in progress").setSmallIcon(R.drawable.placeholder_image);
+        // Start a lengthy operation in a background thread
+        notificationBuilder.setProgress(0, 0, true);
+        notificationManager.notify(notificationId, notificationBuilder.build());
+        notificationBuilder.setAutoCancel(true);
+
+        arr = new ArrayList<AsyncTask<String, Void, Void>>();
+
+        for (int index = 0; index < data. size(); index++) {
+            String rawUrl = data.get(index).getUrlRaw();
+            long id = data.get(index).getUniqueId();
+
+            InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
+                    data.size(), index, notificationBuilder, notificationManager);
+            internalAsyncDownload.execute(rawUrl);
+            arr.add(internalAsyncDownload);
+            Log.d("InternalStorage", " counter --> "+index + " arrayList "+data.size());
+        }
+
+        ContentResolver contentResolver = context.getContentResolver();
+        String enabledNotificationListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
+        String packageName = context.getPackageName();
+
+        // check to see if the enabledNotificationListeners String contains our
+        // package name
+        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName)) {
+            // in this situation we know that the user has not granted the app
+            // the Notification access permission
+            // Check if notification is enabled for this application
+            Log.i("ACC", "Dont Have Notification access");
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            context.startActivity(intent);
+        } else {
+            Log.i("ACC", "Have Notification access");
+        }
+
+        notificationReceiver = new NotificationReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(NLService.NOT_TAG);
+        context.registerReceiver(notificationReceiver, filter);
+    }
+
+
+
+    /**
+     * implementing notification receiver class to handle notification broadcast management.
+     */
+    public class NotificationReceiver extends BroadcastReceiver {
+
+        /**
+         * handling on recieve for broadcast handles
+         * @param context
+         * @param intent
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String event = intent.getExtras().getString(NLService.NOT_EVENT_KEY);
+            Log.i("NotificationReceiver", "NotificationReceiver onReceive : " + event);
+            if (event.trim().contentEquals(NLService.NOT_REMOVED)) {
+                killTasks();
+            }
+        }
+    }
+
+
+    /**
+     * killing all downloading to local data tasks.
+     */
+    private void killTasks() {
+        if (null != arr & arr.size() > 0) {
+            for (AsyncTask<String, Void, Void> a : arr) {
+                if (a != null) {
+                    Log.i("NotificationReceiver", "Killing download thread");
+                    a.cancel(true);
+                }
+            }
+            if (notificationManager != null) notificationManager.cancelAll();
+        }
     }
 }

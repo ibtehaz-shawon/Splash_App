@@ -163,6 +163,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     }
 
 
+    /**
+     * clears the memory frm background.
+     */
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
     /**
      * ---------------------------------------------------------------------
