@@ -151,9 +151,16 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
                 .setContentText("")
                 .setProgress(0, 0, false)
                 .setSmallIcon(R.drawable.placeholder_image)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND);
+
         notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
+
+
+
+
+
+
     }
 
 }

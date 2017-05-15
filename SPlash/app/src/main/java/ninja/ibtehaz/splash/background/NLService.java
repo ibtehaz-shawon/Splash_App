@@ -9,6 +9,7 @@ import android.util.Log;
 /**
  * Created by ibtehaz on 5/15/17.
  * @author ibtehaz
+ * this class currently does NOTHING!
  */
 
 @SuppressLint("NewApi")

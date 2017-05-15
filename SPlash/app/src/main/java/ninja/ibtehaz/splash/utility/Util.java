@@ -361,23 +361,23 @@ public class Util {
 
 
     /**
-     *
-     * @param data
+     * this function will start downloading photos for internal/in app storage.
+     * this function will use notification to keep track of downloading.
+     * TODO: need forground service to handle everything.
+     * @param data contains SplashDB data
+     * @param context handling context to put/do stuffs
      */
     public void startInternalImageDownload(ArrayList<SplashDbModel> data, Context context) {
         NotificationCompat.Builder notificationBuilder;
         NotificationManager notificationManager;
-        ArrayList<AsyncTask<String, Void, Void>> arr = new ArrayList<>();
         /*
         *
         * creating a notification Intent with pending intent to view the progress of download on the view
         *
         **/
         Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelableArrayList("splashDb", (ArrayList<? extends Parcelable>) data);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        notificationIntent.putExtras(bundle);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        notificationIntent.putExtra("splashDbModel", data);
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         for (int index = 0; index < data. size(); index++) {
@@ -390,7 +390,7 @@ public class Util {
                     .setContentText("Download in progress. It may take a while")
                     .setSmallIcon(R.drawable.placeholder_image)
                     .setProgress(0, 0, true)
-                    .setAutoCancel(true)
+                    .setAutoCancel(false)
                     .setContentIntent(notificationPendingIntent);
             // Start a lengthy operation in a background thread
             notificationManager.notify(notificationId[index], notificationBuilder.build());
@@ -398,7 +398,6 @@ public class Util {
             InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
                     data.size(), index, notificationBuilder, notificationManager);
             internalAsyncDownload.execute(rawUrl);
-            arr.add(internalAsyncDownload);
             Log.d("InternalStorage", " counter --> "+index + " arrayList "+data.size());
         }
 
@@ -419,42 +418,4 @@ public class Util {
             Log.i("InternalStorage", "Have Notification access");
         }
     }
-
-
-
-   /* *//**
-     * implementing notification receiver class to handle notification broadcast management.
-     *//*
-    public class NotificationReceiver extends BroadcastReceiver {
-
-        *//**
-         * handling on recieve for broadcast handles
-         * @param context
-         * @param intent
-         *//*
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String event = intent.getExtras().getString(NLService.NOT_EVENT_KEY);
-            Log.d("InternalStorage", "NotificationReceiver onReceive : " + event);
-            if (event.trim().contentEquals(NLService.NOT_REMOVED)) {
-                killTasks();
-            }
-        }
-    }
-
-
-    *//**
-     * killing all downloading to local data tasks.
-     *//*
-    private void killTasks() {
-        if (null != arr & arr.size() > 0) {
-            for (AsyncTask<String, Void, Void> a : arr) {
-                if (a != null) {
-                    Log.d("InternalStorage", "Killing download thread");
-                    a.cancel(true);
-                }
-            }
-            if (notificationManager != null) notificationManager.cancelAll();
-        }
-    }*/
 }
