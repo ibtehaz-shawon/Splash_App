@@ -27,10 +27,11 @@
         <meta-data android:name="QUERY_LOG" android:value="true" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="ninja.ibtehaz.splash" />
 
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.FeedActivity">
+        <activity android:name=".activity.FeedActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,15 +39,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.CollectionDetails"/>
+        <activity android:name=".activity.CollectionDetails"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.DetailActivity"/>
+        <activity android:name=".activity.DetailActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.CollectionProfile"/>
+        <activity android:name=".activity.CollectionProfile"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.SettingsActivity"/>
+        <activity android:name=".activity.SettingsActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.TestLocalPhoto"/>
+        <activity android:name=".activity.TestLocalPhoto"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".background.InternalDownloadService"/>
 
@@ -57,7 +63,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activity.NotificationViewActivity" />
+        <activity android:name=".activity.NotificationViewActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 
