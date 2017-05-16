@@ -87,7 +87,7 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
             duplicateCounter = 0;
             index = 0;
             for (; ;) {
-                if (index == 2) break; //TODO -> to parallaly test offline, online mode
+                if (index == 5) break; //TODO -> to parallaly test offline, online mode
                 FeedModel model = dataModel.get(counter);
                 if (model.getPhotoId() != null) { //first image id is null here. and it cannot be null
                     dataSet.add(model);

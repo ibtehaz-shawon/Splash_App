@@ -2,16 +2,21 @@ package ninja.ibtehaz.splash.background;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
+import com.orm.dsl.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -22,6 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.activity.NotificationViewActivity;
 import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
@@ -52,17 +58,13 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
      * @param context
      */
     public InternalAsyncDownload(Context context, long dataId,
-                                 int totalItem, int currentIndex,
-                                 NotificationCompat.Builder notificationBuilder,
-                                 NotificationManager notificationManager) {
+                                 int totalItem, int currentIndex) {
         this.context = context;
         this.util = new Util();
         this.flag = false;
         this.dataId = dataId;
         this.totalItem = totalItem;
         this.currentIndex = currentIndex;
-        this.notificationBuilder = notificationBuilder;
-        this.notificationManager = notificationManager;
     }
 
 
@@ -71,6 +73,7 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         Bitmap output = null;
         try {
+            showNotification();
             URL url = new URL(params[0]);
             Log.d(TAG, "_log: output URL is: " + url.toString());
 
@@ -146,15 +149,64 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         // When the loop is finished, updates the notification
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationBuilder
                 .setContentTitle("Download completed of Image "+ (currentIndex + 1))
                 .setContentText("")
                 .setProgress(0, 0, false)
                 .setSmallIcon(R.drawable.placeholder_image)
                 .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND);
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setPriority(-2)
+                .setOngoing(false);
 
         notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
+    }
+
+
+
+    /**
+     * creating a notification Intent with pending intent to view the progress of download on the view
+     * shows notification for current index
+     */
+    private void showNotification() {
+
+        /*Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        notificationIntent.putExtra("splashDbModel", splashDbModel);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationId[currentIndex], notificationIntent, 0);*/
+
+        Log.d("InternalStorage", "Notification for index "+currentIndex);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationBuilder = new NotificationCompat.Builder(context)
+                .setContentTitle("Downloading Image "+(currentIndex + 1) + " from the list")
+                .setContentText("Download in progress. It may take a while")
+                .setSmallIcon(R.drawable.placeholder_image)
+                .setProgress(0, 0, true)
+                .setAutoCancel(false)
+                /*.setContentIntent(notificationPendingIntent)*/
+                .setPriority(2)
+                .setOngoing(true);
+        // Start a lengthy operation in a background thread
+        notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
+
+        ContentResolver contentResolver = context.getContentResolver();
+        String enabledNotificationListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
+        String packageName = context.getPackageName();
+
+        // check to see if the enabledNotificationListeners String contains our
+        // package name
+        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName)) {
+            // in this situation we know that the user has not granted the app
+            // the Notification access permission
+            // Check if notification is enabled for this application
+            Log.i("InternalStorage", "Dont Have Notification access");
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } else {
+            Log.i("InternalStorage", "Have Notification access");
+        }
     }
 
 }
