@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.activity.NotificationViewActivity;
 import ninja.ibtehaz.splash.models.SplashDbModel;
+import ninja.ibtehaz.splash.utility.Constant;
 import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
@@ -37,9 +38,6 @@ public class InternalDownloadService extends Service {
     private final String TAG = "InternalStorage";
     private Context context;
     private ArrayList<SplashDbModel> productUrls;
-    private int [] notificationId = new int[] {
-            102524, 102534, 101534, 902534, 332534
-    };
     private SplashDbModel splashDbModel;
 
     @Nullable
@@ -71,26 +69,24 @@ public class InternalDownloadService extends Service {
         productUrls = splashDbModel.getSplashDbModels();
 
         Log.d("InternalStorage", "Service start");
+        Constant instance = Constant.getInstance();
+        instance.setRunningDownload(productUrls.size());
 
         new Thread() {
             @Override
             public void run() {
                 for (int index = 0; index < productUrls.size(); index++) {
                     try {
-                        Log.d("InternalStorage", "Sleep start");
                         Thread.sleep(1500);
-                        Log.d("InternalStorage", "Sleep sesh");
                     } catch (InterruptedException e) {
-                        Log.d("InternalStorage", "Sleep crashed");
                         e.printStackTrace();
                     }
-
                     String rawUrl = productUrls.get(index).getUrlRaw();
                     long id = productUrls.get(index).getUniqueId();
 
                     Log.d("InternalStorage", "Inside the thread");
                     InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
-                            productUrls.size(), index);
+                            productUrls.size(), index, splashDbModel);
                     internalAsyncDownload.execute(rawUrl);
                     Log.d("InternalStorage", " counter --> "+index + " arrayList "+productUrls.size());
                 }

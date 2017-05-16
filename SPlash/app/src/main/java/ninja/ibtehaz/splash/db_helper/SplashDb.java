@@ -13,6 +13,7 @@ import java.util.List;
 
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.models.SplashDbModel;
+import ninja.ibtehaz.splash.utility.Constant;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
@@ -34,6 +35,10 @@ public class SplashDb extends SugarRecord {
     @Unique
     private String imageId;
     private boolean isDailyWallpaper;
+    //use this field to determine whether you have the image downloaded in local (if Offline mode is on)
+    //check from settings and Feed.
+    @Ignore
+    private boolean isDownloaded;
 
 
     /**
@@ -269,6 +274,7 @@ public class SplashDb extends SugarRecord {
     /**
      * This function will be used only if the image has to be stored locally.
      * User will prefer this. Otherwise, Image will not be stored locally
+     * User will get either randomly generated photo list from server or photos from the list (user preference)
      * @param data | all feedModel data containing image data
      * @param context | context is needed in order to access InternalStorage
      */
@@ -281,12 +287,10 @@ public class SplashDb extends SugarRecord {
                 long id = splash.save();
 
                 //call the util function to store data to Internal Storage
-                Log.d(TAG, "successfully inserted :"+id);
-//                new Util().downloadImageToStore(splash.getUrlRaw(), id, context);
-
                 SplashDbModel tempModel = new SplashDbModel();
                 tempModel.setImageId(splash.getImageId());
                 tempModel.setUrlRaw(splash.getUrlRaw());
+                tempModel.setUrlSmall(splash.getUrlSmall());
                 tempModel.setUniqueId(id);
 
                 dataModel.add(tempModel);
@@ -295,6 +299,20 @@ public class SplashDb extends SugarRecord {
             }
         }
         new Util().startInternalImageDownload(dataModel, context);
-        return 0;//temp TODO
+        return 0; //this value will return zero Always. means nothing.
+    }
+
+
+    /**
+     * this function checks if all the download is completed for offline datas.
+     * if not, will initiate a new download, if the current download is not running
+     */
+    public void isDownloadComplete() {
+        Constant instance = Constant.getInstance();
+
+        if (instance.getRunningDownload() <= 0) {
+            //download i
+        }
+
     }
 }

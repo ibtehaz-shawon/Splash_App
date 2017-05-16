@@ -65,7 +65,6 @@ import ninja.ibtehaz.splash.models.SplashDbModel;
 
 public class Util {
 
-
     public static String NOTIFICATION_BROADCAST_CONSTANT = "14442";
     public static String NOTIFICATION_BROADCAST_ID_EXTRA = "uniqueId";
 

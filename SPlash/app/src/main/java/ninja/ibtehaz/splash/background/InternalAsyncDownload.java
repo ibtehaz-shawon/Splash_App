@@ -28,6 +28,8 @@ import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.activity.NotificationViewActivity;
+import ninja.ibtehaz.splash.models.SplashDbModel;
+import ninja.ibtehaz.splash.utility.Constant;
 import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
@@ -50,21 +52,27 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
     private NotificationCompat.Builder notificationBuilder;
     private NotificationManager notificationManager;
     private int [] notificationId = new int[] {
-            102524, 102534, 101534, 902534, 332534
+            272847, 448612, 641112, 843429, 912219
     };
+    private SplashDbModel dataModel;
+
 
     /**
-     *
+     * constructor that passes on the data
      * @param context
+     * @param dataId
+     * @param totalItem
+     * @param currentIndex
      */
     public InternalAsyncDownload(Context context, long dataId,
-                                 int totalItem, int currentIndex) {
+                                 int totalItem, int currentIndex, SplashDbModel dataModel) {
         this.context = context;
         this.util = new Util();
         this.flag = false;
         this.dataId = dataId;
         this.totalItem = totalItem;
         this.currentIndex = currentIndex;
+        this.dataModel = dataModel;
     }
 
 
@@ -150,6 +158,7 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
         super.onPostExecute(aVoid);
         // When the loop is finished, updates the notification
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         notificationBuilder
                 .setContentTitle("Download completed of Image "+ (currentIndex + 1))
                 .setContentText("")
@@ -157,10 +166,13 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
                 .setSmallIcon(R.drawable.placeholder_image)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND)
-                .setPriority(-2)
+                .setPriority(0)
                 .setOngoing(false);
 
         notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
+
+        Constant instance = Constant.getInstance();
+        instance.setRunningDownload(instance.getRunningDownload() - 1);
     }
 
 
@@ -170,13 +182,16 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
      * shows notification for current index
      */
     private void showNotification() {
-
-        /*Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-        notificationIntent.putExtra("splashDbModel", splashDbModel);
-        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationId[currentIndex], notificationIntent, 0);*/
+        Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
+        notificationIntent.setFlags
+                (Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
+                | Intent.FLAG_ACTIVITY_NEW_TASK);
+        notificationIntent.putExtra("splashDbModel", dataModel);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationId[currentIndex], notificationIntent, 0);
 
         Log.d("InternalStorage", "Notification for index "+currentIndex);
+
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationBuilder = new NotificationCompat.Builder(context)
                 .setContentTitle("Downloading Image "+(currentIndex + 1) + " from the list")
@@ -184,10 +199,9 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
                 .setSmallIcon(R.drawable.placeholder_image)
                 .setProgress(0, 0, true)
                 .setAutoCancel(false)
-                /*.setContentIntent(notificationPendingIntent)*/
+                .setContentIntent(notificationPendingIntent)
                 .setPriority(2)
                 .setOngoing(true);
-        // Start a lengthy operation in a background thread
         notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
 
         ContentResolver contentResolver = context.getContentResolver();
