@@ -22,6 +22,7 @@ import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -63,6 +64,10 @@ import ninja.ibtehaz.splash.models.SplashDbModel;
  */
 
 public class Util {
+
+
+    public static String NOTIFICATION_BROADCAST_CONSTANT = "14442";
+    public static String NOTIFICATION_BROADCAST_ID_EXTRA = "uniqueId";
 
     /**
      * singleton instance of Util to handle notification stuffs
@@ -327,6 +332,13 @@ public class Util {
             //load based on id
             new SplashDb().updateFileName(fileName, dataId);
             Log.d(TAG, "FileName: "+fileName);
+
+            //send a broadcast from here that the download is complete
+            Intent intent = new Intent(Util.NOTIFICATION_BROADCAST_CONSTANT);
+            intent.putExtra(Util.NOTIFICATION_BROADCAST_ID_EXTRA, dataId);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+            Log.d(TAG, "------------- Broadcast fired -------------");
         } catch (IOException e) {
             Log.d(TAG, "Exception "+e.toString());
             e.printStackTrace();

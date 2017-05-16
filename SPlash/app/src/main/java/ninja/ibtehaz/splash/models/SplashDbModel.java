@@ -15,6 +15,7 @@ public class SplashDbModel implements Serializable {
     private String urlSmall;
     private boolean isOffline;
     private boolean isSet;
+    private boolean isDownloaded;
 
     private String imageId;
     private boolean isDailyWallpaper;
@@ -26,7 +27,7 @@ public class SplashDbModel implements Serializable {
     /*-------------------------------------------------------------------*/
     /*-------------------------------------------------------------------*/
     /*-------------------------------------------------------------------*/
-    /*if it is need to transport SplashDbModels all at once, from one class to another*/
+    /*if it is needed to transport SplashDbModels all at once, from one class to another*/
     public ArrayList<SplashDbModel> getSplashDbModels() {
         return splashDbModels;
     }
@@ -39,6 +40,14 @@ public class SplashDbModel implements Serializable {
     /*-------------------------------------------------------------------*/
     /*-------------------------------------------------------------------*/
     /*-------------------------------------------------------------------*/
+
+    public boolean isDownloaded() {
+        return isDownloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        isDownloaded = downloaded;
+    }
 
     public long getUniqueId() {
         return uniqueId;

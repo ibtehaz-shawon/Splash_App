@@ -19,4 +19,7 @@
     <string name="last_updated">Last Updated: 3 Days Ago</string>
     <string name="published">Published: September 02, 2016</string>
     <string name="test_local_photo">Test</string>
+    <string name="notification_download_status">Status</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="download_incomplete">Downloading . . .</string>
 </resources>

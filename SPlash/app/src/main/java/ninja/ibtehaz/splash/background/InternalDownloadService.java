@@ -42,6 +42,7 @@ public class InternalDownloadService extends Service {
     private int [] notificationId = new int[] {
             102524, 102534, 101534, 902534, 332534
     };
+    private SplashDbModel splashDbModel;
 
     @Nullable
     @Override
@@ -68,28 +69,40 @@ public class InternalDownloadService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SplashDbModel splashDbModel = (SplashDbModel) intent.getSerializableExtra("data");
+        this.splashDbModel = (SplashDbModel) intent.getSerializableExtra("data");
         productUrls = splashDbModel.getSplashDbModels();
 
         Log.d("InternalStorage", "Service start");
-        new Thread(){
+
+        new Thread() {
             @Override
             public void run() {
-                super.run();
                 for (int index = 0; index < productUrls.size(); index++) {
-                    String rawUrl = productUrls.get(index).getUrlRaw();
-                    long id = productUrls.get(index).getUniqueId();
+                    try {
+                        Log.d("InternalStorage", "Sleep start");
+                        Thread.sleep(1500);
+                        Log.d("InternalStorage", "Sleep sesh");
+                    } catch (InterruptedException e) {
+                        Log.d("InternalStorage", "Sleep crashed");
+                        e.printStackTrace();
+                    }
 
-                    showNotification(index);
+                    final String rawUrl = productUrls.get(index).getUrlRaw();
+                    final long id = productUrls.get(index).getUniqueId();
+                    final int i = index;
+
+                    showNotification(i);
+                    Log.d("InternalStorage", "Inside the thread");
 
                     InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
-                            productUrls.size(), index, notificationBuilder, notificationManager);
+                            productUrls.size(), i, notificationBuilder, notificationManager);
                     internalAsyncDownload.execute(rawUrl);
 
                     Log.d("InternalStorage", " counter --> "+index + " arrayList "+productUrls.size());
                 }
             }
         }.start();
+
         return START_STICKY;
     }
 
@@ -103,8 +116,10 @@ public class InternalDownloadService extends Service {
     private void showNotification(int currentIndex) {
         Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-        //        notificationIntent.putExtra("splashDbModel", data);
-        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+                notificationIntent.putExtra("splashDbModel", splashDbModel);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationId[currentIndex], notificationIntent, 0);
+
+        Log.d("InternalStorage", "Notification for index "+currentIndex);
 
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationBuilder = new NotificationCompat.Builder(context)
@@ -133,7 +148,6 @@ public class InternalDownloadService extends Service {
         } else {
             Log.i("InternalStorage", "Have Notification access");
         }
-
         startForeground(notificationId[currentIndex], notificationBuilder.build());
     }
 }
