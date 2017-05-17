@@ -98,7 +98,9 @@ public class InternalDownloadService extends Service {
                      * TODO: possible breakthrough if race condition exist: stop the main service thread as long as this does return anything. Will halt all the parallel work of the service
                      */
                     networkCall(rawUrl, currentIndex, dataId);
-                    if (downloadComplete == productUrls.size()) stopSelf();
+                    if (downloadComplete == productUrls.size()) {
+                        context.stopService(runningIntent);
+                    }
                 }
             }.start();
         }
