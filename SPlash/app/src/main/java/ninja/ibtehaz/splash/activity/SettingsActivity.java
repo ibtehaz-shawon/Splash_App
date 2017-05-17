@@ -33,7 +33,7 @@ import ninja.ibtehaz.splash.utility.Util;
 import ninja.ibtehaz.splash.viewHolder.FeedViewHolder;
 
 /**
- * Created by ibteh on 4/1/2017.
+ * Created by ibtehaz on 4/1/2017.
  */
 
 public class SettingsActivity extends BaseActivity implements View.OnClickListener {
@@ -88,6 +88,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         switchResetAll = (Switch)findViewById(R.id.switch_clear_all);
         dataModel = new ArrayList<>();
+
+        new Thread() {
+            @Override
+            public void run() {
+                new SplashDb().isDownloadComplete(context); //check if all the downloads are complete
+            }
+        }.start();
     }
 
     /**

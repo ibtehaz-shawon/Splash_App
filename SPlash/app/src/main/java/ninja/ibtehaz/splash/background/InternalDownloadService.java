@@ -30,7 +30,7 @@ import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
- * Created by ibteh on 4/11/2017.
+ * Created by ibtehaz on 4/11/2017.
  */
 
 public class InternalDownloadService extends Service {
@@ -72,27 +72,35 @@ public class InternalDownloadService extends Service {
         Constant instance = Constant.getInstance();
         instance.setRunningDownload(productUrls.size());
 
-        new Thread() {
-            @Override
-            public void run() {
-                for (int index = 0; index < productUrls.size(); index++) {
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    String rawUrl = productUrls.get(index).getUrlRaw();
-                    long id = productUrls.get(index).getUniqueId();
+        for (int i = 0; i < productUrls.size(); i++) {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            final String rawUrl = productUrls.get(i).getUrlRaw();
+            final long id = productUrls.get(i).getUniqueId();
+            final int index = i;
 
-                    Log.d("InternalStorage", "Inside the thread");
-                    InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
+            Log.d("InternalStorage", "Inside the thread");
+            new Thread() {
+                @Override
+                public void run() {
+                    Intent intent1 = new Intent(context, AsyncDownloader.class);
+                    intent1.putExtra(Util.EXTRA_SERVICE_DATA_ID, id);
+                    intent1.putExtra(Util.EXTRA_SERVICE_CURRENT_INDEX, index);
+                    intent1.putExtra(Util.EXTRA_SERVICE_DATA_MODEL, splashDbModel);
+                    intent1.putExtra(Util.EXTRA_SERVICE_CURRENT_DOWNLOAD_URL, rawUrl);
+
+                    context.startService(intent1);
+
+   /*                 InternalAsyncDownload internalAsyncDownload = new InternalAsyncDownload(context, id,
                             productUrls.size(), index, splashDbModel);
-                    internalAsyncDownload.execute(rawUrl);
+                    internalAsyncDownload.execute(rawUrl);*/
                     Log.d("InternalStorage", " counter --> "+index + " arrayList "+productUrls.size());
                 }
-            }
-        }.start();
-
-        return START_STICKY;
+            }.start();
+        }
+        return START_STICKY; //return sticky will recreate only this service, if this does not end completely
     }
 }

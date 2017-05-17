@@ -68,6 +68,12 @@ public class Util {
     public static String NOTIFICATION_BROADCAST_CONSTANT = "14442";
     public static String NOTIFICATION_BROADCAST_ID_EXTRA = "uniqueId";
 
+    public static String EXTRA_SERVICE_DATA_ID = "data_id";
+    public static String EXTRA_SERVICE_CURRENT_INDEX = "current_index";
+    public static String EXTRA_SERVICE_DATA_MODEL = "data_model";
+    public static String EXTRA_SERVICE_CURRENT_DOWNLOAD_URL = "download_url";
+
+
     /**
      * singleton instance of Util to handle notification stuffs
      * @return

@@ -1,22 +1,20 @@
 package ninja.ibtehaz.splash.background;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.os.IBinder;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
-
-import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
-import com.orm.dsl.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -31,17 +29,13 @@ import ninja.ibtehaz.splash.activity.NotificationViewActivity;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.SplashDbModel;
 import ninja.ibtehaz.splash.utility.Constant;
-import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
- * Created by ibtehaz on 5/15/17.
- * this class download the internal images from the server and stores as bitmap in the devices
- * notifications are enabled and given hard coded notification ids.
- *
+ * Created by ibtehaz on 5/17/17.
  */
 
-public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
+public class AsyncDownloader extends Service {
 
     private final String TAG = "InternalStorage";
     private Context context;
@@ -49,40 +43,44 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
     private int currentIndex;
     private NotificationCompat.Builder notificationBuilder;
     private NotificationManager notificationManager;
-    private int [] notificationId = new int[] {
+    private int[] notificationId = new int[]{
             272847, 448612, 641112, 843429, 912219
     };
     private SplashDbModel dataModel;
 
 
     /**
-     * constructor that passes on the data
-     * @param context
-     * @param dataId
-     * @param totalItem
-     * @param currentIndex
+     * Creates an IntentService.  Invoked by your subclass's constructor.
      */
-    public InternalAsyncDownload(Context context, long dataId,
-                                 int totalItem, int currentIndex, SplashDbModel dataModel) {
-        this.context = context;
-        this.dataId = dataId;
-        this.currentIndex = currentIndex;
-        this.dataModel = dataModel;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        context = this;
     }
 
-
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
     @Override
-    protected Void doInBackground(String... params) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Bitmap output = null;
+        dataId = intent.getLongExtra(Util.EXTRA_SERVICE_DATA_ID, -1);
+        currentIndex = intent.getIntExtra(Util.EXTRA_SERVICE_CURRENT_INDEX, 0);
+        String downloadUrl = intent.getStringExtra(Util.EXTRA_SERVICE_CURRENT_DOWNLOAD_URL);
+        dataModel = (SplashDbModel) intent.getSerializableExtra(Util.EXTRA_SERVICE_DATA_MODEL);
+
+        Log.d(TAG, "_log: inside SERVICE $$$$$ ||-> " + AsyncDownloader.class.getCanonicalName());
         try {
-            showNotification();
+            showFirstNotification();
             /**
              * updates the database that a download has commenced
              */
             new SplashDb().setDownloadStatus(0, dataId);
 
-            URL url = new URL(params[0]);
+            URL url = new URL(downloadUrl);
             Log.d(TAG, "_log: output URL is: " + url.toString());
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -93,13 +91,13 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
             int current;
 
             while ((current = bufferedInputStream.read()) != -1) {
-                imageData.add((byte)current);
+                imageData.add((byte) current);
             }
 
             byte[] imageArray = new byte[imageData.size()];
 
             notificationBuilder
-                    .setContentTitle("Downloading Image "+(currentIndex + 1) + " from the list")
+                    .setContentTitle("Downloading Image " + (currentIndex + 1) + " from the list")
                     .setContentText("It's almost over!")
                     .setSmallIcon(R.drawable.placeholder_image)
                     .setProgress(0, 0, true)
@@ -133,62 +131,32 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
         } finally {
             if (output != null) {
                 new Util().storeImageInternalStorage(output, context, dataId);
+                showFinalNotification();
+
+                Log.d(TAG, "_log: Service 1234 is stopping for "+currentIndex);
+                stopSelf();
             } else {
                 new SplashDb().setDownloadStatus(-1, dataId);
                 Log.d(TAG, "_log: output is null");
             }
         }
-        return null;
+
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
     }
-
-
-    /**
-     *
-     */
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-
-    /**
-     *
-     * @param aVoid
-     */
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        // When the loop is finished, updates the notification
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationBuilder
-                .setContentTitle("Download completed of Image "+ (currentIndex + 1))
-                .setContentText("")
-                .setProgress(0, 0, false)
-                .setSmallIcon(R.drawable.placeholder_image)
-                .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setPriority(0)
-                .setOngoing(false);
-
-        notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
-
-        Constant instance = Constant.getInstance();
-        instance.setRunningDownload(instance.getRunningDownload() - 1);
-    }
-
 
 
     /**
      * creating a notification Intent with pending intent to view the progress of download on the view
      * shows notification for current index
      */
-    private void showNotification() {
+    private void showFirstNotification() {
         Intent notificationIntent = new Intent(context, NotificationViewActivity.class);
         notificationIntent.setFlags
                 (Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
-                | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
+                        | Intent.FLAG_ACTIVITY_NEW_TASK);
         notificationIntent.putExtra("splashDbModel", dataModel);
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, notificationId[currentIndex], notificationIntent, 0);
 
@@ -225,4 +193,25 @@ public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
         }
     }
 
+
+    /**
+     *
+     */
+    private void showFinalNotification() {
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationBuilder
+                .setContentTitle("Download completed of Image "+ (currentIndex + 1))
+                .setContentText("")
+                .setProgress(0, 0, false)
+                .setSmallIcon(R.drawable.placeholder_image)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setPriority(0)
+                .setOngoing(false);
+
+        notificationManager.notify(notificationId[currentIndex], notificationBuilder.build());
+
+        Constant instance = Constant.getInstance();
+        instance.setRunningDownload(instance.getRunningDownload() - 1);
+    }
 }

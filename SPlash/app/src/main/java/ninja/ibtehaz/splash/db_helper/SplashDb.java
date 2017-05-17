@@ -30,15 +30,14 @@ public class SplashDb extends SugarRecord {
     private String localFileName; //current time function in milli second along with random generated text
     private String urlRaw;
     private String urlSmall;
-    private boolean isOffline;
+    private boolean offline;
     private boolean isSet;
     @Unique
     private String imageId;
     private boolean isDailyWallpaper;
     //use this field to determine whether you have the image downloaded in local (if Offline mode is on)
     //check from settings and Feed.
-    @Ignore
-    private boolean isDownloaded;
+    private int isDownloading; //-1 for cancel download, 0 for downloading, 1 for complete download
 
 
     /**
@@ -55,16 +54,23 @@ public class SplashDb extends SugarRecord {
      * @overload SplashDb()
      */
     public SplashDb(FeedModel feedModel, boolean offline, String localImageId,
-                    boolean isDailyWallpaper) {
+                    boolean isDailyWallpaper, int isDownloading) {
         this.urlRaw = feedModel.getUrlRaw();
         this.urlSmall = feedModel.getUrlSmall();
         this.imageId = feedModel.getPhotoId();
         this.isSet = false;
-        this.isOffline = offline;
+        this.offline = offline;
         this.localFileName = localImageId;
         this.isDailyWallpaper = isDailyWallpaper;
+        this.isDownloading = isDownloading;
     }
 
+    /**
+     * -------------------------------------------------------------
+     * -------------------------------------------------------------
+     * -------------------------------------------------------------
+     * -------------------------------------------------------------
+     */
     /**
      * getter and setter
      */
@@ -73,7 +79,7 @@ public class SplashDb extends SugarRecord {
     }
 
     public boolean isOffline() {
-        return isOffline;
+        return offline;
     }
 
     public boolean isSet() {
@@ -81,7 +87,7 @@ public class SplashDb extends SugarRecord {
     }
 
     public void setOffline(boolean offline) {
-        isOffline = offline;
+        this.offline = offline;
     }
 
     public void setSet(boolean set) {
@@ -104,7 +110,20 @@ public class SplashDb extends SugarRecord {
         this.localFileName = localFileName;
     }
 
+    public void setDownloadStatus (int downloadStatus) {
+        this.isDownloading = downloadStatus;
+    }
 
+    public int getDownloadStatus () {
+        return isDownloading;
+    }
+
+    /**
+     * -------------------------------------------------------------
+     * -------------------------------------------------------------
+     * -------------------------------------------------------------
+     * -------------------------------------------------------------
+     */
 
     /**
      * returns a single image, the first image from index 0, which has not been set to Wallpaper yet
@@ -171,7 +190,7 @@ public class SplashDb extends SugarRecord {
         ArrayList<String> duplicate = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), false, null, true);
+                SplashDb splash = new SplashDb(data.get(i), false, null, true, -1);
                 long id = splash.save();
 
                 Log.d(TAG, "successfully inserted :"+id);
@@ -190,7 +209,7 @@ public class SplashDb extends SugarRecord {
      */
     public boolean insertSingleImageData(FeedModel feedModel) {
         if (!checkDuplicate(feedModel.getPhotoId())) {
-            SplashDb splashDb = new SplashDb(feedModel, false, null, false);
+            SplashDb splashDb = new SplashDb(feedModel, false, null, false, -1);
             splashDb.save();
             return true;
         } else {
@@ -267,6 +286,7 @@ public class SplashDb extends SugarRecord {
     public void updateFileName(String fileName, long dataId) {
         SplashDb data = SplashDb.findById(SplashDb.class, dataId);
         data.setLocalFileName(fileName);
+        data.setDownloadStatus(1);
         data.save();
     }
 
@@ -283,7 +303,7 @@ public class SplashDb extends SugarRecord {
         ArrayList<SplashDbModel> dataModel = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), true, null, true);
+                SplashDb splash = new SplashDb(data.get(i), true, null, true, 0);
                 long id = splash.save();
 
                 //call the util function to store data to Internal Storage
@@ -307,12 +327,47 @@ public class SplashDb extends SugarRecord {
      * this function checks if all the download is completed for offline datas.
      * if not, will initiate a new download, if the current download is not running
      */
-    public void isDownloadComplete() {
+    public void isDownloadComplete(Context context) {
         Constant instance = Constant.getInstance();
+        Log.d("InternalStorage", "Counter is --> "+instance.getRunningDownload());
 
         if (instance.getRunningDownload() <= 0) {
             //download i
-        }
+            List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+            ArrayList<SplashDbModel> downloadModel = new ArrayList<>();
 
+            for (int i = 0; i < allData.size(); i++) {
+                int downloadStatus = allData.get(i).getDownloadStatus();
+                boolean isOffline = allData.get(i).isOffline();
+
+                if (isOffline) {
+                   if (downloadStatus == -1 || downloadStatus == 0) {
+                       //start downloading
+                       Log.d("InternalStorage", "Download status " + downloadStatus);
+
+                       SplashDbModel tempModel = new SplashDbModel();
+                       tempModel.setImageId(allData.get(i).getImageId());
+                       tempModel.setUrlRaw(allData.get(i).getUrlRaw());
+                       tempModel.setUrlSmall(allData.get(i).getUrlSmall());
+                       tempModel.setUniqueId(allData.get(i).getId());
+
+                       downloadModel.add(tempModel);
+                   }
+                }
+            }
+            if (downloadModel.size() > 0) new Util().startInternalImageDownload(downloadModel, context);
+        }
+    }
+
+
+    /**
+     * updates the database that download has started.
+     * @param downloadStarted
+     * @param dataId
+     */
+    public void setDownloadStatus(int downloadStarted, long dataId) {
+        SplashDb data = SplashDb.findById(SplashDb.class, dataId);
+        data.setDownloadStatus(downloadStarted);
+        data.save();
     }
 }

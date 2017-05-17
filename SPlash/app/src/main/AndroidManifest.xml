@@ -66,6 +66,9 @@
         <activity android:name=".activity.NotificationViewActivity"
             android:screenOrientation="portrait"/>
 
+        <service android:name=".background.AsyncDownloader"
+            android:persistent="true"/>
+
     </application>
 
 </manifest>
