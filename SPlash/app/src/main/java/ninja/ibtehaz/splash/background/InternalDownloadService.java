@@ -47,6 +47,8 @@ public class InternalDownloadService extends Service {
     private int[] notificationId = new int[]{
             272847, 448612, 641112, 843429, 912219
     };
+
+    private int downloadComplete = 0;
     private Intent runningIntent;
 
     @Nullable
@@ -96,6 +98,7 @@ public class InternalDownloadService extends Service {
                      * TODO: possible breakthrough if race condition exist: stop the main service thread as long as this does return anything. Will halt all the parallel work of the service
                      */
                     networkCall(rawUrl, currentIndex, dataId);
+                    if (downloadComplete == productUrls.size()) stopSelf();
                 }
             }.start();
         }
@@ -104,6 +107,7 @@ public class InternalDownloadService extends Service {
 
 
     /**
+     * TODO - need to check if internet connection is available.
      * network call to download a certain image from the internet
      * @param downloadUrl | current url of the file. Url is Raw
      * @param currentIndex | current index of the array item
@@ -168,13 +172,13 @@ public class InternalDownloadService extends Service {
             if (output != null) {
                 new Util().storeImageInternalStorage(output, context, dataId);
                 showFinalNotification(currentIndex);
-                stopService(runningIntent);
             } else {
                 new SplashDb().setDownloadStatus(-1, dataId);
                 Log.d(TAG, "_log: output is null");
-                stopService(runningIntent);
             }
         }
+
+        downloadComplete++;
         return 1001; //this is a useless number.
     }
 

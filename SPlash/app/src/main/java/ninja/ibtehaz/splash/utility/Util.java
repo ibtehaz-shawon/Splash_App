@@ -328,7 +328,7 @@ public class Util {
 
             //load based on id
             new SplashDb().updateFileName(fileName, dataId);
-            Log.d(TAG, "FileName: "+fileName);
+            Log.d(TAG, "FileName: "+fileName + " for "+dataId + " and bitmap size is "+image.getByteCount());
 
             //send a broadcast from here that the download is complete
             Intent intent = new Intent(Util.NOTIFICATION_BROADCAST_CONSTANT);
