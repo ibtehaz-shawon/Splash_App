@@ -61,12 +61,20 @@
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
-
         </service>
+
+
+        <service android:name=".background.DownloadManager"
+            android:process=":Splash_Download_Manager"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
+
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
 
         <activity android:name=".activity.NotificationViewActivity"
             android:screenOrientation="portrait"/>
-
     </application>
-
 </manifest>
