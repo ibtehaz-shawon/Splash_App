@@ -39,28 +39,20 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import ninja.ibtehaz.splash.R;
-import ninja.ibtehaz.splash.activity.NotificationViewActivity;
-import ninja.ibtehaz.splash.background.InternalAsyncDownload;
 import ninja.ibtehaz.splash.background.InternalDownloadService;
-import ninja.ibtehaz.splash.background.NLService;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.SplashDbModel;
 
 /**
- * Created by ibteh on 2/20/2017.
+ * Created by ibtehaz on 2/20/2017.
  */
 
 public class Util {
@@ -376,7 +368,7 @@ public class Util {
     /**
      * this function will start downloading photos for internal/in app storage.
      * this function will use notification to keep track of downloading.
-     * TODO: need forground service to handle everything.
+     * this function works on background thread of another process which is separated from main process.
      * @param data contains SplashDB data
      * @param context handling context to put/do stuffs
      */

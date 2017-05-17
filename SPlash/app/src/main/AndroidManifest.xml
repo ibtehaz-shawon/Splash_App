@@ -54,20 +54,18 @@
         <activity android:name=".activity.TestLocalPhoto"
             android:screenOrientation="portrait"/>
 
-        <service android:name=".background.InternalDownloadService"/>
-
-        <service android:name=".background.NLService"
+        <service android:name=".background.InternalDownloadService"
+            android:process=":Splash_Image_Download"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
+
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
+
         </service>
 
         <activity android:name=".activity.NotificationViewActivity"
             android:screenOrientation="portrait"/>
-
-        <service android:name=".background.AsyncDownloader"
-            android:persistent="true"/>
 
     </application>
 

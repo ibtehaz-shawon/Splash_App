@@ -38,7 +38,6 @@ import ninja.ibtehaz.splash.utility.Util;
  * Created by ibtehaz on 5/15/17.
  * this class download the internal images from the server and stores as bitmap in the devices
  * notifications are enabled and given hard coded notification ids.
- *
  */
 
 public class InternalAsyncDownload extends AsyncTask<String, Void, Void> {
