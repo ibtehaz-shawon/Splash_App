@@ -22,4 +22,11 @@
     <string name="notification_download_status">Status</string>
     <string name="download_complete">Download Complete</string>
     <string name="download_incomplete">Downloading . . .</string>
+    <string name="wallpaper_setup_failed">Wallpaper setup failed</string>
+    <string name="wallpaper_message">An error occured. Please try again!</string>
+    <string name="wallpaper_setup_success">Success!</string>
+    <string name="wallpaper_message_success">Successfully sets up a new wallpaper.</string>
+    <string name="wallpaper_setup_process_start">Process has started. It may take a while...</string>
+    <string name="photo_by_text">Photo by</string>
+    <string name="no_connection_available">You don\'t have internet connection.</string>
 </resources>

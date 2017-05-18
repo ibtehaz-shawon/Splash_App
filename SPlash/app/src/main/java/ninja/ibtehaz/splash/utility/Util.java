@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.background.DownloadManager;
 import ninja.ibtehaz.splash.background.InternalDownloadService;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.SplashDbModel;
@@ -231,13 +232,14 @@ public class Util {
      * @param context
      * @param image
      */
-    public void setupWallpaper(Context context, Bitmap image) {
+    public boolean setupWallpaper(Context context, Bitmap image) {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
 
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
         width *= 2;
+        boolean isSuccess = false;
         try {
             if (image == null) {
                 makeToast(context, "Image is null!");
@@ -247,29 +249,26 @@ public class Util {
                 Bitmap scaledImage = Bitmap.createScaledBitmap(image, width,height, true);
                 Log.d("RetrieveFeed", "Scaled Image size "+scaledImage.getByteCount());
                 wallpaperManager.setBitmap(scaledImage);
+                isSuccess = true;
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception exc) {
             exc.printStackTrace();
         }
+        return isSuccess;
     }
 
 
     /**
-     *
-     * @param Url
+     * uses a service to download and later sets it up as wallpaper.
+     * @param downloadUrl
+     * @param context
      */
-    public void setupWallpaperFromBackground(final Context context, String Url, final
-                                             CircularFillableLoaders loader, Activity activity) {
-
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        RetrieveFeed retrieveFeed = new RetrieveFeed(context, loader, false, -1);
-        retrieveFeed.execute(Url);
+    public void setupWallpaperFromBackground(Context context, String downloadUrl) {
+        Intent i = new Intent(context, DownloadManager.class);
+        i.putExtra(Util.EXTRA_SERVICE_CURRENT_DOWNLOAD_URL, downloadUrl);
+        context.startService(i);
     }
 
 
@@ -290,6 +289,9 @@ public class Util {
 
 
     /**
+     * @deprecated
+     * @see InternalDownloadService
+     * @Link startInternalImageDownload()
      * downloads the image from internet to Internal storage
      * Filename has to be sent to database based on ID
      * This function will be called from splashDB to download the image
@@ -308,7 +310,7 @@ public class Util {
      * store images in android's internal storage
      * this function will be called from RetrieveFeed Async class to load image on background rather than
      * foreground
-     * @see RetrieveFeed
+     * @see InternalDownloadService
      * @param image | just downloaded image from the server
      * @param context
      * @param dataId | sqlite primary key

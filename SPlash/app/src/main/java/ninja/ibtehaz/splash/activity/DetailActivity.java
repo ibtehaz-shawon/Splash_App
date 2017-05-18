@@ -17,7 +17,7 @@ import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
- * Created by ibteh on 2/21/2017.
+ * Created by ibtehaz on 2/21/2017.
  */
 
 public class DetailActivity extends BaseActivity implements View.OnClickListener {
@@ -46,7 +46,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
 
     /**
-     * -----
+     * initialize the view
      */
     private void init() {
         this.context = this;
@@ -64,23 +64,28 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
 
     /**
-     *
+     * loads the data on the view
      */
     private void loadData() {
         progressBar.setIndeterminate(true);
         util.loadImage(context, dataModel.getUrlRegular(), imgOriginal, progressBar);
         util.loadProfilePic(context, dataModel.getUserProfilePic(), imgProfilePic);
-        txtUserDisplayName.setText("Photo by "+dataModel.getUserDisplayName());
+        txtUserDisplayName.setText(context.getString(R.string.photo_by_text) + " " + dataModel.getUserDisplayName());
         Log.d("Helo", dataModel.getPhotoId() + " %%% ");
     }
 
+
+    /**
+     * on click listener interface
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_set_wallpaper:
+                util.makeToast(context, context.getString(R.string.wallpaper_setup_process_start));
                 util.setupWallpaperFromBackground(context,
-                        dataModel.getUrlRaw(),
-                        circularFillableLoaders, this);
+                        dataModel.getUrlRaw());
                 break;
         }
     }
