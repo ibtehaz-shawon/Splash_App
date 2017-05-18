@@ -80,7 +80,7 @@ public class CollectionProfile extends BaseActivity
 
 
     /**
-     *
+     * initiates the view with data
      */
     private void init() {
         this.context = this;

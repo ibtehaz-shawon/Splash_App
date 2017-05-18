@@ -80,7 +80,7 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
         if (holder instanceof CollectionProfileViewHolder) {
             ((CollectionProfileViewHolder)holder).onBindData(profileDataModel);
         } else {
-            ((FeedViewHolder)holder).bindDataToView(feedModel.get(position), position);
+            ((FeedViewHolder)holder).bindDataToView(feedModel.get(position - 1), position);
         }
     }
 
