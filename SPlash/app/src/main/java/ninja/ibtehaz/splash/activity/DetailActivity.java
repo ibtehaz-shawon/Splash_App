@@ -223,34 +223,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
             util.loadProfilePic(context, dataModel.getUserProfilePic(), imgProfilePic);
             txtUserDisplayName.setText(context.getString(R.string.photo_by_text) + " " + dataModel.getUserDisplayName());
-
-
-            /*if (position == 0) {
-                viewPositionZero.setVisibility(View.VISIBLE);
-                viewPositionOne.setVisibility(View.GONE);
-                frameOriginalImage.setVisibility(View.GONE);
-                llFooter.setVisibility(View.GONE);
-            } else if (position == 1){
-                viewPositionZero.setVisibility(View.GONE);
-                viewPositionOne.setVisibility(View.GONE);
-                frameOriginalImage.setVisibility(View.VISIBLE);
-                llFooter.setVisibility(View.GONE);
-
-                progressBar.setIndeterminate(true);
-                util.loadImage(context, dataModel.getUrlRegular(), imgOriginal, progressBar);
-                Log.d(TAG, dataModel.getPhotoId() + " %%% ");
-            } else if (position == 2) {
-                viewPositionZero.setVisibility(View.GONE);
-                viewPositionOne.setVisibility(View.VISIBLE);
-                frameOriginalImage.setVisibility(View.GONE);
-                llFooter.setVisibility(View.GONE);
-            } else {
-                viewPositionZero.setVisibility(View.GONE);
-                viewPositionOne.setVisibility(View.GONE);
-                frameOriginalImage.setVisibility(View.GONE);
-                llFooter.setVisibility(View.VISIBLE);
-
-            }*/
         }
     }
 }
