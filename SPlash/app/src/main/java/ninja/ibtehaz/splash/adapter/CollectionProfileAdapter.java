@@ -13,8 +13,8 @@ import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.models.CollectionModel;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.viewHolder.CollectionProfileViewHolder;
-import ninja.ibtehaz.splash.viewHolder.CollectionViewHolder;
 import ninja.ibtehaz.splash.viewHolder.FeedViewHolder;
+import ninja.ibtehaz.splash.viewHolder.ViewHolderEmpty;
 
 /**
  * Created by ibtehaz on 5/18/17.
@@ -25,12 +25,15 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
     private class ViewType {
         int PROFILE_HEADER = 0;
         int PROFILE_BODY = 1;
+        int PROFILE_EMPTY_BODY = 2;
     }
 
     private ViewType viewType;
     private Context context;
     private CollectionModel profileDataModel;
     private ArrayList<FeedModel> feedModel;
+    private int EMPTY_VIEW;
+
 
     /**
      * collection profile constructor. holds every value needed to view
@@ -44,6 +47,9 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
         this.context = context;
         this.profileDataModel = collectionModel;
         this.feedModel = dataModel;
+
+        if (feedModel.size() == 0) this.EMPTY_VIEW = 1;
+        else this.EMPTY_VIEW = 0;
     }
 
 
@@ -62,10 +68,13 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_collection_profile,
                     parent, false);
             return new CollectionProfileViewHolder(view, context);
-        } else {
+        } else if (viewType == this.viewType.PROFILE_BODY){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item_layout,
                     parent, false);
             return new FeedViewHolder(view, context, this);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_view, parent, false);
+            return new ViewHolderEmpty(view);
         }
     }
 
@@ -77,10 +86,18 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      */
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Log.d("Error", "EMPTY VIEW IS "+ EMPTY_VIEW);
+
         if (holder instanceof CollectionProfileViewHolder) {
             ((CollectionProfileViewHolder)holder).onBindData(profileDataModel);
-        } else {
+        } else if (holder instanceof FeedViewHolder){
             ((FeedViewHolder)holder).bindDataToView(feedModel.get(position - 1), position);
+        } else {
+            //TODO - this is the error layout. this layout will bind for
+            //TODO server error
+            //TODO empty data set
+            //TODO no internet connection
+            ((ViewHolderEmpty)holder).onBindData(context.getString(R.string.empty_collection));
         }
     }
 
@@ -91,7 +108,8 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      */
     @Override
     public int getItemCount() {
-        return feedModel.size() + 1;
+        //total feed data + header + if empty, then extra 1 more view
+        return feedModel.size() + 1 + EMPTY_VIEW;
     }
 
     /**
@@ -104,7 +122,13 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
         if (position == 0) {
             return viewType.PROFILE_HEADER;
         } else {
-            return viewType.PROFILE_BODY;
+            Log.d("Error", "EMPTY VIEW IS "+ EMPTY_VIEW + " When Feed Size is "+feedModel.size());
+
+            if (feedModel.size() == 0) {
+                return viewType.PROFILE_EMPTY_BODY;
+            } else {
+                return viewType.PROFILE_BODY;
+            }
         }
     }
 
@@ -114,7 +138,5 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      * @param isOffline
      */
     @Override
-    public void onDailyPaperSet(boolean isOffline) {
-
-    }
+    public void onDailyPaperSet(boolean isOffline) {}
 }

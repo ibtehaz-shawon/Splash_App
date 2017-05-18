@@ -129,18 +129,18 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
                 JSONArray collectionData = response.getJSONArray("collection_data");
                 int totalCollectionPhoto = response.getInt("total_collection");
                 int currentPayload = response.getInt("total");
-                int page = response.getInt("page");
 
                 if (totalCollectionPhoto == 0 && currentPayload == 0) {
                     JSONObject row = collectionData.getJSONObject(0);
                     if (row.has("error")) {
                         util.makeToast(context, "Data not uploaded yet into the server from Unsplash!");
                         util.makeToast(context, "Error: " + row.getString("message"));
-                        return;
                     } else {
+                        int page = response.getInt("page");
                         parseCollectionData(collectionData, page);
                     }
                 } else {
+                    int page = response.getInt("page");
                     parseCollectionData(collectionData, page);
                 }
             } catch (JSONException e) {
@@ -212,8 +212,9 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
                 @Override
                 public int getSpanSize(int position) {
                     switch (profileAdapter.getItemViewType(position)) {
-                        case 0: return 2;
-                        default: return 1;
+                        case 0: return 2; //header item
+                        case 2: return 2; //empty view
+                        default: return 1; //default feed structure
                     }
                 }
             };
