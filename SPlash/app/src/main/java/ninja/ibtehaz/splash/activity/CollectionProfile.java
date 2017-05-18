@@ -34,20 +34,21 @@ public class CollectionProfile extends BaseActivity
 
     private final String TAG = "collection_photo";
     private Context context;
+    private LinearLayout coordinatorLayout;
+
     private CollectionModel collectionModel;
     private String collectionId, method;
     private boolean isCurated, isEmpty;
-    private LinearLayout llHeader;
-    private CoordinatorLayout coordinatorLayout;
 
-    private TextView txtTitle, txtName, txtDescription, txtTotalPhotos, txtUpdated, txtPublished,
-            txtCollectionTitle;
-    private ImageView imgCover, imgProfile, imgLayer;
+    private TextView txtTitle;
+
     private Util util;
     private ImageView imgBack;
 
-    private LinearLayout llTotalPhotos, llAboutCollection, llLastUpdate, llAboutCollectionTab;
-
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +57,6 @@ public class CollectionProfile extends BaseActivity
         init();
         /*------------------------------------------------------*/
         getExtra();
-        /*------------------------------------------------------*/
-        inflateUi();
         /*------------------------------------------------------*/
         initiateFragments(collectionId, method, isCurated);
         /*------------------------------------------------------*/
@@ -69,14 +68,14 @@ public class CollectionProfile extends BaseActivity
      */
     private void getExtra() {
         this.collectionModel = (CollectionModel)getIntent().getSerializableExtra("collection_data");
-
         this.collectionId = collectionModel.getCollectionId();
-
         if (collectionModel.isCurated()) this.isCurated = true;
         else this.isCurated = false;
 
         if (isCurated) method = "1";
         else method = "2";
+
+        txtTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()));
     }
 
 
@@ -88,63 +87,16 @@ public class CollectionProfile extends BaseActivity
         this.util = new Util();
         this.isEmpty = false;
 
-        txtTitle = (TextView)findViewById(R.id.txt_title);
-        txtCollectionTitle = (TextView)findViewById(R.id.txt_collection_title);
-        txtName = (TextView)findViewById(R.id.txt_user_name);
-        txtDescription = (TextView)findViewById(R.id.txt_description);
-
-        txtTotalPhotos = (TextView)findViewById(R.id.txt_total_photos);
-        txtUpdated = (TextView)findViewById(R.id.txt_last_updated);
-        txtPublished = (TextView)findViewById(R.id.txt_published);
-
-        llTotalPhotos = (LinearLayout)findViewById(R.id.ll_total_photos);
-        llAboutCollection = (LinearLayout)findViewById(R.id.ll_about_collection);
-        llAboutCollectionTab = (LinearLayout)findViewById(R.id.ll_about_collection_tab);
-        llLastUpdate = (LinearLayout)findViewById(R.id.ll_last_update);
-
-        imgCover = (ImageView)findViewById(R.id.img_cover);
-        imgLayer = (ImageView)findViewById(R.id.img_layer);
-        imgProfile = (ImageView)findViewById(R.id.img_profile);
+        coordinatorLayout = (LinearLayout)findViewById(R.id.profile_coordinate_layout);
         imgBack = (ImageView)findViewById(R.id.img_back);
-
-        llHeader = (LinearLayout)findViewById(R.id.ll_header);
-        coordinatorLayout = (CoordinatorLayout)findViewById(R.id.profile_coordinate_layout);
+        txtTitle = (TextView)findViewById(R.id.txt_title);
 
         findViewById(R.id.app_bar_layout).setBackgroundResource(R.color.transparent);
         findViewById(R.id.toolbar).setBackgroundResource(R.drawable.dark_primary_no_radius);
-        llHeader.setBackgroundResource(R.drawable.gradient_feed_bg);
         coordinatorLayout.setBackgroundResource(R.drawable.gradient_feed_bg);
         setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.toolbar));
 
         imgBack.setOnClickListener(this);
-        llAboutCollection.setOnClickListener(this);
-    }
-
-
-    /**
-     *
-     */
-    private void inflateUi() {
-        txtTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()));
-
-        txtCollectionTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()));
-        txtName.setText("By "+util.capitalizeWords(collectionModel.getUsername()));
-
-        if (!collectionModel.getCollectionDescription().equalsIgnoreCase("none")) {
-            Spannable spannable = new SpannableString(collectionModel.getCollectionDescription().trim());
-            spannable.setSpan(new RelativeSizeSpan(1.5f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            txtDescription.setText(spannable);
-        } else {
-            llAboutCollection.setVisibility(View.GONE);
-            findViewById(R.id.view_about_collection).setVisibility(View.GONE);
-        }
-        txtTotalPhotos.setText(collectionModel.getTotalPhotos());
-
-        imgLayer.setBackgroundColor(Color.parseColor(collectionModel.getCoverColor()));
-        util.loadImage(context, collectionModel.getUrlRegular(), imgCover, imgLayer);
-        util.loadProfilePic(context, collectionModel.getProfileImageLarge(), imgProfile);
-        txtPublished.setText(collectionModel.getPublishedAt());
-        txtUpdated.setText(collectionModel.getUpdatedAt());
     }
 
     /**
@@ -156,10 +108,6 @@ public class CollectionProfile extends BaseActivity
         switch (v.getId()) {
             case R.id.img_back:
                 finish();
-                break;
-            case R.id.ll_about_collection:
-                if (llAboutCollectionTab.getVisibility() != View.VISIBLE) llAboutCollectionTab.setVisibility(View.VISIBLE);
-                else llAboutCollectionTab.setVisibility(View.GONE);
                 break;
         }
     }
@@ -176,6 +124,7 @@ public class CollectionProfile extends BaseActivity
         CollectionProfileFragments fragments = new CollectionProfileFragments();
         Bundle bundle1 = new Bundle();
         bundle1.putString("collectionId", collectionId);
+        bundle1.putSerializable("collectionModel", collectionModel);
         bundle1.putString("method", method);
         bundle1.putBoolean("isCurated", isCurated);
         fragments.setArguments(bundle1);

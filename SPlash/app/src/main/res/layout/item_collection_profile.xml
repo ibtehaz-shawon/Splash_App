@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/ll_header"
     >
 
     <FrameLayout
@@ -306,7 +307,6 @@
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
-
 
     <LinearLayout
         android:id="@+id/ll_about_collection_tab"

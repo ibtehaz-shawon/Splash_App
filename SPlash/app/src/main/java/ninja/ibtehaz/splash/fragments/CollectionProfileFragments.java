@@ -20,7 +20,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.adapter.CollectionProfileAdapter;
 import ninja.ibtehaz.splash.adapter.FeedAdapter;
+import ninja.ibtehaz.splash.models.CollectionModel;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.network.ApiWrapperToGet;
 import ninja.ibtehaz.splash.network.ApiWrapperUtility;
@@ -42,8 +44,9 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
     private boolean isCurated, isEmpty;
     private Util util;
     private ArrayList<FeedModel> dataModel;
-    private FeedAdapter feedAdapter;
+    private CollectionProfileAdapter profileAdapter;
     private int currentPage;
+    private CollectionModel collectionModel;
 
     /**
      *
@@ -66,7 +69,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
 
 
     /**
-     *
+     * initilizes the fragments view and other necessary variables
      */
     private void  init() {
         context = getContext();
@@ -78,13 +81,14 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
 
 
     /**
-     *
+     * get bundles data from the activity to fragment
      */
     private void getBundleData() {
         Bundle bundle = getArguments();
         this.collectionId = bundle.getString("collectionId");
         this.method = bundle.getString("method");
         this.isCurated = bundle.getBoolean("isCurated");
+        this.collectionModel = (CollectionModel) bundle.getSerializable("collectionModel");
     }
 
 
@@ -142,13 +146,15 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            //bind the list no matter what
+            listBind();
         }
     }
 
 
 
     /**
-     *
+     * parses the json responses came from server
      * @param collectionData
      */
     private void parseCollectionData(JSONArray collectionData, int page) {
@@ -186,7 +192,6 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
 
                 dataModel.add(feedModel);
             }
-            listBind();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -194,24 +199,33 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
 
 
 
-
     /**
-     *
+     * binds data to list with a dynamic span view implementation
      */
     private void listBind() {
-        if (feedAdapter == null) {
-            feedAdapter = new FeedAdapter(context, dataModel);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 2,
+        if (profileAdapter == null) {
+            profileAdapter = new CollectionProfileAdapter(context, collectionModel, dataModel);
+            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2,
                     LinearLayoutManager.VERTICAL, false);
+
+            GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    switch (profileAdapter.getItemViewType(position)) {
+                        case 0: return 2;
+                        default: return 1;
+                    }
+                }
+            };
+            mLayoutManager.setSpanSizeLookup(spanSizeLookup);
             recyclerView.setLayoutManager(mLayoutManager);
             RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
             itemAnimator.setAddDuration(1500);
             itemAnimator.setChangeDuration(1000);
             recyclerView.setItemAnimator(itemAnimator);
             recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(feedAdapter);
-        } else {
-            feedAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(profileAdapter);
         }
+        profileAdapter.notifyDataSetChanged();
     }
 }
