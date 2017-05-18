@@ -1,95 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <!-- action bar -->
+    <include layout="@layout/detail_action_bar"/>
+
+    <!--Rest of the layout without the action bar-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!--Original Image View-->
-        <ImageView
-            android:id="@+id/img_original"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/placeholder_image"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:scrollbarFadeDuration="@android:integer/config_mediumAnimTime">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-
-            <!--action bar {improvised}-->
-            <include
-                layout="@layout/detail_action_bar"/>
-
-            <android.support.v4.widget.Space
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                />
-
-            <!--Circular loader-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <android.support.v4.widget.Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    />
-
-                <com.mikhaellopez.circularfillableloaders.CircularFillableLoaders
-                    android:id="@+id/circular_animated_loader"
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:src="@drawable/robot_fill_icon"
-                    app:cfl_border="true"
-                    app:cfl_border_width="2dp"
-                    app:cfl_progress="0"
-                    app:cfl_wave_amplitude="0.05"
-                    app:cfl_wave_color="@color/colorAccent"
-                    android:visibility="visible"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    />
-
-                <android.support.v4.widget.Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    />
-
-
-            </LinearLayout>
-
-
-            <!--Progress bar-->
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/progress_bar"
-                />
-
-            <android.support.v4.widget.Space
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                />
-
-
-            <!--Footer user details-->
-            <include layout="@layout/detail_footer" />
-        </LinearLayout>
-    </FrameLayout>
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>
