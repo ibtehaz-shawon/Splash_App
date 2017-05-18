@@ -17,24 +17,29 @@ import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
+ * this activity shows the detailed information of a photo
  * Created by ibtehaz on 2/21/2017.
  */
 
 public class DetailActivity extends BaseActivity implements View.OnClickListener {
 
+    private final String TAG = DetailActivity.class.getSimpleName();
     private Context context;
     private ImageView imgBack, imgOriginal, imgProfilePic;
-    private CircularFillableLoaders circularFillableLoaders;
     private ProgressBar progressBar;
     private Button btnSetWallpaper;
     private TextView txtUserDisplayName;
     private Util util;
     private FeedModel dataModel;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.detail_activity);
+        setContentView(R.layout.detail_activity_v2);
 
         /*---------------------------------------*/
         init();
@@ -42,6 +47,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         loadData();
         /*---------------------------------------*/
         btnSetWallpaper.setOnClickListener(this);
+        imgBack.setOnClickListener(this);
     }
 
 
@@ -57,8 +63,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         imgOriginal = (ImageView)findViewById(R.id.img_original);
         imgProfilePic = (ImageView)findViewById(R.id.img_profile_ic);
         txtUserDisplayName = (TextView)findViewById(R.id.txt_user_name);
-        circularFillableLoaders = (CircularFillableLoaders)findViewById(R.id.circular_animated_loader);
-        circularFillableLoaders.setVisibility(View.GONE);
         progressBar = (ProgressBar)findViewById(R.id.progress_bar);
     }
 
@@ -71,7 +75,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         util.loadImage(context, dataModel.getUrlRegular(), imgOriginal, progressBar);
         util.loadProfilePic(context, dataModel.getUserProfilePic(), imgProfilePic);
         txtUserDisplayName.setText(context.getString(R.string.photo_by_text) + " " + dataModel.getUserDisplayName());
-        Log.d("Helo", dataModel.getPhotoId() + " %%% ");
+        Log.d(TAG, dataModel.getPhotoId() + " %%% ");
     }
 
 
@@ -87,7 +91,21 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                 util.setupWallpaperFromBackground(context,
                         dataModel.getUrlRaw());
                 break;
+
+            case R.id.img_back:
+                finish();
+                break;
         }
+    }
+
+
+    /**
+     * finishes the activity without keeping anything
+     * END OF STORY!
+     */
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
 

@@ -28,7 +28,6 @@ import ninja.ibtehaz.splash.activity.NotificationViewActivity;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.SplashDbModel;
 import ninja.ibtehaz.splash.utility.Constant;
-import ninja.ibtehaz.splash.utility.RetrieveFeed;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**

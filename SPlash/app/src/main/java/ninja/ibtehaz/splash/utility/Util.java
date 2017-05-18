@@ -247,7 +247,7 @@ public class Util {
                 float scale = width / (float) image.getWidth();
                 height = (int) (scale * image.getHeight());
                 Bitmap scaledImage = Bitmap.createScaledBitmap(image, width,height, true);
-                Log.d("RetrieveFeed", "Scaled Image size "+scaledImage.getByteCount());
+                Log.d("DownloadService", "Scaled Image size "+scaledImage.getByteCount());
                 wallpaperManager.setBitmap(scaledImage);
                 isSuccess = true;
             }
@@ -289,27 +289,8 @@ public class Util {
 
 
     /**
-     * @deprecated
-     * @see InternalDownloadService
-     * @Link startInternalImageDownload()
-     * downloads the image from internet to Internal storage
-     * Filename has to be sent to database based on ID
-     * This function will be called from splashDB to download the image
-     * @see SplashDb
-     * @param rawUrl | raw url of the current photo
-     * @param databaseId | sqlite unique id
-     * @param context
-     */
-    public void downloadImageToStore(String rawUrl, long databaseId, Context context) {
-        RetrieveFeed retrieveFeed = new RetrieveFeed(context, null, true, databaseId);
-        retrieveFeed.execute(rawUrl);
-    }
-
-
-    /**
      * store images in android's internal storage
-     * this function will be called from RetrieveFeed Async class to load image on background rather than
-     * foreground
+     * this function will be called from Internal Download Service class to load image on background rather than foreground. Service runs in another process and as well as Async
      * @see InternalDownloadService
      * @param image | just downloaded image from the server
      * @param context

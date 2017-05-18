@@ -9,8 +9,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/black_no_radius"
-        android:alpha="0.3"
+        android:background="@drawable/gray_no_radius"
         />
 
 
@@ -18,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
         android:paddingTop="@dimen/margin_8dp"
         android:paddingBottom="@dimen/margin_8dp"
         >
@@ -26,7 +26,7 @@
             android:id="@+id/img_profile_ic"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/placeholder_user"
+            android:src="@drawable/placeholder_user_black"
             app:civ_border_width="0dp"/>
 
         <LinearLayout
@@ -46,7 +46,7 @@
                 android:layout_marginLeft="@dimen/margin_16dp"
                 android:layout_marginRight="@dimen/margin_16dp"
                 android:maxLines="1"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:textSize="@dimen/text_20sp"
                 android:textColor="@color/primaryTextColor"
                 android:layout_marginBottom="@dimen/margin_12dp"
@@ -60,7 +60,7 @@
                 android:layout_marginLeft="@dimen/margin_16dp"
                 android:layout_marginRight="@dimen/margin_16dp"
                 android:maxLines="1"
-                android:ellipsize="end"
+                android:ellipsize="marquee"
                 android:textSize="@dimen/text_16sp"
                 android:textColor="@color/secondaryColor"
                 />
