@@ -32,4 +32,5 @@
     <string name="empty_collection">We don\'t have any data for this collection. Please try again later!</string>
     <string name="loading_collection_data">Loading</string>
     <string name="null_returned">An Error Occurred! Please try again!</string>
+    <string name="loading_collection_list">Loading Collections... Please wait!</string>
 </resources>

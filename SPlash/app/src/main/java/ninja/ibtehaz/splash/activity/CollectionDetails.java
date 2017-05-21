@@ -59,6 +59,10 @@ public class CollectionDetails extends BaseActivity
     private CollectionAdapter collectionAdapter;
 
 
+    /**
+     * on create view & layout generator
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +102,7 @@ public class CollectionDetails extends BaseActivity
 
 
     /**
-     *
+     * initializes the view and other global variables/
      */
     private void init() {
         this.context = this;
@@ -117,7 +121,7 @@ public class CollectionDetails extends BaseActivity
 
 
     /**
-     *
+     * get extra data from intent
      */
     private void getIntentExtra() {
         collectionState = getIntent().getBooleanExtra("collection_state", false);
@@ -135,7 +139,7 @@ public class CollectionDetails extends BaseActivity
 
 
     /**
-     *
+     * handles on click listener
      * @param v
      */
     @Override
@@ -147,12 +151,13 @@ public class CollectionDetails extends BaseActivity
         }
     }
 
+
     /**
-     *
+     * calls to get the list API
      */
     private void callApi() {
         if (currentPage == 1)
-            showDialog("Loading Collections... Please wait!");
+            showDialog(context.getString(R.string.loading_collection_list));
 
         if (util.isConnectionAvailable(context)) {
             String actionTag;
@@ -168,13 +173,19 @@ public class CollectionDetails extends BaseActivity
         } else {
             //ERROR Layout
             cancelDialog();
-            initErrorLayout("No Internet Connectivity", true);
+
+            //show the error layout only if the current page is 1. else jst show a snackbar
+            if (currentPage == 1) {
+                initErrorLayout(context.getString(R.string.no_connection_available), false);
+            } else {
+                util.showSnackbar(context, findViewById(R.id.ll_collection_details), context.getString(R.string.no_connection_available));
+            }
         }
     }
 
 
     /**
-     *
+     * handles the error layout
      * @param message
      * @param state
      */
@@ -315,7 +326,7 @@ public class CollectionDetails extends BaseActivity
 
 
     /**
-     *
+     * binds data to view
      */
     private void listBind() {
         if (collectionAdapter == null) {
@@ -328,8 +339,7 @@ public class CollectionDetails extends BaseActivity
             itemAnimator.setChangeDuration(1000);
             recyclerView.setItemAnimator(itemAnimator);
             recyclerView.setAdapter(collectionAdapter);
-        } else {
-            collectionAdapter.notifyDataSetChanged();
         }
+        collectionAdapter.notifyDataSetChanged();
     }
 }
