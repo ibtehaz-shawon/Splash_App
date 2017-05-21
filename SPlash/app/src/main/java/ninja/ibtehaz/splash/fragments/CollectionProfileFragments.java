@@ -1,6 +1,5 @@
 package ninja.ibtehaz.splash.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.activity.CollectionProfile;
 import ninja.ibtehaz.splash.adapter.CollectionProfileAdapter;
-import ninja.ibtehaz.splash.adapter.FeedAdapter;
 import ninja.ibtehaz.splash.models.CollectionModel;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.network.ApiWrapperToGet;
