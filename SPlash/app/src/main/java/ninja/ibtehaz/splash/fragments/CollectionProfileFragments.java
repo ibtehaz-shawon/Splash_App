@@ -48,6 +48,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
     private CollectionProfileAdapter profileAdapter;
     private int currentPage;
     private CollectionModel collectionModel;
+    private String errorFlag = "";
 
     /**
      *
@@ -64,7 +65,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
         init();
         getBundleData();
         //binds data to list and the next ones will notify the dataset
-        listBind();
+        listBind(errorFlag);
         callApi(currentPage);
 
         return view;
@@ -110,7 +111,8 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
                 currentPage++;
             }
         } else {
-            util.makeToast(context, "No Connection Available!");
+            errorFlag = context.getString(R.string.no_connection_available);
+            listBind(errorFlag);
         }
     }
 
@@ -125,8 +127,9 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
     public void onGetResponse(String actionTag, JSONObject response) {
         ((CollectionProfile)getActivity()).cancelDialog();
 
+
         if (response == null) {
-            util.makeToast(context, "An Error Occurred! Please try again!");
+            errorFlag = context.getString(R.string.null_returned);
             Log.d(TAG, "_log: null returned");
             return;
         } else {
@@ -142,22 +145,26 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
                 if (totalCollectionPhoto == 0 && currentPayload == 0) {
                     JSONObject row = collectionData.getJSONObject(0);
                     if (row.has("error")) {
-                        util.makeToast(context, "Data not uploaded yet into the server from Unsplash!");
-                        util.makeToast(context, "Error: " + row.getString("message"));
+                        //error message
+                        errorFlag = context.getString(R.string.empty_collection);
                     } else {
+                        //parse ok
                         int page = response.getInt("page");
                         parseCollectionData(collectionData, page);
                     }
                 } else {
+                    //parse ok
                     int page = response.getInt("page");
                     parseCollectionData(collectionData, page);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //bind the list no matter what
-            listBind();
+        } else {
+            errorFlag = context.getString(R.string.null_returned);
         }
+        //finally bind the list data with error message
+        listBind(errorFlag);
     }
 
 
@@ -211,9 +218,9 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
     /**
      * binds data to list with a dynamic span view implementation
      */
-    private void listBind() {
+    private void listBind(String message) {
         if (profileAdapter == null) {
-            profileAdapter = new CollectionProfileAdapter(context, collectionModel, dataModel);
+            profileAdapter = new CollectionProfileAdapter(context, collectionModel, dataModel, message);
             GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2,
                     LinearLayoutManager.VERTICAL, false);
 
@@ -236,6 +243,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(profileAdapter);
         }
+        profileAdapter.setErrorMessage(message);
         profileAdapter.notifyDataSetChanged();
     }
 }

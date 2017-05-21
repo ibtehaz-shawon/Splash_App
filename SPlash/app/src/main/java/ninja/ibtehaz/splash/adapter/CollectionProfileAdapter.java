@@ -33,6 +33,7 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
     private CollectionModel profileDataModel;
     private ArrayList<FeedModel> feedModel;
     private int EMPTY_VIEW;
+    private String errorMessage;
 
 
     /**
@@ -42,14 +43,24 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      * @param dataModel
      */
     public CollectionProfileAdapter(Context context, CollectionModel collectionModel,
-                                    ArrayList<FeedModel> dataModel) {
+                                    ArrayList<FeedModel> dataModel, String errorMessage) {
         viewType = new ViewType();
         this.context = context;
         this.profileDataModel = collectionModel;
         this.feedModel = dataModel;
+        this.errorMessage = errorMessage;
 
         if (feedModel.size() == 0) this.EMPTY_VIEW = 1;
         else this.EMPTY_VIEW = 0;
+    }
+
+
+    /**
+     * sets up error message if value changes
+     * @param errorMessage
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 
@@ -63,6 +74,8 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d("Error", "ViewType is -->> "+ viewType);
+        if (feedModel.size() == 0) this.EMPTY_VIEW = 1;
+        else this.EMPTY_VIEW = 0;
 
         if (viewType == this.viewType.PROFILE_HEADER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_collection_profile,
@@ -91,13 +104,13 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
         if (holder instanceof CollectionProfileViewHolder) {
             ((CollectionProfileViewHolder)holder).onBindData(profileDataModel);
         } else if (holder instanceof FeedViewHolder){
-            ((FeedViewHolder)holder).bindDataToView(feedModel.get(position - 1), position);
+            if (EMPTY_VIEW == 1) {
+                ((FeedViewHolder)holder).bindDataToView(feedModel.get(position - 2), position);
+            } else {
+                ((FeedViewHolder)holder).bindDataToView(feedModel.get(position - 1), position);
+            }
         } else {
-            //TODO - this is the error layout. this layout will bind for
-            //TODO server error
-            //TODO empty data set
-            //TODO no internet connection
-            ((ViewHolderEmpty)holder).onBindData(context.getString(R.string.empty_collection));
+            ((ViewHolderEmpty)holder).onBindData(errorMessage);
         }
     }
 

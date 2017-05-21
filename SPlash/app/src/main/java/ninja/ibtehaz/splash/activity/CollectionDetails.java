@@ -183,7 +183,7 @@ public class CollectionDetails extends BaseActivity
         llErrorLayout.setVisibility(View.VISIBLE);
 
         if (state) {
-            util.showSnackbar(context, findViewById(R.id.ll_feed_layout), message);
+            util.showSnackbar(context, findViewById(R.id.ll_collection_details), message);
         }
     }
 
