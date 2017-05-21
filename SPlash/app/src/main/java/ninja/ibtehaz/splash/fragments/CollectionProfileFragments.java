@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import ninja.ibtehaz.splash.R;
+import ninja.ibtehaz.splash.activity.CollectionProfile;
 import ninja.ibtehaz.splash.adapter.CollectionProfileAdapter;
 import ninja.ibtehaz.splash.adapter.FeedAdapter;
 import ninja.ibtehaz.splash.models.CollectionModel;
@@ -62,6 +63,8 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
 
         init();
         getBundleData();
+        //binds data to list and the next ones will notify the dataset
+        listBind();
         callApi(currentPage);
 
         return view;
@@ -99,6 +102,10 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
     private void callApi(int pageNumber) {
         if (util.isConnectionAvailable(context)) {
             if (!isEmpty) {
+                if (currentPage == 1) {
+                    ((CollectionProfile)getActivity()).showDialog(context.getString(R.string.loading_collection_data) + " "+collectionModel.getCollectionTitle());
+                }
+
                 new ApiWrapperUtility().apicallToGetCollectionPhoto(this, pageNumber, collectionId, method, "");
                 currentPage++;
             }
@@ -116,6 +123,8 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
      */
     @Override
     public void onGetResponse(String actionTag, JSONObject response) {
+        ((CollectionProfile)getActivity()).cancelDialog();
+
         if (response == null) {
             util.makeToast(context, "An Error Occurred! Please try again!");
             Log.d(TAG, "_log: null returned");
