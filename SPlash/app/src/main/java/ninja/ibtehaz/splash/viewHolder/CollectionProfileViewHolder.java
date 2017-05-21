@@ -90,7 +90,6 @@ public class CollectionProfileViewHolder extends RecyclerView.ViewHolder impleme
         txtPublished.setText(new Util().dateParser(collectionModel.getPublishedAt()));
 
         txtUpdated.setText(collectionModel.getUpdatedAt());
-
     }
 
     /**
