@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="circularfillableloaders-1.2.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/a6b3ec3ae74559fd1a81a7184fd6b925bab300f3/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/a6b3ec3ae74559fd1a81a7184fd6b925bab300f3/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikhaellopez/circularfillableloaders/1.2.0/f08aea6ff29e2622c0b3a4200d3b8be94530f47f/circularfillableloaders-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
