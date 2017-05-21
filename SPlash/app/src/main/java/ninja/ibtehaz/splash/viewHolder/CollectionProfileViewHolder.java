@@ -87,7 +87,8 @@ public class CollectionProfileViewHolder extends RecyclerView.ViewHolder impleme
         imgLayer.setBackgroundColor(Color.parseColor(collectionModel.getCoverColor()));
         util.loadImage(context, collectionModel.getUrlRegular(), imgCover, imgLayer);
         util.loadProfilePic(context, collectionModel.getProfileImageLarge(), imgProfile);
-        txtPublished.setText(collectionModel.getPublishedAt());
+        txtPublished.setText(new Util().dateParser(collectionModel.getPublishedAt()));
+
         txtUpdated.setText(collectionModel.getUpdatedAt());
 
     }

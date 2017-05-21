@@ -1,31 +1,18 @@
 package ninja.ibtehaz.splash.utility;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.WallpaperManager;
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -38,12 +25,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -66,6 +54,10 @@ public class Util {
     public static String EXTRA_SERVICE_CURRENT_INDEX = "current_index";
     public static String EXTRA_SERVICE_DATA_MODEL = "data_model";
     public static String EXTRA_SERVICE_CURRENT_DOWNLOAD_URL = "download_url";
+
+    public static String [] MONTH_NAMES = new String[] {
+            "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    };
 
 
     /**
@@ -368,5 +360,49 @@ public class Util {
         local.setSplashDbModels(data);
         i.putExtra("data", local);
         context.startService(i);
+    }
+
+
+    /**
+     * fuck society
+     * returns human readable data from 2017-02-03 12:28:06+00:00
+     * @param date
+     * @return DD MMM, YYYY format
+     */
+    public String dateParser(String date) {
+        String []yearParsed = date.split(" ")[0].split("-");
+        int monthPart = Integer.parseInt(yearParsed[1]);
+
+        return yearParsed[2] + " "+ MONTH_NAMES[monthPart -1]+", "+yearParsed[0];
+    }
+
+
+    /**
+     * receives a date (2017-02-03 12:28:06+00:00) and returns AGO text
+     * @param date
+     * @return 3 MMM/YYYY/DD/HH/MM/Just now ago
+     */
+    public String dateParserAgo(String date) {
+        String ago = "";
+        String []yearParsed = date.split(" ")[0].split("-");
+        String []hourParsed = date.split(" ")[1].split(":");
+
+        String value = "";
+        for (int i = 0; i < hourParsed[2].length(); i++) {
+            char c = hourParsed[2].charAt(i);
+
+            if (c == '+') {
+                break;
+            } else {
+                value += c;
+            }
+        }
+        hourParsed[2] = value;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currentDate = new Date();
+
+
+        return ago;
     }
 }

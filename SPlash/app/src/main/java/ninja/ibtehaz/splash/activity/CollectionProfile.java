@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,6 +77,8 @@ public class CollectionProfile extends BaseActivity
         else method = "2";
 
         txtTitle.setText(util.capitalizeWords(collectionModel.getCollectionTitle()));
+
+        Log.d("Last", collectionModel.getPublishedAt() + "_____------_____"+ collectionModel.getUpdatedAt());
     }
 
 
