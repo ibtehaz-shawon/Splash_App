@@ -105,7 +105,7 @@
                         android:fontFamily="serif"
                         android:visibility="visible"
                         android:maxLines="1"
-                        android:ellipsize="end"
+                        android:ellipsize="marquee"
                         android:layout_marginLeft="@dimen/margin_16dp"
                         />
                 </LinearLayout>
@@ -141,7 +141,7 @@
                         android:fontFamily="serif"
                         android:visibility="visible"
                         android:maxLines="1"
-                        android:ellipsize="end"
+                        android:ellipsize="marquee"
                         android:layout_marginLeft="@dimen/margin_16dp"
                         />
 
@@ -196,7 +196,7 @@
                             android:gravity="center"
                             android:fontFamily="sans-serif"
                             android:maxLines="1"
-                            android:ellipsize="end"
+                            android:ellipsize="marquee"
                             />
 
                         <TextView
@@ -286,13 +286,13 @@
                             android:gravity="center"
                             android:fontFamily="sans-serif"
                             android:maxLines="1"
-                            android:ellipsize="end"
+                            android:ellipsize="marquee"
                             />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Last update"
+                            android:text="@string/updated"
                             android:textSize="@dimen/text_24sp"
                             android:textColor="@color/textIconsColor"
                             android:gravity="center"

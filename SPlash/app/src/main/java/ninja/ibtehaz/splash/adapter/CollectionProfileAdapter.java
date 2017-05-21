@@ -73,7 +73,6 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("Error", "ViewType is -->> "+ viewType);
         if (feedModel.size() == 0) this.EMPTY_VIEW = 1;
         else this.EMPTY_VIEW = 0;
 
@@ -99,8 +98,6 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      */
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d("Error", "EMPTY VIEW IS "+ EMPTY_VIEW);
-
         if (holder instanceof CollectionProfileViewHolder) {
             ((CollectionProfileViewHolder)holder).onBindData(profileDataModel);
         } else if (holder instanceof FeedViewHolder){
@@ -135,8 +132,6 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
         if (position == 0) {
             return viewType.PROFILE_HEADER;
         } else {
-            Log.d("Error", "EMPTY VIEW IS "+ EMPTY_VIEW + " When Feed Size is "+feedModel.size());
-
             if (feedModel.size() == 0) {
                 return viewType.PROFILE_EMPTY_BODY;
             } else {

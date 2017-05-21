@@ -33,4 +33,16 @@
     <string name="loading_collection_data">Loading</string>
     <string name="null_returned">An Error Occurred! Please try again!</string>
     <string name="loading_collection_list">Loading Collections... Please wait!</string>
+    <string name="day_single">day</string>
+    <string name="day_plural">days</string>
+    <string name="hour_single">hour</string>
+    <string name="hour_plural">hours</string>
+    <string name="just_now">Just now</string>
+    <string name="min_single">minute</string>
+    <string name="min_plural">minutes</string>
+    <string name="month_singular">month</string>
+    <string name="month_plural">months</string>
+    <string name="year_singular">year</string>
+    <string name="year_plural">years</string>
+    <string name="updated">Updated</string>
 </resources>

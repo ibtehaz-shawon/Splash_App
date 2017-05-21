@@ -30,10 +30,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.background.DownloadManager;
@@ -382,27 +384,107 @@ public class Util {
      * @param date
      * @return 3 MMM/YYYY/DD/HH/MM/Just now ago
      */
-    public String dateParserAgo(String date) {
-        String ago = "";
+    public String dateParserAgo(String date, Context context) {
         String []yearParsed = date.split(" ")[0].split("-");
         String []hourParsed = date.split(" ")[1].split(":");
 
-        String value = "";
-        for (int i = 0; i < hourParsed[2].length(); i++) {
-            char c = hourParsed[2].charAt(i);
+        String updatedDate = yearParsed[0]+"-"+yearParsed[1]+"-"+yearParsed[2]+" "+hourParsed[0]+":"+hourParsed[1];
+        return calculateDate(updatedDate, context);
+    }
 
-            if (c == '+') {
-                break;
+
+    /**
+     * returns a fucking human readable text
+     * @param date | yyyy-MM-dd HH:mm:ss date
+     * @param context | current context
+     * @return returns a bullshit date
+     */
+    public static String calculateDate(String date, Context context) {
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String[] dateTime = date.split(" "); //separate the space
+        SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+        Date postCreationYear, postCreationHour;
+        String whenCreated = "";
+
+        try {
+            postCreationYear = yearFormatter.parse(dateTime[0]);
+            postCreationHour = timeFormatter.parse(dateTime[1]);
+            Date today = yearFormatter.parse(yearFormatter.format(new Date())); //Today's date
+            Calendar currentCalendar = GregorianCalendar.getInstance();  //todays calender
+            Calendar postCalendar = GregorianCalendar.getInstance(); //polls calender
+
+            //get how long ago the poll was created
+            if (today.after(postCreationYear)) {
+                currentCalendar.setTime(today);
+                postCalendar.setTime(postCreationYear);
+                int postYear = postCalendar.get(Calendar.YEAR);
+                int currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
+                int postDate = postCalendar.get(Calendar.DAY_OF_MONTH);
+
+                if (postDate < currentDay) {
+                    if ((currentDay - postDate) <= 1) {
+                        whenCreated = "" + (currentDay - postDate) + " " + context.getString(R.string.day_single);
+                    } else if ((currentDay - postDate) > 1 && (currentDay - postDate) <= 30)
+                        whenCreated = "" + (currentDay - postDate) + " " + context.getString(R.string.day_plural);
+                    else {
+                        //month
+                        int currentMonth = currentCalendar.get(Calendar.MONTH);
+                        int postMonth = postCalendar.get(Calendar.MONTH);
+
+                        if (currentMonth - postMonth == 0) {
+                            //check date here
+                            whenCreated = "" + (currentMonth - postMonth) + " " + context.getString(R.string.month_singular);
+                        } else if (currentMonth - postMonth == 1) {
+                            // 1 or less month
+                            whenCreated = "" + (currentMonth - postMonth) + " " + context.getString(R.string.month_singular);
+                        } else if (currentMonth - postMonth > 1 && currentMonth - postMonth <= 12) {
+                            whenCreated = "" + (currentMonth - postMonth) + " " + context.getString(R.string.month_plural);
+                        } else {
+                            //year
+                            int currentYear = currentCalendar.get(Calendar.YEAR);
+                            if (currentYear - postYear <= 1) {
+                                whenCreated = "" + (currentYear - postYear) + " " + context.getString(R.string.year_singular);
+                            } else {
+                                whenCreated = "" + (currentYear - postYear) + " " + context.getString(R.string.year_plural);
+                            }
+                        }
+                    }
+                }
+
+            } else if (today.equals(postCreationYear)) {
+                Date now = new Date();
+                currentCalendar.setTime(now);
+                postCalendar.setTime(postCreationHour);
+                int nowHour = currentCalendar.get(Calendar.HOUR_OF_DAY);
+                int nowMin = currentCalendar.get(Calendar.MINUTE);
+                int postHour = postCalendar.get(Calendar.HOUR_OF_DAY);
+                int postMin = postCalendar.get(Calendar.MINUTE);
+
+                if (postHour < nowHour) {
+                    if ((nowHour - postHour) == 1) {
+                        whenCreated = "" + (nowHour - postHour) + " " + context.getString(R.string.hour_single);
+                    } else
+                        whenCreated = "" + (nowHour - postHour) + " " + context.getString(R.string.hour_plural);
+                } else {
+                    if ((nowMin - postMin) == 0) {
+                        whenCreated = context.getString(R.string.just_now);
+                    } else {
+                        if ((nowMin - postMin) == 1) {
+                            whenCreated = "" + (nowMin - postMin) + " " + context.getString(R.string.min_single);
+                        } else
+                            whenCreated = "" + (nowMin - postMin) + " " + context.getString(R.string.min_plural);
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } finally {
+            if (whenCreated.equalsIgnoreCase("")) {
+                return date; //fail safe the orignal date if crashes
             } else {
-                value += c;
+                return whenCreated + " ago"; //return actual data
             }
         }
-        hourParsed[2] = value;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date currentDate = new Date();
-
-
-        return ago;
     }
 }
