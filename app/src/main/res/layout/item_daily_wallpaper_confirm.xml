@@ -50,6 +50,7 @@
             />
 
         <RadioGroup
+            android:id="@+id/rGroup_wallpaper_change"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -58,6 +59,7 @@
             android:paddingRight="@dimen/margin_16dp">
 
             <RadioButton
+                android:id="@+id/rButton_six_am"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wallpaper_change_6"
@@ -70,6 +72,7 @@
 
 
             <RadioButton
+                android:id="@+id/rButton_twelve_am"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wallpaper_change_12"
@@ -110,6 +113,7 @@
 
 
         <RadioGroup
+            android:id="@+id/rGroup_wallpaper_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -119,6 +123,7 @@
             >
 
             <RadioButton
+                android:id="@+id/rBtn_five"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wallpaper_change_5"
@@ -130,6 +135,7 @@
                 />
 
             <RadioButton
+                android:id="@+id/rBtn_ten"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wallpaper_change_10"
@@ -140,6 +146,7 @@
                 />
 
             <RadioButton
+                android:id="@+id/rBtn_fifteen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wallpaper_change_15"
