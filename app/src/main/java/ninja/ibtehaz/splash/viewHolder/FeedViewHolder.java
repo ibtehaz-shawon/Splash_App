@@ -107,7 +107,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
 
     /**
-     *
+     * opens up the feed details in the main feed
      */
     private void openDetails(FeedModel dataModel) {
         Intent i = new Intent(context, DetailActivity.class);

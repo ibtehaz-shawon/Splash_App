@@ -5,45 +5,230 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_16dp"
     android:layout_marginBottom="@dimen/margin_16dp"
-    android:layout_marginLeft="@dimen/margin_16dp"
-    android:layout_marginRight="@dimen/margin_16dp"
     >
 
-    <CheckBox
-        android:id="@+id/cBox_offline_mode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enable Offline Mode"
-        android:paddingTop="@dimen/margin_16dp"
-        android:paddingBottom="@dimen/margin_16dp"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/text_16sp"
-        android:fontFamily="serif"
-        android:ellipsize="end"
-        />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="lorem ipsum -> some text about how and when the daily wallpaper change will occur and etc"
-        android:paddingTop="@dimen/margin_16dp"
-        android:paddingBottom="@dimen/margin_16dp"
+        android:text="@string/download_almost"
+        android:gravity="center"
+        android:textSize="@dimen/text_32sp"
         android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/text_16sp"
         android:fontFamily="serif"
+        android:textAllCaps="true"
+        android:maxLines="1"
         android:ellipsize="end"
+        android:layout_marginBottom="@dimen/margin_16dp"
+        android:layout_marginLeft="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
+        android:textAlignment="gravity"
         />
 
+
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <!--ONE-->
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_8dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_wallpaper"
+            android:paddingTop="@dimen/margin_16dp"
+            android:paddingBottom="@dimen/margin_12dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_16sp"
+            android:fontFamily="serif"
+            android:ellipsize="end"
+            android:background="@drawable/gray_no_radius"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp"
+            />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/margin_4dp"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallpaper_change_6"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/text_16sp"
+                android:fontFamily="serif"
+                android:layout_weight="1"
+                android:checked="true"
+                />
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallpaper_change_12"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/text_16sp"
+                android:fontFamily="serif"
+                android:layout_weight="1"
+                />
+
+        </RadioGroup>
+    </LinearLayout>
+
+
+
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <!--TWO-->
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/max_wallpaper_data"
+            android:paddingTop="@dimen/margin_16dp"
+            android:paddingBottom="@dimen/margin_12dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_16sp"
+            android:fontFamily="serif"
+            android:ellipsize="marquee"
+            android:background="@drawable/gray_no_radius"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp"
+            />
+
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp"
+            android:paddingTop="@dimen/margin_4dp"
+            >
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallpaper_change_5"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/text_16sp"
+                android:fontFamily="serif"
+                android:layout_weight="1"
+                android:checked="true"
+                />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallpaper_change_10"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/text_16sp"
+                android:fontFamily="serif"
+                android:layout_weight="1"
+                />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallpaper_change_15"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/text_16sp"
+                android:fontFamily="serif"
+                android:layout_weight="1"
+                />
+        </RadioGroup>
+
+    </LinearLayout>
+
+
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <!--Three-->
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_16dp">
+
+        <CheckBox
+            android:id="@+id/cBox_offline_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable Offline Mode"
+            android:paddingTop="@dimen/margin_16dp"
+            android:paddingBottom="@dimen/margin_16dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_16sp"
+            android:fontFamily="serif"
+            android:ellipsize="end"
+            android:background="@drawable/gray_no_radius"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/offline_hint"
+            android:textSize="@dimen/text_12sp"
+            android:fontFamily="serif"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/size_of_internal_image"
+            android:padding="@dimen/margin_16dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_16sp"
+            android:fontFamily="serif"
+            android:ellipsize="end"
+            android:visibility="gone"
+            />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="50"
+            android:elevation="@dimen/margin_8dp"
+            android:visibility="gone"
+            android:paddingLeft="@dimen/margin_16dp"
+            android:paddingRight="@dimen/margin_16dp"
+            />
+    </LinearLayout>
+
+    <!--|||||||||||||||||||||||||||||||||||-->
+    <!--Confirmation Button-->
+    <!--|||||||||||||||||||||||||||||||||||-->
     <Button
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/accent_no_radius"
+        android:background="@drawable/accent_all_radius"
         android:text="Confirm"
         android:textColor="@color/textIconsColor"
         android:textSize="@dimen/text_16sp"
         android:fontFamily="serif"
         android:ellipsize="end"
         android:textStyle="bold"
+        android:layout_margin="@dimen/margin_16dp"
         />
 </LinearLayout>

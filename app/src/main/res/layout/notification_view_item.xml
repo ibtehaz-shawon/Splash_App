@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gray_no_radius"
+    android:background="@drawable/gray_all_radius"
     android:padding="@dimen/margin_16dp">
 
     <FrameLayout
