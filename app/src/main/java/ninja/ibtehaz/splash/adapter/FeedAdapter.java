@@ -20,6 +20,14 @@ import ninja.ibtehaz.splash.viewHolder.FeedViewHolder;
 
 public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.DailyWallpaper {
 
+    public class ViewType {
+        int FEED_ONE = 1;
+        int FEED_TWO = 2;
+        int FEED_THREE = 3;
+    }
+
+    private ViewType viewType;
+
     private Context context;
     private ArrayList<FeedModel> dataModel;
 
@@ -31,6 +39,7 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
     public FeedAdapter(Context context, ArrayList<FeedModel> dataModel) {
         this.context = context;
         this.dataModel = dataModel;
+        this.viewType = new ViewType();
     }
 
 
@@ -104,6 +113,21 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
                 if (duplicate.size() == 0) break;
             }
             dataSet.clear();
+        }
+    }
+
+
+    /**
+     * get which item type to load on a certain view position
+     * @param position
+     * @return
+     */
+    @Override
+    public int getItemViewType(int position) {
+        if (position % 7 == 0) {
+            return viewType.FEED_ONE;
+        } else {
+            return viewType.FEED_TWO;
         }
     }
 }

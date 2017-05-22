@@ -88,7 +88,8 @@ public class FeedActivity extends BaseActivity
                     while (isLoading) {
                         synchronized (paginationLock) {
                             isLoading = false;
-                            callApi();
+                            if (pageNumber < 4)
+                                callApi();
                         }
                     }
                 }
@@ -216,6 +217,8 @@ public class FeedActivity extends BaseActivity
                         FeedModel model = new FeedModel();
                         model.setView(true);
                         dataModel.add(model);
+                    } else if (pageNumber == 4) {
+                        isEmpty = true;
                     }
 
                     for (int i = 0; i < photo.length(); i++) {
@@ -272,8 +275,20 @@ public class FeedActivity extends BaseActivity
     private void listBind() {
         if (feedAdapter == null) {
             feedAdapter = new FeedAdapter(context, dataModel);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 2,
+
+            GridLayoutManager mLayoutManager  = new GridLayoutManager(context, 2,
                     LinearLayoutManager.VERTICAL, false);
+            GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    switch (feedAdapter.getItemViewType(position)) {
+                        case 1: return 2; //single view (or take the entire item size)
+                        default: return 1; //default two item feed structure (for other cases take a singular item size)
+                    }
+                }
+            };
+            mLayoutManager.setSpanSizeLookup(spanSizeLookup);
+
             recyclerView.setLayoutManager(mLayoutManager);
             RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
             itemAnimator.setAddDuration(1500);
@@ -281,9 +296,8 @@ public class FeedActivity extends BaseActivity
             recyclerView.setItemAnimator(itemAnimator);
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(feedAdapter);
-        } else {
-            feedAdapter.notifyDataSetChanged();
         }
+        feedAdapter.notifyDataSetChanged();
 
         if (llErrorLayout.getVisibility() == View.VISIBLE) {
             llErrorLayout.setVisibility(View.GONE);

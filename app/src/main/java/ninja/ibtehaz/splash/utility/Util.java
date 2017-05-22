@@ -275,15 +275,20 @@ public class Util {
 
     /**
      * returns the capitalize version of a string/each string
+     * string size for any splitted index might become (min 1, maxif (words.length == 1)  = n)
      * @param word
-     * @return
+     * @return Capitalized name for each words
      */
     public String capitalizeWords(String word) {
         String []words = word.split(" ");
         String returnVal = "";
         for (int i =0; i < words.length; i++) {
-            returnVal += words[i].substring(0,1).toUpperCase()
-                    + words[i].substring(1).toLowerCase() +" ";
+            if (words[i].length() > 1) {
+                returnVal += words[i].substring(0,1).toUpperCase()
+                        + words[i].substring(1).toLowerCase() +" ";
+            } else {
+                returnVal += words[i].substring(0).toUpperCase() + " ";
+            }
         }
         return returnVal;
     }
