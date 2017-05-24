@@ -39,6 +39,7 @@ public class SplashDb extends SugarRecord {
     private int quality;
     private int wallpaperChangeTime;
     private int wallpaperAmount;
+    private String collectionId;
 
 
     /**
@@ -134,6 +135,14 @@ public class SplashDb extends SugarRecord {
         this.wallpaperAmount = wallpaperAmount;
     }
 
+    public String getCollectionId() {
+        return collectionId;
+    }
+
+    public void setCollectionId(String collectionId) {
+        this.collectionId = collectionId;
+    }
+
     /**
      * -------------------------------------------------------------
      * -------------------------------------------------------------
@@ -207,6 +216,7 @@ public class SplashDb extends SugarRecord {
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
                 SplashDb splash = new SplashDb(data.get(i), false, null, true);
+                splash.setCollectionId(null);
                 long id = splash.save();
 
                 Log.d(TAG, "successfully inserted :"+id);
@@ -323,6 +333,7 @@ public class SplashDb extends SugarRecord {
                 splash.setQuality(quality);
                 splash.setWallpaperAmount(wallpaperAmount);
                 splash.setWallpaperChangeTime(wallpaperChangeTime);
+                splash.setCollectionId(null);
                 long id = splash.save();
 
                 //call the util function to store data to Internal Storage

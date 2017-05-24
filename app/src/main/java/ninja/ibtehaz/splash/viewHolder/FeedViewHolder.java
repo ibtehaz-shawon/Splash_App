@@ -41,17 +41,23 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     private Util util;
     private Context context;
     private DailyWallpaper dailyWallpaper;
+    private String collectionId;
+
 
     /**
-     * constructor to construct the view
-     * @param itemView
+     *
+     * @param itemView \ current View Item to initilalize the layout
+     * @param context | current context
+     * @param dailyWallpaper | interface instantiation for daily wallpaper
+     * @param collectionId | current collectionId (can be nullable).
      */
-    public FeedViewHolder(View itemView, Context context, DailyWallpaper dailyWallpaper) {
+    public FeedViewHolder(View itemView, Context context, DailyWallpaper dailyWallpaper, String collectionId) {
         super(itemView);
         this.itemView = itemView;
         this.util = new Util();
         this.context = context;
         this.dailyWallpaper = dailyWallpaper;
+        this.collectionId = collectionId;
 
         imgLeft = (ImageView)itemView.findViewById(R.id.img_left_original);
         imgLayerLeft = (ImageView)itemView.findViewById(R.id.img_layer_left);
@@ -64,9 +70,12 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
 
     /**
-     *
-     * @param model
+     * binds data to view
+     * @param model | feed model contains feed data
      * @param position
+     * Usage ->
+     * @see ninja.ibtehaz.splash.adapter.CollectionProfileAdapter
+     * @see ninja.ibtehaz.splash.adapter.FeedAdapter
      */
     public void bindDataToView(FeedModel model, int position) {
         this.currentDataModel = model;
@@ -272,7 +281,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                     quality = seekBarDownload.getProgress();
                 }
 
-                dailyWallpaper.onDailyPaperSet(isOffline, quality, wallpaperAmount, changeTime, isRandom);
+                dailyWallpaper.onDailyPaperSet(isOffline, quality, wallpaperAmount, changeTime, isRandom, collectionId);
                 util.makeToast(context, context.getString(R.string.daily_wallpaper_set));
                 dialog.dismiss();
             }
@@ -286,13 +295,16 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
      * interface implementation for on click listener for download image
      */
     public interface DailyWallpaper {
+
         /**
          *
          * @param isOffline | if the images will be stored in offline mode
          * @param quality | quality of the downloading image
          * @param wallpaperAmount | amount of wallpaper to be stored at a time, both online/offline
          * @param changeTime | when will the change occur
+         * @param isRandom | if user enabled to get random data from server or first 5/10 feed datat
+         * @param collectionId @nullable | if user enabled collection's daily photos, collectionId won't be null.
          */
-        void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom);
+        void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom, String collectionId);
     }
 }

@@ -53,7 +53,7 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.feed_item_layout, parent, false);
-        return new FeedViewHolder(itemView, context, this);
+        return new FeedViewHolder(itemView, context, this, null);
 
     }
 
@@ -78,13 +78,17 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
     }
 
 
-
     /**
-     * TODO -> get random data if needed from server
-     * @param isOffline
+     * This is for FeedData. Collection Id will always be nullable.
+     * @param isOffline | if the images will be stored in offline mode
+     * @param quality | quality of the downloading image
+     * @param wallpaperAmount | amount of wallpaper to be stored at a time, both online/offline
+     * @param changeTime | when will the change occur
+     * @param isRandom | if user enabled to get random data from server or first 5/10 feed datat
+     * @param collectionId @nullable
      */
     @Override
-    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom) {
+    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom, String collectionId) {
         ArrayList<FeedModel> dataSet = new ArrayList<>();
         int counter = 0, index = 0;
 

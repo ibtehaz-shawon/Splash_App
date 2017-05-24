@@ -83,7 +83,7 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
         } else if (viewType == this.viewType.PROFILE_BODY){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item_layout,
                     parent, false);
-            return new FeedViewHolder(view, context, this);
+            return new FeedViewHolder(view, context, this, profileDataModel.getCollectionId());
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_empty_view, parent, false);
             return new ViewHolderEmpty(view);
@@ -146,5 +146,5 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      * @param isOffline
      */
     @Override
-    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom) {}
+    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom, String collectionId) {}
 }
