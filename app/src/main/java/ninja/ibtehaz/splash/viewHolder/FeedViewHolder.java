@@ -141,6 +141,8 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             rGroupChangeTime.setVisibility(View.VISIBLE);
             rGroupWallpaperNumber.setVisibility(View.VISIBLE);
         } else {
+            //TODO - fetch already settings data from database
+            //TODO - show an alert message where to change the settings If needed
             rGroupChangeTime.setVisibility(View.GONE);
             rGroupWallpaperNumber.setVisibility(View.GONE);
         }
