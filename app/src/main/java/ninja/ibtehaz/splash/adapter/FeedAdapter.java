@@ -84,18 +84,15 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
      * @param isOffline
      */
     @Override
-    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime) {
+    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom) {
         ArrayList<FeedModel> dataSet = new ArrayList<>();
-        ArrayList<String> duplicate = new ArrayList<>();
-        int counter = 0;
-        int index;
-        boolean flag = true;
-        int duplicateCounter = 0;
+        int counter = 0, index = 0;
 
-        while (flag) {
-            duplicateCounter = 0;
-            index = 0;
-            for (; ;) {
+        if (isRandom) {
+            // call server from here
+            new Util().makeToast(context, "get random photo from server!");
+        } else {
+            while (true) {
                 if (index == wallpaperAmount) break;
                 FeedModel model = dataModel.get(counter);
                 if (model.getPhotoId() != null) { //first image id is null here. and it cannot be null
@@ -106,11 +103,9 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
             }
 
             if (isOffline) {
-                duplicateCounter = new SplashDb().insertLocalImage(dataSet, context, quality, changeTime, wallpaperAmount);
-                if (duplicateCounter == 0) break;
+                new SplashDb().insertLocalImage(dataSet, context, quality, changeTime, wallpaperAmount);
             } else {
-                duplicate = new SplashDb().insertFeedData(dataSet);
-                if (duplicate.size() == 0) break;
+                new SplashDb().insertFeedData(dataSet);
             }
             dataSet.clear();
         }

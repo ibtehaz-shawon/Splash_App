@@ -410,4 +410,28 @@ public class SplashDb extends SugarRecord {
         if (data.size() == 0) return true;
         else return false;
     }
+
+
+    /**
+     * return the number of photo data to be stored
+     * @return wallpapaer amount
+     */
+    public int returnDownloadAmount() {
+        List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+
+        if (allData.size() == 0) return 0;
+        else return allData.get(0).getWallpaperAmount();
+    }
+
+
+    /**
+     * returns the nutime when the photo will be changed
+     * @return Wallpaper change time.
+     */
+    public int returnChangeTime() {
+        List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+
+        if (allData.size() == 0) return 0;
+        else return allData.get(0).getWallpaperChangeTime();
+    }
 }

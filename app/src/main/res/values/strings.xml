@@ -45,7 +45,7 @@
     <string name="year_singular">year</string>
     <string name="year_plural">years</string>
     <string name="updated">Updated</string>
-    <string name="size_of_internal_image">Reduce the size of downloaded Images</string>
+    <string name="size_of_internal_image">Choose Image Quality</string>
     <string name="change_wallpaper">Change Wallpaper between</string>
     <string name="wallpaper_change_12">12 AM</string>
     <string name="wallpaper_change_6">6 AM</string>
@@ -56,5 +56,8 @@
     <string name="offline_hint">Photos will be downloaded and stored on your device. This might require a lot of space</string>
     <string name="download_almost">Almost Complete !!</string>
     <string name="download_wallpaper">Downloading the wallpapers. It will take a while! We will let you know when it\'s over.</string>
-    <string name="daily_wallpaper_set">Daily Wallpaper setup is complete!</string>
+    <string name="daily_wallpaper_set">We are working on it! We will notify you when it\'s finished.</string>
+    <string name="download_almost_text">Please choose the necessary options before confirming</string>
+    <string name="use_random_photo">Use Random Photo</string>
+    <string name="enable_offline">Store Image Locally</string>
 </resources>

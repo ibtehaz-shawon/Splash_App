@@ -133,18 +133,20 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         final RadioGroup rGroupChangeTime = (RadioGroup)dialog.findViewById(R.id.rGroup_wallpaper_change);
         final RadioGroup rGroupWallpaperNumber = (RadioGroup)dialog.findViewById(R.id.rGroup_wallpaper_number);
         final CheckBox chkIsOffline = (CheckBox)dialog.findViewById(R.id.cBox_offline_mode);
+        final CheckBox chkIsRandom = (CheckBox)dialog.findViewById(R.id.cBox_random_photo);
+        final TextView txtImageQuality = (TextView)dialog.findViewById(R.id.txt_download_size);
         Button btnConfirm = (Button)dialog.findViewById(R.id.btn_confirm);
         final SeekBar seekBarDownload = (SeekBar)dialog.findViewById(R.id.seekbar_download_size);
 
+        txtImageQuality.setText(context.getString(R.string.size_of_internal_image) + " - "+seekBarDownload.getProgress());
+
         final boolean isFirstTime = new SplashDb().isFirstTime();
         if (isFirstTime) {
-            rGroupChangeTime.setVisibility(View.VISIBLE);
-            rGroupWallpaperNumber.setVisibility(View.VISIBLE);
+            dialog.findViewById(R.id.ll_change_time).setVisibility(View.VISIBLE);
+            dialog.findViewById(R.id.ll_photo_amount).setVisibility(View.VISIBLE);
         } else {
-            //TODO - fetch already settings data from database
-            //TODO - show an alert message where to change the settings If needed
-            rGroupChangeTime.setVisibility(View.GONE);
-            rGroupWallpaperNumber.setVisibility(View.GONE);
+            dialog.findViewById(R.id.ll_change_time).setVisibility(View.GONE);
+            dialog.findViewById(R.id.ll_photo_amount).setVisibility(View.GONE);
         }
 
         /**
@@ -157,7 +159,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                     case R.id.rButton_six_am:
                         break;
                     case R.id.rButton_twelve_am:
-                        //12 am
                         break;
                 }
             }
@@ -212,11 +213,12 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                 if (progress < 50) {
                     seekBarDownload.setProgress(50);
                 }
+                txtImageQuality.setText(context.getString(R.string.size_of_internal_image)  + " - " + seekBar.getProgress());
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                txtImageQuality.setText(context.getString(R.string.size_of_internal_image)  + " - " + seekBar.getProgress());
             }
 
             @Override
@@ -226,11 +228,14 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         });
 
 
-
+        /**
+         * confirm btn on click listener handler
+         */
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isOffline = chkIsOffline.isChecked();
+                boolean isRandom = chkIsRandom.isChecked();
                 int changeTime = 0, wallpaperAmount = 0, quality = 70;
                 //quality is by default 70%
 
@@ -258,18 +263,17 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                             wallpaperAmount = 15;
                             break;
                     }
+                } else {
+                    changeTime = new SplashDb().returnChangeTime();
+                    wallpaperAmount = new SplashDb().returnDownloadAmount();
                 }
 
                 if (isOffline) {
                     quality = seekBarDownload.getProgress();
                 }
-                dailyWallpaper.onDailyPaperSet(isOffline, quality, wallpaperAmount, changeTime);
-                if (isOffline) {
-                    util.makeToast(context, context.getString(R.string.download_wallpaper));
 
-                } else {
-                    util.makeToast(context, context.getString(R.string.daily_wallpaper_set));
-                }
+                dailyWallpaper.onDailyPaperSet(isOffline, quality, wallpaperAmount, changeTime, isRandom);
+                util.makeToast(context, context.getString(R.string.daily_wallpaper_set));
                 dialog.dismiss();
             }
         });
@@ -279,7 +283,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
 
     /**
-     * interace implementation for on click listener for download image
+     * interface implementation for on click listener for download image
      */
     public interface DailyWallpaper {
         /**
@@ -289,6 +293,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
          * @param wallpaperAmount | amount of wallpaper to be stored at a time, both online/offline
          * @param changeTime | when will the change occur
          */
-        void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime);
+        void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom);
     }
 }
