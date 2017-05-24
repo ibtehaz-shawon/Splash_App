@@ -55,4 +55,6 @@
     <string name="wallpaper_change_15">15</string>
     <string name="offline_hint">Photos will be downloaded and stored on your device. This might require a lot of space</string>
     <string name="download_almost">Almost Complete !!</string>
+    <string name="download_wallpaper">Downloading the wallpapers. It will take a while! We will let you know when it\'s over.</string>
+    <string name="daily_wallpaper_set">Daily Wallpaper setup is complete!</string>
 </resources>

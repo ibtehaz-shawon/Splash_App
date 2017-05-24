@@ -11,14 +11,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.activity.DetailActivity;
+import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.utility.Util;
 
@@ -127,10 +130,20 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.item_daily_wallpaper_confirm);
 
-        RadioGroup rGroupChangeTime = (RadioGroup)dialog.findViewById(R.id.rGroup_wallpaper_change);
-        RadioGroup rGroupWallpaperNumber = (RadioGroup)dialog.findViewById(R.id.rGroup_wallpaper_number);
+        final RadioGroup rGroupChangeTime = (RadioGroup)dialog.findViewById(R.id.rGroup_wallpaper_change);
+        final RadioGroup rGroupWallpaperNumber = (RadioGroup)dialog.findViewById(R.id.rGroup_wallpaper_number);
         final CheckBox chkIsOffline = (CheckBox)dialog.findViewById(R.id.cBox_offline_mode);
         Button btnConfirm = (Button)dialog.findViewById(R.id.btn_confirm);
+        final SeekBar seekBarDownload = (SeekBar)dialog.findViewById(R.id.seekbar_download_size);
+
+        final boolean isFirstTime = new SplashDb().isFirstTime();
+        if (isFirstTime) {
+            rGroupChangeTime.setVisibility(View.VISIBLE);
+            rGroupWallpaperNumber.setVisibility(View.VISIBLE);
+        } else {
+            rGroupChangeTime.setVisibility(View.GONE);
+            rGroupWallpaperNumber.setVisibility(View.GONE);
+        }
 
         /**
          * on click listener to handle and detect time listener (When to change wallpaper)
@@ -140,7 +153,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (group.getCheckedRadioButtonId()) {
                     case R.id.rButton_six_am:
-                        //6 am
                         break;
                     case R.id.rButton_twelve_am:
                         //12 am
@@ -170,17 +182,91 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         });
 
 
+        /**
+         * checked on this on will enable some other UI components as well.
+         */
+        chkIsOffline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    dialog.findViewById(R.id.txt_offline_alert).setVisibility(View.VISIBLE);
+                    dialog.findViewById(R.id.txt_download_size).setVisibility(View.VISIBLE);
+                    dialog.findViewById(R.id.seekbar_download_size).setVisibility(View.VISIBLE);
+                } else {
+                    dialog.findViewById(R.id.txt_offline_alert).setVisibility(View.GONE);
+                    dialog.findViewById(R.id.txt_download_size).setVisibility(View.GONE);
+                    dialog.findViewById(R.id.seekbar_download_size).setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        /**
+         * seekbar changed listener
+         */
+        seekBarDownload.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (progress < 50) {
+                    seekBarDownload.setProgress(50);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
 
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isOffline = chkIsOffline.isChecked();
-                dailyWallpaper.onDailyPaperSet(isOffline);
+                int changeTime = 0, wallpaperAmount = 0, quality = 70;
+                //quality is by default 70%
+
+                if (isFirstTime) {
+                    switch (rGroupChangeTime.getCheckedRadioButtonId()) {
+                        case R.id.rButton_six_am:
+                            changeTime = 1;
+                            break;
+                        case R.id.rButton_twelve_am:
+                            changeTime = 2;
+                            break;
+                    }
+
+
+                    switch (rGroupWallpaperNumber.getCheckedRadioButtonId()) {
+                        case R.id.rBtn_five:
+                            wallpaperAmount = 5;
+                            break;
+
+                        case R.id.rBtn_ten:
+                            wallpaperAmount = 10;
+                            break;
+
+                        case R.id.rBtn_fifteen:
+                            wallpaperAmount = 15;
+                            break;
+                    }
+                }
+
                 if (isOffline) {
-                    //do some shit here
-                    util.makeToast(context, "We are downloading the wallpapers. It will take a while!");
+                    quality = seekBarDownload.getProgress();
+                }
+                dailyWallpaper.onDailyPaperSet(isOffline, quality, wallpaperAmount, changeTime);
+                if (isOffline) {
+                    util.makeToast(context, context.getString(R.string.download_wallpaper));
+
                 } else {
-                    util.makeToast(context, "Wallpapers are being set! Please check Settings for changes!");
+                    util.makeToast(context, context.getString(R.string.daily_wallpaper_set));
                 }
                 dialog.dismiss();
             }
@@ -190,7 +276,17 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
     }
 
 
+    /**
+     * interace implementation for on click listener for download image
+     */
     public interface DailyWallpaper {
-        void onDailyPaperSet(boolean isOffline);
+        /**
+         *
+         * @param isOffline | if the images will be stored in offline mode
+         * @param quality | quality of the downloading image
+         * @param wallpaperAmount | amount of wallpaper to be stored at a time, both online/offline
+         * @param changeTime | when will the change occur
+         */
+        void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime);
     }
 }

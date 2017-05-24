@@ -47,6 +47,7 @@ public class InternalDownloadService extends Service {
             272847, 448612, 641112, 843429, 912219
     };
 
+    private int downloadQuality;
     private int downloadComplete = 0;
     private Intent runningIntent;
 
@@ -78,6 +79,7 @@ public class InternalDownloadService extends Service {
         this.runningIntent = intent;
         this.splashDbModel = (SplashDbModel) intent.getSerializableExtra("data");
         productUrls = splashDbModel.getSplashDbModels();
+        this.downloadQuality = splashDbModel.getQuality();
 
         Constant instance = Constant.getInstance();
         instance.setRunningDownload(productUrls.size());
@@ -171,7 +173,7 @@ public class InternalDownloadService extends Service {
             e.printStackTrace();
         } finally {
             if (output != null) {
-                new Util().storeImageInternalStorage(output, context, dataId);
+                new Util().storeImageInternalStorage(output, context, dataId, downloadQuality);
                 showFinalNotification(currentIndex);
             } else {
                 new SplashDb().setDownloadStatus(-1, dataId);

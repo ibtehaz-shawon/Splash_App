@@ -146,5 +146,5 @@ public class CollectionProfileAdapter extends RecyclerView.Adapter implements Fe
      * @param isOffline
      */
     @Override
-    public void onDailyPaperSet(boolean isOffline) {}
+    public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime) {}
 }

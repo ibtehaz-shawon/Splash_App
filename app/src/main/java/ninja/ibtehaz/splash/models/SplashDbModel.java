@@ -16,6 +16,7 @@ public class SplashDbModel implements Serializable {
     private boolean isOffline;
     private boolean isSet;
     private boolean isDownloaded;
+    private int quality;
 
     private String imageId;
     private boolean isDailyWallpaper;
@@ -111,5 +112,13 @@ public class SplashDbModel implements Serializable {
 
     public void setDailyWallpaper(boolean dailyWallpaper) {
         isDailyWallpaper = dailyWallpaper;
+    }
+
+    public int getQuality() {
+        return quality;
+    }
+
+    public void setQuality(int quality) {
+        this.quality = quality;
     }
 }

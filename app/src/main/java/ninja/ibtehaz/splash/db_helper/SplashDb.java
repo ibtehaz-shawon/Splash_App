@@ -13,7 +13,6 @@ import java.util.List;
 
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.models.SplashDbModel;
-import ninja.ibtehaz.splash.utility.Constant;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
@@ -37,7 +36,9 @@ public class SplashDb extends SugarRecord {
     private boolean isDailyWallpaper;
     //use this field to determine whether you have the image downloaded in local (if Offline mode is on)
     //check from settings and Feed.
-    private int isDownloading; //-1 for cancel download, 0 for downloading, 1 for complete download
+    private int quality;
+    private int wallpaperChangeTime;
+    private int wallpaperAmount;
 
 
     /**
@@ -54,7 +55,7 @@ public class SplashDb extends SugarRecord {
      * @overload SplashDb()
      */
     public SplashDb(FeedModel feedModel, boolean offline, String localImageId,
-                    boolean isDailyWallpaper, int isDownloading) {
+                    boolean isDailyWallpaper) {
         this.urlRaw = feedModel.getUrlRaw();
         this.urlSmall = feedModel.getUrlSmall();
         this.imageId = feedModel.getPhotoId();
@@ -62,7 +63,6 @@ public class SplashDb extends SugarRecord {
         this.offline = offline;
         this.localFileName = localImageId;
         this.isDailyWallpaper = isDailyWallpaper;
-        this.isDownloading = isDownloading;
     }
 
     /**
@@ -110,12 +110,28 @@ public class SplashDb extends SugarRecord {
         this.localFileName = localFileName;
     }
 
-    public void setDownloadStatus (int downloadStatus) {
-        this.isDownloading = downloadStatus;
+    public int getQuality() {
+        return quality;
     }
 
-    public int getDownloadStatus () {
-        return isDownloading;
+    public void setQuality(int quality) {
+        this.quality = quality;
+    }
+
+    public int getWallpaperChangeTime() {
+        return wallpaperChangeTime;
+    }
+
+    public void setWallpaperChangeTime(int wallpaperChangeTime) {
+        this.wallpaperChangeTime = wallpaperChangeTime;
+    }
+
+    public int getWallpaperAmount() {
+        return wallpaperAmount;
+    }
+
+    public void setWallpaperAmount(int wallpaperAmount) {
+        this.wallpaperAmount = wallpaperAmount;
     }
 
     /**
@@ -190,7 +206,7 @@ public class SplashDb extends SugarRecord {
         ArrayList<String> duplicate = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), false, null, true, -1);
+                SplashDb splash = new SplashDb(data.get(i), false, null, true);
                 long id = splash.save();
 
                 Log.d(TAG, "successfully inserted :"+id);
@@ -209,7 +225,7 @@ public class SplashDb extends SugarRecord {
      */
     public boolean insertSingleImageData(FeedModel feedModel) {
         if (!checkDuplicate(feedModel.getPhotoId())) {
-            SplashDb splashDb = new SplashDb(feedModel, false, null, false, -1);
+            SplashDb splashDb = new SplashDb(feedModel, false, null, false);
             splashDb.save();
             return true;
         } else {
@@ -286,7 +302,6 @@ public class SplashDb extends SugarRecord {
     public void updateFileName(String fileName, long dataId) {
         SplashDb data = SplashDb.findById(SplashDb.class, dataId);
         data.setLocalFileName(fileName);
-        data.setDownloadStatus(1);
         data.save();
     }
 
@@ -298,12 +313,16 @@ public class SplashDb extends SugarRecord {
      * @param data | all feedModel data containing image data
      * @param context | context is needed in order to access InternalStorage
      */
-    public int insertLocalImage(ArrayList<FeedModel> data, Context context) {
+    public int insertLocalImage(ArrayList<FeedModel> data, Context context, int quality, int wallpaperChangeTime, int wallpaperAmount) {
+
         int duplicate = 0;
         ArrayList<SplashDbModel> dataModel = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), true, null, true, 0);
+                SplashDb splash = new SplashDb(data.get(i), true, null, true);
+                splash.setQuality(quality);
+                splash.setWallpaperAmount(wallpaperAmount);
+                splash.setWallpaperChangeTime(wallpaperChangeTime);
                 long id = splash.save();
 
                 //call the util function to store data to Internal Storage
@@ -311,6 +330,7 @@ public class SplashDb extends SugarRecord {
                 tempModel.setImageId(splash.getImageId());
                 tempModel.setUrlRaw(splash.getUrlRaw());
                 tempModel.setUrlSmall(splash.getUrlSmall());
+                tempModel.setQuality(quality);
                 tempModel.setUniqueId(id);
 
                 dataModel.add(tempModel);
@@ -328,46 +348,66 @@ public class SplashDb extends SugarRecord {
      * if not, will initiate a new download, if the current download is not running
      */
     public void isDownloadComplete(Context context) {
-        Constant instance = Constant.getInstance();
-        Log.d("InternalStorage", "Counter is --> "+instance.getRunningDownload());
-
-        if (instance.getRunningDownload() <= 0) {
-            //download i
-            List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
-            ArrayList<SplashDbModel> downloadModel = new ArrayList<>();
-
-            for (int i = 0; i < allData.size(); i++) {
-                int downloadStatus = allData.get(i).getDownloadStatus();
-                boolean isOffline = allData.get(i).isOffline();
-
-                if (isOffline) {
-                   if (downloadStatus == -1 || downloadStatus == 0) {
-                       //start downloading
-                       Log.d("InternalStorage", "Download status " + downloadStatus);
-
-                       SplashDbModel tempModel = new SplashDbModel();
-                       tempModel.setImageId(allData.get(i).getImageId());
-                       tempModel.setUrlRaw(allData.get(i).getUrlRaw());
-                       tempModel.setUrlSmall(allData.get(i).getUrlSmall());
-                       tempModel.setUniqueId(allData.get(i).getId());
-
-                       downloadModel.add(tempModel);
-                   }
-                }
-            }
-            if (downloadModel.size() > 0) new Util().startInternalImageDownload(downloadModel, context);
-        }
+        return;
+//        Constant instance = Constant.getInstance();
+//        Log.d("InternalStorage", "Counter is --> "+instance.getRunningDownload());
+//
+//        if (instance.getRunningDownload() <= 0) {
+//            //download i
+//            List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+//            ArrayList<SplashDbModel> downloadModel = new ArrayList<>();
+//
+//            for (int i = 0; i < allData.size(); i++) {
+//                boolean isOffline = allData.get(i).isOffline();
+//                String fileName = allData.get(i).getLocalFileName();
+//
+//                if (isOffline) {
+//                   if (fileName == null) {
+//                       //start downloading
+//                       SplashDbModel tempModel = new SplashDbModel();
+//                       tempModel.setImageId(allData.get(i).getImageId());
+//                       tempModel.setUrlRaw(allData.get(i).getUrlRaw());
+//                       tempModel.setUrlSmall(allData.get(i).getUrlSmall());
+//                       tempModel.setUniqueId(allData.get(i).getId());
+//
+//                       downloadModel.add(tempModel);
+//                   } else if (fileName.equals("")) {
+//                       SplashDbModel tempModel = new SplashDbModel();
+//                       tempModel.setImageId(allData.get(i).getImageId());
+//                       tempModel.setUrlRaw(allData.get(i).getUrlRaw());
+//                       tempModel.setUrlSmall(allData.get(i).getUrlSmall());
+//                       tempModel.setUniqueId(allData.get(i).getId());
+//
+//                       downloadModel.add(tempModel);
+//                   }
+//                }
+//            }
+//            if (downloadModel.size() > 0) new Util().startInternalImageDownload(downloadModel, context);
+//        }
     }
 
 
     /**
+     * @deprecated
+     * @since 24/05/2017
      * updates the database that download has started.
      * @param downloadStarted
      * @param dataId
      */
     public void setDownloadStatus(int downloadStarted, long dataId) {
-        SplashDb data = SplashDb.findById(SplashDb.class, dataId);
-        data.setDownloadStatus(downloadStarted);
-        data.save();
+//        SplashDb data = SplashDb.findById(SplashDb.class, dataId);
+//        data.save();
+        return;
+    }
+
+
+    /**
+     * returns true, if it's the first time database is being initialized
+     */
+    public boolean isFirstTime() {
+        List<SplashDb> data = SplashDb.listAll(SplashDb.class);
+
+        if (data.size() == 0) return true;
+        else return false;
     }
 }

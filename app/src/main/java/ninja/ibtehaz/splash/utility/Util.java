@@ -302,7 +302,7 @@ public class Util {
      * @param context
      * @param dataId | sqlite primary key
      */
-    public void storeImageInternalStorage(Bitmap image, Context context, long dataId) {
+    public void storeImageInternalStorage(Bitmap image, Context context, long dataId, int quality) {
         String TAG = "InternalStorage";
         try {
             String fileName = Calendar.getInstance().get(Calendar.DAY_OF_YEAR) + ""
@@ -312,7 +312,7 @@ public class Util {
 
             // path to /data/data/yourapp/app_data/splashDir
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            image.compress(Bitmap.CompressFormat.JPEG, 60, fos);
+            image.compress(Bitmap.CompressFormat.JPEG, quality, fos);
             fos.close();
 
             //load based on id
