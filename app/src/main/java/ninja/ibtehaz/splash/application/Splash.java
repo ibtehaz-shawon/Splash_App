@@ -40,7 +40,8 @@ public class Splash extends Application {
 
 
     /**
-     * californication :/
+     * @deprecated
+     * this function was used just for testing purpose
      */
     private void initDB() {
         FeedModel feedModel = new FeedModel();

@@ -90,28 +90,46 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
     @Override
     public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom, String collectionId) {
         ArrayList<FeedModel> dataSet = new ArrayList<>();
-        int counter = 0, index = 0;
+        int duplicate = 0, counter = 0, loopCounter = 0;
 
         if (isRandom) {
             // call server from here
             new Util().makeToast(context, "get random photo from server!");
         } else {
-            while (true) {
-                if (index == wallpaperAmount) break;
-                FeedModel model = dataModel.get(counter);
-                if (model.getPhotoId() != null) { //first image id is null here. and it cannot be null
-                    dataSet.add(model);
-                    index++;
-                }
-                counter++;
-            }
+            boolean flag = true;
 
-            if (isOffline) {
-                new SplashDb().insertLocalImage(dataSet, context, quality, changeTime, wallpaperAmount);
-            } else {
-                new SplashDb().insertFeedData(dataSet);
+            while (flag) {
+                while (true) {
+                    if (loopCounter == wallpaperAmount) break;
+                    FeedModel model;
+
+                    if (counter < dataModel.size()) {
+                        model = dataModel.get(counter);
+                    } else {
+                        flag = false;
+                        break;
+                    }
+
+                    if (model.getPhotoId() != null) {
+                        //first image id is null here. and it cannot be null
+                        dataSet.add(model);
+                        loopCounter++;
+                    }
+                    counter++;
+                }
+
+                if (isOffline) {
+                    duplicate = new SplashDb().insertLocalImage(dataSet, context, quality, changeTime, wallpaperAmount, collectionId);
+                } else {
+                    duplicate = new SplashDb().insertFeedData(dataSet, changeTime, wallpaperAmount, collectionId);
+                }
+                dataSet.clear();
+                if (duplicate == 0) flag = false;
+                else {
+                    wallpaperAmount = duplicate;
+                    loopCounter = 0;
+                }
             }
-            dataSet.clear();
         }
     }
 

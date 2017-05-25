@@ -50,20 +50,29 @@ public class SplashDb extends SugarRecord {
 
 
     /**
-     * creates a database to store the database and offline/online preferences
-     * @param feedModel
-     * @param offline
-     * @overload SplashDb()
+     * constructor for database
+     * @param feedModel feed model, gather all Image related data from this model
+     * @param offline carries whether the offline mode is enabled or not
+     * @param localFileName Image filename if the image is supposed to be locally stored
+     * @param isDailyWallpaper if daily wallpaper is enabled. this field is probably not required
+     * @param quality quality of the locally stored image. Minimum 50, maximum 100
+     * @param wallpaperChangeTime wallpaper change time. current it's either 6 am or 12 am
+     * @param wallpaperAmount how many wallpaper data will be stored locally at a single time. either 5 or 10
+     * @param collectionId id of a certain collection. If daily wallpaper is enabled from collection. It's nullable
      */
-    public SplashDb(FeedModel feedModel, boolean offline, String localImageId,
-                    boolean isDailyWallpaper) {
+    public SplashDb(FeedModel feedModel, boolean offline, String localFileName,
+                    boolean isDailyWallpaper, int quality, int wallpaperChangeTime, int wallpaperAmount, String collectionId) {
         this.urlRaw = feedModel.getUrlRaw();
         this.urlSmall = feedModel.getUrlSmall();
         this.imageId = feedModel.getPhotoId();
         this.isSet = false;
         this.offline = offline;
-        this.localFileName = localImageId;
+        this.localFileName = localFileName;
         this.isDailyWallpaper = isDailyWallpaper;
+        this.quality = quality;
+        this.wallpaperChangeTime = wallpaperChangeTime;
+        this.wallpaperAmount = wallpaperAmount;
+        this.collectionId = collectionId;
     }
 
     /**
@@ -185,6 +194,7 @@ public class SplashDb extends SugarRecord {
 
 
     /**
+     * I will probably need to reinitialize this function
      * this will re-initiate splash if it has been filled and running in offline mode
      * computation will be done in another part.
      * TODO: need to compute if the internet collection is available. Take decision based on that.
@@ -210,32 +220,45 @@ public class SplashDb extends SugarRecord {
      * @param data
      * @return ArrayList<String> duplicate image id.
      */
-    public ArrayList<String> insertFeedData(ArrayList<FeedModel> data) {
+    public int insertFeedData(ArrayList<FeedModel> data, int wallpaperChangeTime, int wallpaperAmount, String collectionId) {
         //amount is 10;
-        ArrayList<String> duplicate = new ArrayList<>();
+        int duplicate = 0;
+        Log.d(TAG, "Enable Insertion :"+data.size());
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), false, null, true);
-                splash.setCollectionId(null);
+
+                if (wallpaperChangeTime == 0) {
+                    //get any other previous time
+                    List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+                    if (allData.size() > 0)  wallpaperChangeTime = allData.get(0).getWallpaperChangeTime();
+                }
+
+                if (wallpaperAmount == 0) {
+                    List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+                    if (allData.size() > 0)  wallpaperAmount = allData.get(0).getWallpaperAmount();
+                }
+                SplashDb splash = new SplashDb(data.get(i), false, null, true, -1, wallpaperChangeTime, wallpaperAmount, collectionId);
                 long id = splash.save();
 
                 Log.d(TAG, "successfully inserted :"+id);
             } else {
-                duplicate.add(data.get(i).getPhotoId());
+                duplicate++;
             }
         }
+        Log.d(TAG, "Total Duplicate :"+duplicate);
         return duplicate;
     }
 
 
     /**
-     * sweden dream
+     * @deprecated
+     * this function was used to insert on image data to local sqlite database
      * @param feedModel
      * @return
      */
     public boolean insertSingleImageData(FeedModel feedModel) {
         if (!checkDuplicate(feedModel.getPhotoId())) {
-            SplashDb splashDb = new SplashDb(feedModel, false, null, false);
+            SplashDb splashDb = new SplashDb(feedModel, false, null, false, -1, 0, 0, null);
             splashDb.save();
             return true;
         } else {
@@ -322,20 +345,29 @@ public class SplashDb extends SugarRecord {
      * User will get either randomly generated photo list from server or photos from the list (user preference)
      * @param data | all feedModel data containing image data
      * @param context | context is needed in order to access InternalStorage
+     * @return duplicate number of values that are already in the list (Db)
      */
-    public int insertLocalImage(ArrayList<FeedModel> data, Context context, int quality, int wallpaperChangeTime, int wallpaperAmount) {
-
+    public int insertLocalImage(ArrayList<FeedModel> data, Context context, int quality, int wallpaperChangeTime, int wallpaperAmount, String collectionId) {
+        Log.d(TAG, "Inside local "+data.size());
         int duplicate = 0;
         ArrayList<SplashDbModel> dataModel = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             if (!checkDuplicate(data.get(i).getPhotoId())) {
-                SplashDb splash = new SplashDb(data.get(i), true, null, true);
-                splash.setQuality(quality);
-                splash.setWallpaperAmount(wallpaperAmount);
-                splash.setWallpaperChangeTime(wallpaperChangeTime);
-                splash.setCollectionId(null);
+
+                if (wallpaperChangeTime == 0) {
+                    //get any other previous time
+                    List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+                    if (allData.size() > 0)  wallpaperChangeTime = allData.get(0).getWallpaperChangeTime();
+                }
+
+                if (wallpaperAmount == 0) {
+                    List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+                    if (allData.size() > 0)  wallpaperAmount = allData.get(0).getWallpaperAmount();
+                }
+                SplashDb splash = new SplashDb(data.get(i), true, null, true, quality, wallpaperChangeTime, wallpaperAmount, collectionId);
                 long id = splash.save();
 
+                Log.d(TAG, "Successfully Inserted Local "+id);
                 //call the util function to store data to Internal Storage
                 SplashDbModel tempModel = new SplashDbModel();
                 tempModel.setImageId(splash.getImageId());
@@ -349,8 +381,9 @@ public class SplashDb extends SugarRecord {
                 duplicate++;
             }
         }
+        Log.d(TAG, "Total Duplicated "+duplicate);
         new Util().startInternalImageDownload(dataModel, context);
-        return 0; //this value will return zero Always. means nothing.
+        return duplicate;
     }
 
 
@@ -436,7 +469,7 @@ public class SplashDb extends SugarRecord {
 
 
     /**
-     * returns the nutime when the photo will be changed
+     * returns the time when the photo will be changed
      * @return Wallpaper change time.
      */
     public int returnChangeTime() {
