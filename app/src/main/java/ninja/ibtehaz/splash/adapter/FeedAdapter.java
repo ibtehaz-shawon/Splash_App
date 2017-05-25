@@ -1,5 +1,6 @@
 package ninja.ibtehaz.splash.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,15 +31,17 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
 
     private Context context;
     private ArrayList<FeedModel> dataModel;
+    private Activity activity;
 
     /**
      *
      * @param context
      * @param dataModel
      */
-    public FeedAdapter(Context context, ArrayList<FeedModel> dataModel) {
+    public FeedAdapter(Context context, ArrayList<FeedModel> dataModel, Activity activity) {
         this.context = context;
         this.dataModel = dataModel;
+        this.activity = activity;
         this.viewType = new ViewType();
     }
 
@@ -89,6 +92,9 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
      */
     @Override
     public void onDailyPaperSet(boolean isOffline, int quality, int wallpaperAmount, int changeTime, boolean isRandom, String collectionId) {
+
+        if (!checkDailyPhotoStatus()) return; //check if the app already has 10 photos. 10 is the maximum number
+
         ArrayList<FeedModel> dataSet = new ArrayList<>();
         int duplicate = 0, counter = 0, loopCounter = 0;
 
@@ -124,7 +130,10 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
                     duplicate = new SplashDb().insertFeedData(dataSet, changeTime, wallpaperAmount, collectionId);
                 }
                 dataSet.clear();
-                if (duplicate == 0) flag = false;
+                if (duplicate == 0) {
+                    flag = false;
+                    new Util().makeToast(context, context.getString(R.string.daily_wallpaper_set));
+                }
                 else {
                     wallpaperAmount = duplicate;
                     loopCounter = 0;
@@ -146,5 +155,17 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
         } else {
             return viewType.FEED_TWO;
         }
+    }
+
+
+    /**
+     *
+     */
+    private boolean checkDailyPhotoStatus() {
+        long value = new SplashDb().totalPhotos();
+        if (value == 10l) {
+            new Util().showErrorToast(context.getString(R.string.maximum_photos), activity);
+            return false;
+        } else return true;
     }
 }

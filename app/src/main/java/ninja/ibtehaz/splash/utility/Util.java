@@ -13,7 +13,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -491,5 +494,25 @@ public class Util {
                 return whenCreated + " ago"; //return actual data
             }
         }
+    }
+
+
+    /**
+     * this function shows a custom generated toast message for all error values
+     * @param message | the message that needs to be shown on screen
+     * @param activity | current activity of the value
+     */
+    public void showErrorToast(String message, Activity activity) {
+        Context context = activity.getApplicationContext();
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_error_toast,
+                (ViewGroup) activity.findViewById(R.id.ll_error_toast_container));
+
+        ((TextView)layout.findViewById(R.id.txt_toast_message)).setText(message);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.CENTER|Gravity.BOTTOM, 0, 30);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 }

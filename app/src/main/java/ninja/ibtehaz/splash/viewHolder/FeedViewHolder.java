@@ -282,7 +282,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnCl
                 }
 
                 dailyWallpaper.onDailyPaperSet(isOffline, quality, wallpaperAmount, changeTime, isRandom, collectionId);
-                util.makeToast(context, context.getString(R.string.daily_wallpaper_set));
                 dialog.dismiss();
             }
         });

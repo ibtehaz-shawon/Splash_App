@@ -478,4 +478,13 @@ public class SplashDb extends SugarRecord {
         if (allData.size() == 0) return 0;
         else return allData.get(0).getWallpaperChangeTime();
     }
+
+
+    /**
+     * returns the counter of total photos in the sqlite database
+     * @return total photos in the database
+     */
+    public long totalPhotos() {
+        return SplashDb.count(SplashDb.class);
+    }
 }

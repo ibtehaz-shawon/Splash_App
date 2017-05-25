@@ -56,8 +56,9 @@
     <string name="offline_hint">Photos will be downloaded and stored on your device. This might require a lot of space</string>
     <string name="download_almost">Almost Complete !!</string>
     <string name="download_wallpaper">Downloading the wallpapers. It will take a while! We will let you know when it\'s over.</string>
-    <string name="daily_wallpaper_set">We are working on it! We will notify you when it\'s finished.</string>
+    <string name="daily_wallpaper_set">Daily wallpaper is set!</string>
     <string name="download_almost_text">Please choose the necessary options before confirming</string>
     <string name="use_random_photo">Use Random Photo</string>
     <string name="enable_offline">Store Image Locally</string>
+    <string name="maximum_photos">You have already enabled daily wallpaper!\n Remove the previous ones from Settings page.</string>
 </resources>

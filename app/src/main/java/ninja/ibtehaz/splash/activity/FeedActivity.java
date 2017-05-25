@@ -274,7 +274,7 @@ public class FeedActivity extends BaseActivity
      */
     private void listBind() {
         if (feedAdapter == null) {
-            feedAdapter = new FeedAdapter(context, dataModel);
+            feedAdapter = new FeedAdapter(context, dataModel, this);
 
             GridLayoutManager mLayoutManager  = new GridLayoutManager(context, 2,
                     LinearLayoutManager.VERTICAL, false);
