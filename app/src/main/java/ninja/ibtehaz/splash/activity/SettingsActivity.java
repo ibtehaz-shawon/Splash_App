@@ -1,6 +1,7 @@
 package ninja.ibtehaz.splash.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -73,12 +74,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
     /**
      * on click listener implementation
-     * @param v
+     * @param v current view
      */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_show_photos:
+                startActivity(new Intent(this, SavedImageActivity.class));
                 break;
 
         }

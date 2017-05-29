@@ -27,7 +27,7 @@
         <meta-data android:name="QUERY_LOG" android:value="true" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="ninja.ibtehaz.splash" />
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".activity.SavedImageActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name=".activity.FeedActivity"
