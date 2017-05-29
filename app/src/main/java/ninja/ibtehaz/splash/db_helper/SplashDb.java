@@ -152,6 +152,10 @@ public class SplashDb extends SugarRecord {
         this.collectionId = collectionId;
     }
 
+    public void setDailyWallpaper(boolean dailyWallpaper) {
+        isDailyWallpaper = dailyWallpaper;
+    }
+
     /**
      * -------------------------------------------------------------
      * -------------------------------------------------------------
@@ -486,5 +490,28 @@ public class SplashDb extends SugarRecord {
      */
     public long totalPhotos() {
         return SplashDb.count(SplashDb.class);
+    }
+
+
+    /**
+     * check if daily wallpaper is set or not
+     * @return true if daily wallpaper has been set
+     */
+    public boolean isDailyWallpaper() {
+        if (totalPhotos() == 0) return false;
+        List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+        return allData.get(0).isDailyWallpaper;
+    }
+
+
+    /**
+     * function handles daily wallpaper setup
+     * @param state true, if daily wallpaper is set, false if daily wallpaper is not set
+     */
+    public void statusDailyWallpaper(boolean state) {
+        List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+        for (int i = 0; i < allData.size(); i++) {
+            allData.get(i).setDailyWallpaper(state);
+        }
     }
 }

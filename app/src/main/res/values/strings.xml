@@ -61,4 +61,7 @@
     <string name="use_random_photo">Use Random Photo</string>
     <string name="enable_offline">Store Image Locally</string>
     <string name="maximum_photos">You have already enabled daily wallpaper!\n Remove the previous ones from Settings page.</string>
+    <string name="wallpaper_set">You have already setup Daily Wallpaper. Do you want to cancel?</string>
+    <string name="txt_ok">Confirm</string>
+    <string name="txt_cancel">Cancel</string>
 </resources>

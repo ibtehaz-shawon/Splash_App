@@ -1,7 +1,9 @@
 package ninja.ibtehaz.splash.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,14 +14,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import ninja.ibtehaz.splash.R;
 import ninja.ibtehaz.splash.adapter.FeedAdapter;
+import ninja.ibtehaz.splash.db_helper.SplashDb;
 import ninja.ibtehaz.splash.models.FeedModel;
 import ninja.ibtehaz.splash.utility.Util;
 import ninja.ibtehaz.splash.viewHolder.FeedViewHolder;
@@ -97,9 +104,13 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_set_wallpaper:
-                util.makeToast(context, context.getString(R.string.wallpaper_setup_process_start));
-                util.setupWallpaperFromBackground(context,
-                        dataModel.getUrlRaw());
+                if (new SplashDb().isDailyWallpaper()) {
+                    showAlertDialog();
+                } else {
+                    util.makeToast(context, context.getString(R.string.wallpaper_setup_process_start));
+                    util.setupWallpaperFromBackground(context,
+                            dataModel.getUrlRaw());
+                }
                 break;
 
             case R.id.img_back:
@@ -224,6 +235,46 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             util.loadProfilePic(context, dataModel.getUserProfilePic(), imgProfilePic);
             txtUserDisplayName.setText(context.getString(R.string.photo_by_text) + " " + dataModel.getUserDisplayName());
         }
+    }
+
+
+    /**
+     * shows an alert dialog before confirming the daily wallpaper cancel setup
+     */
+    private void showAlertDialog() {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.item_daily_wallpaper_set);
+
+        final Button btnConfirm = (Button)dialog.findViewById(R.id.btn_confirm);
+        final Button btnCancel = (Button)dialog.findViewById(R.id.btn_cancel);
+
+        /**
+         * confirm btn on click listener handler
+         */
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                util.makeToast(context, context.getString(R.string.wallpaper_setup_process_start));
+                util.setupWallpaperFromBackground(context,
+                        dataModel.getUrlRaw());
+                //cancel the daily wallpaper setup
+                new SplashDb().statusDailyWallpaper(true);
+                dialog.dismiss();
+            }
+        });
+
+
+        /**
+         * cancels the fucking dialog
+         */
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }
 
