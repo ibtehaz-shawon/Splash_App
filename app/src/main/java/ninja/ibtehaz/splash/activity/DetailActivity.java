@@ -258,7 +258,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                 util.setupWallpaperFromBackground(context,
                         dataModel.getUrlRaw());
                 //cancel the daily wallpaper setup
-                new SplashDb().statusDailyWallpaper(true);
+                new SplashDb().statusDailyWallpaper(false);
                 dialog.dismiss();
             }
         });

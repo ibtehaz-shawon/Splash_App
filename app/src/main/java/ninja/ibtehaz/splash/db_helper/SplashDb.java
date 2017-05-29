@@ -25,7 +25,7 @@ public class SplashDb extends SugarRecord {
     private final String TAG = "SplashDb";
 
     @Unique
-    private int id;
+    private long id;
     private String localFileName; //current time function in milli second along with random generated text
     private String urlRaw;
     private String urlSmall;
@@ -511,7 +511,11 @@ public class SplashDb extends SugarRecord {
     public void statusDailyWallpaper(boolean state) {
         List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
         for (int i = 0; i < allData.size(); i++) {
-            allData.get(i).setDailyWallpaper(state);
+            long id = allData.get(i).getId();
+            Log.d(TAG, "ID is -_-> "+id);
+            SplashDb data = SplashDb.findById(SplashDb.class, id);
+            data.setDailyWallpaper(state);
+            data.save();
         }
     }
 }
