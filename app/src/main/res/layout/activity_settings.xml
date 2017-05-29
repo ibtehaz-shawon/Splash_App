@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_feed_bg"
-    >
+    android:background="@drawable/gradient_feed_bg">
 
     <!--App bar goes here.-->
     <android.support.design.widget.AppBarLayout
@@ -27,109 +27,197 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+    <!--\/\/\/\/\/\\/\/\/\/\\/\/\/\/\/\\/\/\/\/\/\/\/\/-->
+    <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/white_all_radius"
+            android:layout_marginLeft="@dimen/margin_16dp"
+            android:layout_marginRight="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_16dp"
+            android:padding="@dimen/margin_16dp">
 
+            <Switch
+                android:id="@+id/switch_daily_wallpaper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enabled_daily_wallpaper"
+                android:textSize="@dimen/text_16sp"
+                android:textStyle="normal"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primaryTextColor"
+                android:layout_marginBottom="@dimen/margin_16dp"
+                android:gravity="center|left"
+                />
+
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--Wallpaper change time-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--Amount of wallpaper data stored!-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
 
             <LinearLayout
-                android:id="@+id/ll_settings_part"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:background="@drawable/white_all_radius"
-                android:layout_marginLeft="@dimen/margin_16dp"
-                android:layout_marginRight="@dimen/margin_16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:padding="@dimen/margin_16dp"
-                >
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <Switch
-                    android:id="@+id/switch_daily_wallpaper"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Set Daily Wallpaper"
-                    android:textSize="@dimen/text_16sp"
-                    android:textStyle="normal"
-                    android:fontFamily="sans-serif"
+                    android:text="@string/change_wallpaper_time"
                     android:textColor="@color/primaryTextColor"
-                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_weight="1"
                     />
 
-                <Switch
-                    android:id="@+id/switch_offline_mode"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/txt_change_time"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" Enable Offline Mode"
-                    android:textSize="@dimen/text_16sp"
-                    android:textStyle="normal"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/primaryTextColor"
-                    android:layout_marginBottom="@dimen/margin_16dp"
-                    />
-
-                <Switch
-                    android:id="@+id/switch_clear_all"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Clear All Data"
-                    android:textSize="@dimen/text_16sp"
-                    android:textStyle="normal"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/primaryTextColor"
-                    android:layout_marginBottom="@dimen/margin_16dp"
-                    />
-
-
-                <Button
-                    android:id="@+id/btn_show_photos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Show Saved Photos"
-                    android:textSize="@dimen/text_16sp"
+                    android:textColor="@color/colorAccent"
                     android:textStyle="bold"
+                    android:textSize="@dimen/text_16sp"
                     android:fontFamily="sans-serif"
-                    android:textColor="@color/textIconsColor"
-                    android:textAllCaps="false"
-                    android:background="@drawable/primary_no_radius"
+                    android:text="@string/app_name"
                     />
             </LinearLayout>
 
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="@dimen/margin_16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:layout_marginRight="@dimen/margin_16dp"
-                android:background="@drawable/white_all_radius"
-                android:visibility="gone"
-                android:layout_weight="7">
-
-
-            </android.support.v7.widget.RecyclerView>
-
-
-            <TextView
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--Total photo data-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ibtehaz Shawon 2017"
-                android:layout_gravity="bottom"
-                android:gravity="center|bottom"
-                android:padding="@dimen/margin_16dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_photo_data"
+                    android:textColor="@color/primaryTextColor"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_total_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/app_name"
+                    />
+            </LinearLayout>
+
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--Locally stored photo data-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/local_stored_photo"
+                    android:textColor="@color/primaryTextColor"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_locally_stored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/app_name"
+                    />
+            </LinearLayout>
+
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--Total Wallpaper Set-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_set_wallpaper"
+                    android:textColor="@color/primaryTextColor"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_total_wallpaper_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_16sp"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/app_name"
+                    />
+            </LinearLayout>
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+            <!--|||||||||||||||||||||||||||||||||||||||||||||||-->
+
+            <Button
+                android:id="@+id/btn_show_photos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:text="@string/show_saved_photo"
+                android:textSize="@dimen/text_16sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
                 android:textColor="@color/textIconsColor"
-                android:fontFamily="serif"
-                android:textSize="@dimen/text_14sp"
+                android:textAllCaps="false"
+                android:background="@drawable/accent_all_radius"
                 />
-
         </LinearLayout>
+    </ScrollView>
 
-    </android.support.v4.widget.NestedScrollView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ibtehaz Shawon 2017"
+        android:layout_gravity="bottom"
+        android:gravity="center|bottom"
+        android:padding="@dimen/margin_16dp"
+        android:textColor="@color/textIconsColor"
+        android:fontFamily="serif"
+        android:textSize="@dimen/text_14sp"
+        android:textStyle="bold"
+        />
 </LinearLayout>

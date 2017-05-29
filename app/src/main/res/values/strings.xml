@@ -64,4 +64,12 @@
     <string name="wallpaper_set">You have already setup Daily Wallpaper. Do you want to cancel?</string>
     <string name="txt_ok">Confirm</string>
     <string name="txt_cancel">Cancel</string>
+    <string name="enabled_daily_wallpaper">Daily Wallpaper</string>
+    <string name="change_wallpaper_time">Wallpaper Change Time</string>
+    <string name="change_wallpaper_amount">Wallpaper Amount</string>
+    <string name="local_stored_photo">Locally Stored Photo</string>
+    <string name="total_photo_data">Total Photo Data</string>
+    <string name="show_saved_photo">Show Saved Photos</string>
+    <string name="total_set_wallpaper">Total Set Wallpaper</string>
+    <string name="no_saved_photo">No Saved Photos!</string>
 </resources>

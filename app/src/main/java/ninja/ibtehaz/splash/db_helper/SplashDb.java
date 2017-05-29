@@ -45,8 +45,7 @@ public class SplashDb extends SugarRecord {
     /**
      * default constructor
      */
-    public SplashDb() {
-    }
+    public SplashDb() {}
 
 
     /**
@@ -155,6 +154,8 @@ public class SplashDb extends SugarRecord {
     public void setDailyWallpaper(boolean dailyWallpaper) {
         isDailyWallpaper = dailyWallpaper;
     }
+
+
 
     /**
      * -------------------------------------------------------------
@@ -517,5 +518,19 @@ public class SplashDb extends SugarRecord {
             data.setDailyWallpaper(state);
             data.save();
         }
+    }
+
+
+    /**
+     * returns the counter of total photos in the sqlite database
+     * @return total photos in the database
+     */
+    public int getLocallyStoredCounter() {
+        List<SplashDb> allData = SplashDb.listAll(SplashDb.class);
+        int counter = 0;
+        for (int i = 0; i < allData.size(); i++) {
+            if (allData.get(i).getLocalFileName() == null) counter++;
+        }
+        return counter;
     }
 }

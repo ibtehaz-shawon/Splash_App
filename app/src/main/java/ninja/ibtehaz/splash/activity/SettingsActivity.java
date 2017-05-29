@@ -1,38 +1,20 @@
 package ninja.ibtehaz.splash.activity;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
-import java.util.List;
-
 import ninja.ibtehaz.splash.R;
-import ninja.ibtehaz.splash.adapter.FeedAdapter;
 import ninja.ibtehaz.splash.db_helper.SplashDb;
-import ninja.ibtehaz.splash.models.FeedModel;
-import ninja.ibtehaz.splash.models.SplashDbModel;
-import ninja.ibtehaz.splash.utility.Util;
-import ninja.ibtehaz.splash.viewHolder.FeedViewHolder;
 
 /**
+ * this class contains the settings related value app wise
  * Created by ibtehaz on 4/1/2017.
  */
 
@@ -40,12 +22,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     private Context context;
+    private TextView txtLocallyStored, txtChangeTime, txtTotalWallpaperSet,
+            txtTotalPhotos;
+    private Switch switchDailyWallpaper;
     private Button btnShowPhotos;
-    private RecyclerView recyclerView;
-    private ArrayList<?> dataModel;
-    private Switch switchResetAll;
-    private AdapterSettings adapterSettings;
-
 
     /**
      *
@@ -57,22 +37,13 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_settings);
 
         init();
-        getAllLocalData();
-        listBind();
-
+        inflateData();
         btnShowPhotos.setOnClickListener(this);
-
-        switchResetAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchDailyWallpaper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    new SplashDb().removeAll(context);
-                    switchResetAll.setChecked(false);
-                    dataModel.clear();
-                    adapterSettings.notifyDataSetChanged();
-                    noSavedData();
-
-                    new Util().makeToast(context, "All data removed!");
+                    //TODO do something!
                 }
             }
         });
@@ -80,60 +51,37 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
 
     /**
-     *
+     * initiates the view
      */
     private void init() {
         context = this;
         btnShowPhotos = (Button)findViewById(R.id.btn_show_photos);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        switchResetAll = (Switch)findViewById(R.id.switch_clear_all);
-        dataModel = new ArrayList<>();
+        switchDailyWallpaper = (Switch)findViewById(R.id.switch_daily_wallpaper);
+        txtChangeTime = (TextView)findViewById(R.id.txt_change_time);
+        txtLocallyStored = (TextView)findViewById(R.id.txt_locally_stored);
+        txtTotalPhotos = (TextView)findViewById(R.id.txt_total_photos);
+        txtTotalWallpaperSet = (TextView)findViewById(R.id.txt_total_wallpaper_set);
 
-        new Thread() {
+        findViewById(R.id.img_back).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                new SplashDb().isDownloadComplete(context); //check if all the downloads are complete
+            public void onClick(View v) {
+                finish();
             }
-        }.start();
+        });
+        ((TextView)findViewById(R.id.txt_title)).setText(context.getString(R.string.settings));
     }
 
     /**
-     *
+     * on click listener implementation
      * @param v
      */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_show_photos:
-                if (recyclerView.getVisibility() == View.VISIBLE) {
-                    recyclerView.setVisibility(View.GONE);
-                    btnShowPhotos.setText("Show Saved Photos");
-                } else {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    btnShowPhotos.setText("Hide Saved Photos");
-                }
-                ((LinearLayout)findViewById(R.id.ll_settings_part)).setBackgroundResource(R.drawable.white_all_radius);
-                adapterSettings.notifyDataSetChanged();
                 break;
 
         }
-    }
-
-    /**
-     *
-     */
-    private void getAllLocalData() {
-        dataModel = new SplashDb().returnAllImage();
-
-        //filtering NULL Vals
-        for (int i = 0; i < dataModel.size(); i++) {
-            SplashDbModel model = ((SplashDbModel)dataModel.get(i));
-            if (model.getUrlSmall() == null || model.getUrlRaw() == null) {
-                dataModel.remove(i);
-            }
-        }
-
-        if (dataModel.size() == 0) noSavedData();
     }
 
 
@@ -142,170 +90,40 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
      */
     private void noSavedData() {
         btnShowPhotos.setEnabled(false);
-        recyclerView.setVisibility(View.GONE);
         btnShowPhotos.setAlpha(0.3f);
-        switchResetAll.setAlpha(0.3f);
-        switchResetAll.setEnabled(false);
-        btnShowPhotos.setText("No Saved Photos!");
+        btnShowPhotos.setText(context.getString(R.string.no_saved_photo));
     }
 
 
     /**
-     *
-     */
-    private void listBind() {
-        if (adapterSettings == null) {
-            adapterSettings = new AdapterSettings(dataModel);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(context, 4,
-                    LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(mLayoutManager);
-            RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-            itemAnimator.setAddDuration(1500);
-            itemAnimator.setChangeDuration(1000);
-            recyclerView.setItemAnimator(itemAnimator);
-            recyclerView.setHasFixedSize(false);
-            recyclerView.setAdapter(adapterSettings);
-        }
-        adapterSettings.notifyDataSetChanged();
-    }
-
-
-    /**
-     * clears the memory frm background.
+     * hardware back implementation
      */
     @Override
     public void onBackPressed() {
         finish();
     }
 
-    /**
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     */
-    private class AdapterSettings extends RecyclerView.Adapter {
-
-        private ArrayList<?> dataModel;
-
-        /**
-         *
-         * @param dataModel
-         */
-        public AdapterSettings(ArrayList<?> dataModel) {
-            this.dataModel = dataModel;
-        }
-
-        /**
-         *
-         * @param parent
-         * @param viewType
-         * @return
-         */
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.settings_item_layout, parent, false);
-            return new SettingsViewHolder(itemView);
-        }
-
-        /**
-         *
-         * @param holder
-         * @param position
-         */
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((SettingsViewHolder) holder).bindDataToView((SplashDbModel) dataModel.get(position), position);
-        }
-
-
-        /**
-         *
-         * @return
-         */
-        @Override
-        public int getItemCount() {
-            return dataModel.size();
-        }
-    }
-
 
     /**
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
-     * ---------------------------------------------------------------------
+     * inflate data to UI
      */
-    private class SettingsViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView imgLeft, imgLayerLeft;
-        private FrameLayout frameLeft;
-        private TextView txtAuthorLeft;
-
-        private SplashDbModel currentDataModel;
-        private int currentPosition;
-        private View itemView;
-        private Util util;
-
-
-        /**
-         *
-         * @param itemView
-         */
-        public SettingsViewHolder(View itemView) {
-            super(itemView);
-
-            this.itemView = itemView;
-            this.util = new Util();
-
-            imgLeft = (ImageView)itemView.findViewById(R.id.img_left_original);
-            imgLayerLeft = (ImageView)itemView.findViewById(R.id.img_layer_left);
-            frameLeft = (FrameLayout)itemView.findViewById(R.id.frame_left);
-            txtAuthorLeft = (TextView)itemView.findViewById(R.id.txt_author_left);
+    private void inflateData() {
+        if (new SplashDb().isDailyWallpaper()) {
+            switchDailyWallpaper.setChecked(true);
+        } else {
+            switchDailyWallpaper.setChecked(false);
         }
 
+        txtTotalPhotos.setText(new SplashDb().totalPhotos() + "");
+        txtChangeTime.setText(new SplashDb().returnChangeTime() + "");
+        txtLocallyStored.setText(new SplashDb().getLocallyStoredCounter() + "");
+        txtTotalWallpaperSet.setText("0");
 
-        /**
-         *
-         * @param model
-         * @param position
-         */
-        public void bindDataToView(SplashDbModel model, int position) {
-            this.currentDataModel = model;
-            this.currentPosition = position;
-
-            imgLayerLeft.setVisibility(View.VISIBLE);
-            txtAuthorLeft.setVisibility(View.GONE);
-            itemView.findViewById(R.id.ll_daily_wallpaper).setVisibility(View.GONE);
-
-            if (model.isOffline()) {
-                if (model.getLocalFileName() != null) {
-                    new Util().getInternalStorageImage(
-                            model.getLocalFileName(),
-                            context,
-                            imgLeft);
-
-                    itemView.findViewById(R.id.ll_archived).setVisibility(View.VISIBLE);
-                }
-            } else {
-                itemView.findViewById(R.id.ll_archived).setVisibility(View.GONE);
-                loadPicture();
-            }
-        }
-
-
-        /**
-         * checks which url would be able to load image
-         */
-        private void loadPicture() {
-            util.loadImage(context, currentDataModel.getUrlSmall(), imgLeft, imgLayerLeft);
+        if (new SplashDb().totalPhotos() == 0l) {
+            switchDailyWallpaper.setChecked(false);
+            switchDailyWallpaper.setAlpha(0.3f);
+            switchDailyWallpaper.setClickable(false);
+            noSavedData();
         }
     }
 }
