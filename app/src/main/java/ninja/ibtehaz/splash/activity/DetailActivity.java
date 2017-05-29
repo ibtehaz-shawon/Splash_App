@@ -107,7 +107,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                 if (new SplashDb().isDailyWallpaper()) {
                     showAlertDialog();
                 } else {
-                    util.makeToast(context, context.getString(R.string.wallpaper_setup_process_start));
+                    util.showSuccessToast(context.getString(R.string.wallpaper_setup_process_start), this);
                     util.setupWallpaperFromBackground(context,
                             dataModel.getUrlRaw());
                 }
@@ -254,7 +254,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                util.makeToast(context, context.getString(R.string.wallpaper_setup_process_start));
+                util.showSuccessToast(context.getString(R.string.wallpaper_setup_process_start), DetailActivity.this);
                 util.setupWallpaperFromBackground(context,
                         dataModel.getUrlRaw());
                 //cancel the daily wallpaper setup

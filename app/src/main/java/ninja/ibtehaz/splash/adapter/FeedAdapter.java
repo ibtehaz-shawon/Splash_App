@@ -159,7 +159,7 @@ public class FeedAdapter extends RecyclerView.Adapter implements FeedViewHolder.
 
 
     /**
-     *
+     * checks if user has already sets up 10 photo as his daily wallpaper
      */
     private boolean checkDailyPhotoStatus() {
         long value = new SplashDb().totalPhotos();

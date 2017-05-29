@@ -12,4 +12,5 @@
     <color name="transparent">@android:color/transparent</color>
     <color name="white_50_transparent"> #80FFFFFF</color>
     <color name="FF4C1BColor">#FF4C1B</color>
+    <color name="C1FEFFColor">#1CFEFF</color>
 </resources>

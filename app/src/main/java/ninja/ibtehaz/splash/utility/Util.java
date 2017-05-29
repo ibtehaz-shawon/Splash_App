@@ -515,4 +515,24 @@ public class Util {
         toast.setView(layout);
         toast.show();
     }
+
+
+    /**
+     * this function shows a custom generated toast message for all error values
+     * @param message | the message that needs to be shown on screen
+     * @param activity | current activity of the value
+     */
+    public void showSuccessToast(String message, Activity activity) {
+        Context context = activity.getApplicationContext();
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_success_toast,
+                (ViewGroup) activity.findViewById(R.id.ll_success_toast_container));
+
+        ((TextView)layout.findViewById(R.id.txt_toast_message)).setText(message);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.CENTER|Gravity.BOTTOM, 0, 30);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
 }

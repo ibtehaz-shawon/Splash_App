@@ -60,7 +60,7 @@
     <string name="download_almost_text">Please choose the necessary options before confirming</string>
     <string name="use_random_photo">Use Random Photo</string>
     <string name="enable_offline">Store Image Locally</string>
-    <string name="maximum_photos">You have already enabled daily wallpaper!\n Remove the previous ones from Settings page.</string>
+    <string name="maximum_photos">You have stored maximum number of photos (10).\n Remove the previous ones from Settings page to add more.</string>
     <string name="wallpaper_set">You have already setup Daily Wallpaper. Do you want to cancel?</string>
     <string name="txt_ok">Confirm</string>
     <string name="txt_cancel">Cancel</string>

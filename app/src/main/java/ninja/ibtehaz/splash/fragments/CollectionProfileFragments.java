@@ -218,7 +218,7 @@ public class CollectionProfileFragments extends android.support.v4.app.Fragment 
      */
     private void listBind(String message) {
         if (profileAdapter == null) {
-            profileAdapter = new CollectionProfileAdapter(context, collectionModel, dataModel, message);
+            profileAdapter = new CollectionProfileAdapter(context, collectionModel, dataModel, message, getActivity());
             GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2,
                     LinearLayoutManager.VERTICAL, false);
 
