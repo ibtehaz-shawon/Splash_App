@@ -16,7 +16,8 @@ import ninja.ibtehaz.splash.models.SplashDbModel;
 import ninja.ibtehaz.splash.utility.Util;
 
 /**
- * Created by ibteh on 4/1/2017.
+ * @author ibtehaz
+ * Created by ibtehaz on 4/1/2017.
  */
 
 public class SplashDb extends SugarRecord {
