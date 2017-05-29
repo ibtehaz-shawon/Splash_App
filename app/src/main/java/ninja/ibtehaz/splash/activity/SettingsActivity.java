@@ -128,4 +128,14 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
             noSavedData();
         }
     }
+
+
+    /**
+     * inflates the UI to get up-to-date with sqlite change
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        inflateData();
+    }
 }

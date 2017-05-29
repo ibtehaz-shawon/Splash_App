@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
+    android:background="@color/transparent"
     >
 
     <ImageView
@@ -33,4 +33,13 @@
         android:fontFamily="sans-serif-smallcaps"
         android:textAllCaps="false"
         />
+
+    <ImageView
+        android:id="@+id/img_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/delete_icon"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/margin_8dp"
+        android:visibility="gone"/>
 </LinearLayout>

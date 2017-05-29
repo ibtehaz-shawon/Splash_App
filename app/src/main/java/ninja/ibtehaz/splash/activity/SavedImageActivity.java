@@ -56,6 +56,20 @@ public class SavedImageActivity extends BaseActivity {
     private void init() {
         context = this;
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        findViewById(R.id.img_delete).setVisibility(View.VISIBLE);
+        findViewById(R.id.img_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SplashDb().removeAll(context);
+                dataModel.clear();
+                adapterSavedImage.notifyDataSetChanged();
+
+                new Util().showSuccessToast(context.getString(R.string.all_data_removed), SavedImageActivity.this);
+
+                //initiate empty view
+                initEmptyView(context.getString(R.string.no_saved_photo));
+            }
+        });
     }
 
 
@@ -72,6 +86,8 @@ public class SavedImageActivity extends BaseActivity {
                 dataModel.remove(i);
             }
         }
+
+        if (dataModel.size() == 0)initEmptyView(context.getString(R.string.no_saved_photo));
     }
 
 
@@ -92,6 +108,19 @@ public class SavedImageActivity extends BaseActivity {
             recyclerView.setAdapter(adapterSavedImage);
         }
         adapterSavedImage.notifyDataSetChanged();
+    }
+
+
+    /**
+     * initiate this layout if there is no item
+     */
+    private void initEmptyView(String message) {
+        recyclerView.setVisibility(View.GONE);
+        ((TextView)findViewById(R.id.txt_empty_view)).setText(message.trim());
+        findViewById(R.id.ll_empty_view).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.img_delete).setClickable(false);
+        findViewById(R.id.img_delete).setAlpha(0.3f);
     }
 
 
